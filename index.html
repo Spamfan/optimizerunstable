@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Framework 3: Tank Render & Min/Max FPS</title>
+    <title>Framework 4: Memory Stress Test</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #333; touch-action: none; }
         canvas { display: block; width: 100%; height: 100%; }
@@ -38,7 +38,7 @@
         FPS: <span id="fps-cur">0</span><br>
         Min: <span id="fps-min" style="color: #ff4444;">0</span><br>
         Max: <span id="fps-max" style="color: #44ff44;">0</span><br>
-        Objs: 2000 Tanks
+        Test: Memory Churn (Grid)
     </div>
     <canvas id="gameCanvas"></canvas>
     <div id="joystick-zone"><div id="joystick-knob"></div></div>
@@ -56,7 +56,7 @@
     let player = { x: 2000, y: 2000, width: 35, height: 35, speed: 8, angle: 0, turretAngle: 0 };
     let joystick = { active: false, dx: 0, dy: 0 };
     
-    // GENERATE 2000 "TANKS" (Dummy objects)
+    // GENERATE 2000 "TANKS"
     let worldObjects = [];
     function generateWorld() {
         for(let i=0; i<2000; i++) {
@@ -67,7 +67,7 @@
                 turretAngle: Math.random() * Math.PI * 2,
                 width: 35,
                 height: 35,
-                color: Math.random() > 0.5 ? '#991b1b' : '#7f1d1d' // Enemy Colors
+                color: Math.random() > 0.5 ? '#991b1b' : '#7f1d1d'
             });
         }
     }
@@ -81,6 +81,22 @@
     }
     window.addEventListener('resize', resize);
     resize();
+
+    // --- THE TRASH GENERATOR (Mimicking Main Game) ---
+    class SpatialGrid {
+        constructor(width, height, cellSize) {
+            this.cellSize = cellSize;
+            this.cells = new Map();
+        }
+        getKey(x, y) { return `${x},${y}`; }
+        add(obj) {
+            const startX = Math.floor(obj.x / this.cellSize);
+            const startY = Math.floor(obj.y / this.cellSize);
+            const key = this.getKey(startX, startY);
+            if (!this.cells.has(key)) this.cells.set(key, []);
+            this.cells.get(key).push(obj);
+        }
+    }
 
     // Joystick Logic
     const joyZone = document.getElementById('joystick-zone');
@@ -120,7 +136,7 @@
         else { joystick.dx = 0; joystick.dy = 0; }
     }
 
-    // --- RENDERER (The Test Subject) ---
+    // --- RENDERER ---
     function drawTank(t) {
         ctx.save();
         ctx.translate(t.x + t.width / 2, t.y + t.height / 2);
@@ -130,10 +146,10 @@
         ctx.rotate(t.angle);
         ctx.lineWidth = 3;
         ctx.strokeStyle = 'black';
-        ctx.fillStyle = "#4A5568"; // Tracks
+        ctx.fillStyle = "#4A5568";
         ctx.strokeRect(-t.width / 2, -t.height / 2, t.width, t.height);
         ctx.fillRect(-t.width / 2, -t.height / 2, t.width, t.height);
-        ctx.fillStyle = t.color || "#3b82f6"; // Body
+        ctx.fillStyle = t.color || "#3b82f6"; 
         ctx.strokeRect(-t.width / 2 * 0.8, -t.height / 2 * 0.8, t.width * 0.8, t.height * 0.8);
         ctx.fillRect(-t.width / 2 * 0.8, -t.height / 2 * 0.8, t.width * 0.8, t.height * 0.8);
         ctx.restore();
@@ -146,7 +162,7 @@
         ctx.restore();
     }
 
-    // --- LOOP & DIAGNOSTICS ---
+    // --- LOOP ---
     let lastTime = performance.now();
     let frames = 0;
     let lastFpsTime = lastTime;
@@ -160,7 +176,7 @@
         const instantFps = 1000 / delta;
         lastTime = now;
 
-        if (instantFps < minFps && frames > 5) minFps = instantFps; // Ignore startup spike
+        if (instantFps < minFps && frames > 5) minFps = instantFps;
         if (instantFps > maxFps) maxFps = instantFps;
 
         if (now - lastFpsTime >= 1000) {
@@ -168,17 +184,25 @@
             document.getElementById('fps-min').textContent = Math.round(minFps);
             document.getElementById('fps-max').textContent = Math.round(maxFps);
             frames = 0;
-            minFps = 60; // Reset min/max every second
+            minFps = 60; 
             maxFps = 0;
             lastFpsTime = now;
         }
+
+        // --- THE STRESS TEST ---
+        // Create trash every frame
+        let trashGrid = new SpatialGrid(worldSize, worldSize, 200);
+        for(const obj of worldObjects) {
+            trashGrid.add(obj);
+        }
+        // trashGrid goes out of scope here (Garbage Collection Trigger)
 
         // Update
         if (joystick.active) {
             player.x += joystick.dx * player.speed;
             player.y += joystick.dy * player.speed;
             player.angle = Math.atan2(joystick.dy, joystick.dx);
-            player.turretAngle = player.angle; // Lock turret to body for this test
+            player.turretAngle = player.angle; 
         }
         camera.x = player.x - width / 2;
         camera.y = player.y - height / 2;
@@ -200,12 +224,10 @@
             }
         }
 
-        // Draw 2000 Tanks
+        // Draw Objects
         for (const obj of worldObjects) {
             drawTank(obj);
         }
-        
-        // Draw Player
         drawTank(player);
 
         ctx.restore();
