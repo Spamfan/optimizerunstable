@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimizer (beta 29u)</title>
+    <title>Optimizer (beta 32u)</title>
     
     <!-- PDF.js and jsPDF library CDNs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
@@ -192,6 +192,37 @@
             font-family: monospace;
             font-size: 0.8em;
             margin-bottom: 10px;
+            display: flex;
+            flex-direction: column; /* v32u: Stack divs */
+        }
+        
+        /* v32u: Log Styles & View Filtering */
+        .log-entry { margin-bottom: 2px; border-bottom: 1px solid #eee; padding-bottom: 2px; }
+        .log-pdf { color: #0056b3; } /* Blueish */
+        .log-edlp { color: #d93025; } /* Reddish */
+        .log-sys { color: #333; }
+        
+        /* Filter Classes applied to parent */
+        #dev-console-output.hide-pdf .log-pdf { display: none; }
+        #dev-console-output.hide-edlp .log-edlp { display: none; }
+        
+        #console-filters {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            gap: 15px;
+            font-size: 0.85em;
+            color: #606770;
+        }
+        #console-filters label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+        #console-filters input {
+            margin-right: 5px;
         }
 
         /* Modal Styles */
@@ -225,7 +256,7 @@
 <body>
 
     <div id="version-wrapper">
-        <span id="version-text">Beta Version 29u</span>
+        <span id="version-text">Beta Version 32u</span>
         <span id="status-dot" title="Offline Mode"></span>
     </div>
 
@@ -273,8 +304,15 @@
 
         <div id="how-to-use-container"></div>
 
+        <!-- Developer Console -->
         <div id="dev-console-container">
-            <pre id="dev-console-output"></pre>
+            <!-- v32u: Log View Filters -->
+            <div id="console-filters">
+                <label><input type="checkbox" id="cb-log-pdf" checked> Show PDF Inputs</label>
+                <label><input type="checkbox" id="cb-log-edlp" checked> Show EDLP Fetches</label>
+            </div>
+            
+            <div id="dev-console-output"></div>
             <button id="btn-force-fetch">Force Refetch Data</button>
             <button id="copy-log-btn">Copy Log</button>
         </div>
@@ -288,7 +326,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'Beta Version 29u';
+        const APP_VERSION = 'Beta Version 32u';
         document.getElementById('version-text').textContent = APP_VERSION;
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
         // Standard SVG
@@ -392,7 +430,7 @@
             'Moto G Stylus 2024 unloc ked 256GB': 'STYL24 Unlocked'
         };
 
-        // Snapshot Data (Generated Beta v25 with TMO Math Fix)
+        // Snapshot Data (Backup + Live Fetch Target)
         let EDLP_DATA = {
             att: {
                 'Classic': { total: 55, last_updated: 1764700686556 },
@@ -497,37 +535,44 @@
             }
         };
 
-        // --- LIVE FETCH LOGIC (v29u) ---
+        // --- LIVE FETCH LOGIC (v32u) ---
         const fetchLivePricing = () => {
             const statusDot = document.getElementById('status-dot');
             const consoleOut = document.getElementById('dev-console-output');
-            const log = (msg) => {
-                if(document.getElementById('dev-console-toggle').checked) {
-                    const ts = new Date().toLocaleTimeString();
-                    consoleOut.textContent += `[${ts}] ${msg}\n`;
-                    consoleOut.scrollTop = consoleOut.scrollHeight;
-                }
+            
+            // v32u: Categorized Logger
+            const log = (msg, type = 'sys') => {
+                const div = document.createElement('div');
+                div.className = `log-entry log-${type}`;
+                const ts = new Date().toLocaleTimeString();
+                div.textContent = `[${ts}] ${msg}`;
+                consoleOut.appendChild(div);
+                consoleOut.scrollTop = consoleOut.scrollHeight;
             };
 
-            const url = 'https://cdn.jsdelivr.net/gh/spamfan/optimizerunstable/edlp_data.json?t=' + Date.now();
-            log(`🔄 FETCH START: ${url}`);
+            // v32u: CDN @main fix
+            const url = 'https://cdn.jsdelivr.net/gh/spamfan/optimizerunstable@main/edlp_data.json?t=' + Date.now();
+            log(`🔄 FETCH START: ${url}`, 'edlp');
 
             fetch(url)
                 .then(res => {
-                    log(`📡 RESPONSE: Status ${res.status}`);
+                    log(`📡 RESPONSE: Status ${res.status}`, 'edlp');
                     if (!res.ok) throw new Error("Fetch failed");
                     return res.json();
                 })
                 .then(data => {
                     if (data && data.devices) {
                         const deviceCount = Object.keys(data.devices).length;
-                        log(`📦 DATA RECEIVED: ${deviceCount} devices found.`);
+                        log(`📦 DATA RECEIVED: ${deviceCount} devices found.`, 'edlp');
 
-                        // Canary Check
-                        const ip16 = data.devices['iphone16'];
-                        if(ip16) log(`🐤 CANARY: iPhone 16 (TMO) -> Total: ${ip16.tmo?.total}, Mo: ${ip16.tmo?.monthly}`);
+                        // Canary Check (v31u: Galaxy A03)
+                        const a03 = data.devices['galaxya03'];
+                        if(a03) {
+                            log(`🐤 CANARY: Galaxy A03 (VZW) -> Total: ${a03.vzw?.total}, LastUpd: ${a03.vzw?.last_updated}`, 'edlp');
+                            log(`🐤 CANARY: Galaxy A03 (ATT) -> Total: ${a03.att?.total}, LastUpd: ${a03.att?.last_updated}`, 'edlp');
+                        }
 
-                        log(`🔄 TRANSFORMING data...`);
+                        log(`🔄 TRANSFORMING data...`, 'edlp');
                         const newEdlp = { att: {}, vzw: {}, tmo: {} };
                         Object.keys(data.devices).forEach(key => {
                             const device = data.devices[key];
@@ -545,11 +590,11 @@
                         EDLP_DATA = newEdlp; // Overwrite global data
                         statusDot.classList.add('live');
                         statusDot.title = "Live Data Active (Cloud)";
-                        log(`✅ LIVE DATA APPLIED.`);
+                        log(`✅ LIVE DATA APPLIED.`, 'edlp');
                     }
                 })
                 .catch(err => {
-                    log(`❌ ERROR: ${err.message}`);
+                    log(`❌ ERROR: ${err.message}`, 'edlp');
                 });
         };
 
@@ -673,6 +718,20 @@
                     postFilterList.push(item); 
                 }
             } 
+            
+            // v32u: Log PDF Input
+            // We use the log function defined in fetchLivePricing via a slight hack or global
+            // For cleaner code, we define a global log helper or just dispatch an event
+            // But since log() is inside fetchLivePricing scope, we replicate the logic here for simplicity
+            if(document.getElementById('cb-log-pdf').checked) {
+                 const consoleOut = document.getElementById('dev-console-output');
+                 const div = document.createElement('div');
+                 div.className = `log-entry log-pdf`;
+                 div.textContent = `[${new Date().toLocaleTimeString()}] PDF Parsed: ${preFilterList.length} items found, ${autoHidden.length} auto-hidden.`;
+                 consoleOut.appendChild(div);
+                 consoleOut.scrollTop = consoleOut.scrollHeight;
+            }
+
             return { preFilterList, postFilterList, autoHidden }; 
         };
         
@@ -1353,6 +1412,14 @@
              edlpWarning.classList.add('visible');
         }
 
+        // v30u: Log Filter Listeners
+        document.getElementById('cb-log-pdf').addEventListener('change', () => {
+             // No action needed, state is checked dynamically
+        });
+        document.getElementById('cb-log-edlp').addEventListener('change', () => {
+             // No action needed
+        });
+
         copyLogBtn.addEventListener('click', () => { const logText = devConsoleOutput.textContent; if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(logText).then(() => { alert('Log copied to clipboard!'); }).catch(err => { console.warn('Modern clipboard API failed, trying fallback.', err); legacyCopy(logText); }); } else { legacyCopy(logText); } });
         const legacyCopy = (text) => { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.top = 0; textArea.style.left = 0; textArea.style.opacity = 0; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); if (!successful) { alert('Failed to copy log.'); } } catch (err) { alert('Failed to copy log.'); } document.body.removeChild(textArea); };
         
@@ -1372,7 +1439,7 @@
 
         // Initial load of settings from localStorage
         loadSettings();
-        fetchLivePricing(); // v28u: Fetch Live Data
+        fetchLivePricing(); // v30u: Fetch Live Data
     });
     </script>
 
