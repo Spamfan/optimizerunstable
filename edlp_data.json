@@ -490,7 +490,7 @@
     },
     "motog5g2024": {
       "att": {
-        "last_updated": 1766198011746,
+        "last_updated": 1767641086273,
         "monthly": 1,
         "total": 36
       },
@@ -498,12 +498,12 @@
       "name": "Moto G 5G 2024",
       "tmo": {
         "dp": 0,
-        "last_updated": 1766198011746,
-        "monthly": 1.5,
+        "last_updated": 1767641086273,
+        "monthly": 0,
         "total": 36
       },
       "vzw": {
-        "last_updated": 1766198011746,
+        "last_updated": 1767641086273,
         "monthly": 1,
         "total": 36
       }
