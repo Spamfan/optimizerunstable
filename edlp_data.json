@@ -62,22 +62,22 @@
     },
     "galaxya03": {
       "att": {
-        "last_updated": 1767640740812,
-        "monthly": 1.92,
-        "total": 69
+        "last_updated": 1767653824335,
+        "monthly": 0,
+        "total": 0
       },
       "last_updated": 1767107032057,
       "name": "Galaxy A03",
       "tmo": {
         "dp": 0,
-        "last_updated": 1767640740812,
+        "last_updated": 1767653824335,
         "monthly": 0,
-        "total": 69
+        "total": 0
       },
       "vzw": {
-        "last_updated": 1767640740812,
-        "monthly": 1.92,
-        "total": 69
+        "last_updated": 1767653824335,
+        "monthly": 1,
+        "total": 36
       }
     },
     "galaxya11": {
