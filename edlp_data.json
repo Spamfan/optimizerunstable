@@ -608,18 +608,22 @@
     },
     "revvl6": {
       "att": {
-        "last_updated": 1764701398907
+        "last_updated": 1764701398907,
+        "monthly": 0,
+        "total": 0
       },
       "last_updated": 1764448685542,
       "name": "REVVL 6",
       "tmo": {
         "dp": 30,
-        "last_updated": 1764701398907,
-        "mo": 0.25,
+        "last_updated": 1767654814269,
+        "monthly": 0.25,
         "total": 36
       },
       "vzw": {
-        "last_updated": 1764701398907
+        "last_updated": 1764701398907,
+        "monthly": 0,
+        "total": 0
       }
     },
     "tclflip3": {
