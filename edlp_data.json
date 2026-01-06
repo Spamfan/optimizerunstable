@@ -75,9 +75,9 @@
         "total": 0
       },
       "vzw": {
-        "last_updated": 1767653824335,
-        "monthly": 1,
-        "total": 36
+        "last_updated": 1767722680707,
+        "monthly": 3.42,
+        "total": 123
       }
     },
     "galaxya11": {
@@ -186,6 +186,26 @@
         "last_updated": 1764700915613,
         "monthly": 18.03,
         "total": 649
+      }
+    },
+    "galaxys24plus": {
+      "att": {
+        "last_updated": 1767657359333,
+        "monthly": 2.75,
+        "total": 99
+      },
+      "last_updated": 1767657354528,
+      "name": "Galaxy S24 Plus",
+      "tmo": {
+        "dp": 0,
+        "last_updated": 1767657359333,
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "last_updated": 1767657359333,
+        "monthly": 0,
+        "total": 0
       }
     },
     "galaxys25fe": {
