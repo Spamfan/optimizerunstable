@@ -3,16 +3,503 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSL Test Page</title>
+    <title>Optimizer Tutorial Concept - 4 Quadrants</title>
+    <style>
+        /* Base Styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #111;
+            line-height: 1.5;
+            overflow: hidden; /* Lock main body, scroll inside quadrants */
+        }
+
+        /* 4-Quadrant Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 50vw 50vw;
+            grid-template-rows: 50vh 50vh;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Top Left: Optimizer Placeholder */
+        .top-left {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            border-right: 2px solid #e0e0e0;
+            border-bottom: 2px solid #e0e0e0;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        /* Top Right: Empty */
+        .top-right {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            border-bottom: 2px solid #e0e0e0;
+            background-color: #ffffff;
+        }
+
+        /* Bottom Left: FAQ List */
+        .bottom-left {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            border-right: 2px solid #e0e0e0;
+            background-color: #ffffff;
+            overflow-y: auto;
+            padding: 2.5rem 3rem;
+            position: relative;
+        }
+
+        /* Bottom Right: Focus Details */
+        .bottom-right {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            background-color: #ffffff;
+            overflow-y: auto;
+            padding: 2.5rem 3rem;
+            position: relative;
+        }
+
+        /* Scrollbar Styling for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        /* Close Button ('X') */
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #111;
+        }
+
+        /* Header & Info Box */
+        h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box {
+            background-color: #f0f7ff;
+            border: 1px solid #cce0ff;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Left Main Headers (▼) */
+        .main-header {
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            margin-top: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .main-header .arrow {
+            font-size: 0.8rem;
+            transition: transform 0.2s ease;
+            color: #0066cc;
+        }
+
+        .main-header.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Left Steps Content */
+        .step-list {
+            display: block;
+            margin-top: 1rem;
+        }
+
+        .step-container {
+            margin-bottom: 1.2rem;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        /* Clean Interactive Links */
+        .trigger-link {
+            color: #0066cc;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: inline-block;
+            transition: color 0.2s;
+        }
+
+        .trigger-link:hover {
+            color: #004499;
+            text-decoration: underline;
+        }
+
+        /* The dynamic "<" Notch Indicator */
+        .notch-indicator {
+            position: absolute;
+            right: 0; /* Flush against the right border */
+            width: 12px;
+            height: 24px;
+            overflow: hidden; /* Clips the square to make a perfect triangle */
+            display: none; /* Hidden until activated */
+            z-index: 10;
+        }
+
+        .notch-indicator::after {
+            content: '';
+            position: absolute;
+            right: -8px; /* Shift right so only the left point shows */
+            top: 4px; /* Center in the 24px wrapper */
+            width: 14px;
+            height: 14px;
+            background: #ffffff; /* Matches right panel */
+            border-left: 2px solid #e0e0e0;
+            border-bottom: 2px solid #e0e0e0;
+            transform: rotate(45deg);
+        }
+
+        /* Inline Accordion Content */
+        .inline-content {
+            display: none;
+            margin-top: 0.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid #0066cc;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        /* Right Side Detail Content */
+        .detail-content {
+            display: none;
+        }
+
+        .detail-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        ul, ol {
+            margin-top: 0.5rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+        }
+
+        .badge {
+            background: #666;
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 6px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .icon-svg {
+            width: 18px;
+            height: 18px;
+            fill: #666666;
+            vertical-align: middle;
+            margin: 0 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Walmart Network Test</h1>
-    <p>If the image below loads, the GitHub raw content domain is unblocked.</p>
-    
-    <hr>
-    <img src="https://i.imgur.com/sYkK3zN.jpeg" alt="Select All Test Image" style="max-width: 100%; height: auto;">
-    <hr>
 
-    <p>File source: selectAll.jpeg</p>
+<div class="grid-container">
+    
+    <!-- TOP LEFT: OPTIMIZER INTERFACE -->
+    <div class="top-left">
+        [ Optimizer Interface Placeholder ]
+    </div>
+
+    <!-- TOP RIGHT: EMPTY -->
+    <div class="top-right"></div>
+
+    <!-- BOTTOM LEFT: FAQ LIST -->
+    <div class="bottom-left" id="bottom-left-panel">
+        
+        <!-- The Dynamic Notch Indicator -->
+        <div id="notch" class="notch-indicator"></div>
+
+        <h2>❔ FAQ/Help</h2>
+        
+        <div class="info-box">
+            ℹ️ <strong>Optimizer works by rephrasing normal inventory prints into a more organized document.</strong> Because of this, it should use new inventory files every day or each time it is used.
+        </div>
+
+        <div class="main-header open" onclick="toggleInline('main-steps', this)">
+            How do I use optimizer? <span class="arrow">▼</span>
+        </div>
+        
+        <div id="main-steps" class="step-list">
+            
+            <!-- STEP 1 (FOCUS RIGHT) -->
+            <div class="step-container">
+                <div class="step-title">● Step 1: log into WARP and save each carrier's print as a PDF.</div>
+                <div class="trigger-link" onclick="showRightPanel('detail-step1', this)">Show me how.</div>
+            </div>
+
+            <!-- STEP 2 (FOCUS RIGHT) -->
+            <div class="step-container">
+                <div class="step-title">● Step 2: upload each carrier's PDF into optimizer.</div>
+                <div class="trigger-link" onclick="showRightPanel('detail-step2', this)">Show me how.</div>
+            </div>
+
+            <!-- STEP 3 (FOCUS RIGHT) -->
+            <div class="step-container">
+                <div class="step-title">● Step 3: (optional) customize the list by hiding inaccurate listings</div>
+                <div class="trigger-link" onclick="showRightPanel('detail-step3', this)">Show me how.</div>
+            </div>
+
+            <!-- STEP 4 (INLINE) -->
+            <div class="step-container">
+                <div class="step-title">● Step 4: (optional) change settings like “show EDLPs” and “isolate iPhones”</div>
+                <div class="trigger-link" onclick="toggleInline('inline-step4', this)">More info.</div>
+                <div id="inline-step4" class="inline-content">
+                    <ul>
+                        <li>EDLP data waits for a human to notice an installment change and manually post it to the optimizer database, so it can sometimes be inaccurate or outdated. ☁️✅ means the database is working and showing the latest reported prices, while ☁️❌ means Optimizer can't see the database, and is using a static price backup, usually only a month or so old. “Likely EDLPs” are usually accurate but aren't guaranteed, always check installment price on ESP before performing a sale.</li>
+                        <li>When <strong>isolate Apple products</strong> is turned on, Apple devices will only appear once in their own category on the inventory report, rather than repeating for each carrier.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- STEP 5 (INLINE) -->
+            <div class="step-container">
+                <div class="step-title">● Step 5: (optional) customize the list by highlighting listings you think deserve more attention</div>
+                <div class="trigger-link" onclick="toggleInline('inline-step5', this)">Show me how.</div>
+                <div id="inline-step5" class="inline-content">
+                    <ul>
+                        <li>Partial Highlight (left checkbox): Highlights only the phone's name. (Recommended for good deals).</li>
+                        <li>Full Highlight (right checkbox): Highlights the entire row for that device. (Recommended for extra good deals).</li>
+                        <li>Master Checkboxes: Use the main checkboxes at the top of the list to toggle partial or full highlights for all inventory at once.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- STEP 6 (INLINE) -->
+            <div class="step-container">
+                <div class="step-title">● Step 6: (optional) add comments to your printout for others to read.</div>
+                <div class="trigger-link" onclick="toggleInline('inline-step6', this)">Show me how.</div>
+                <div id="inline-step6" class="inline-content">
+                    <ul>
+                        <li>Comments are visible near the top of the printout. This can be used for something fun or helpful you want others to know that day such as “We've got this team!” or “the stylus is free on T-Mobile right now,” etc.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- STEP 7 (INLINE) -->
+            <div class="step-container">
+                <div class="step-title">● Step 7: print the combined inventory list</div>
+                <div class="trigger-link" onclick="toggleInline('inline-step7', this)">Show me how.</div>
+                <div id="inline-step7" class="inline-content">
+                    <ul>
+                        <li>Click the blue "Preview or Print" button.</li>
+                        <li>A preview pane showing the combined PDF will appear. Right-click anywhere on the PDF preview and choose Print</li>
+                        <li>Important: Be sure to re-select your store's printer (e.g., "CPR1") as the destination so you print the combined file instead of saving it as a PDF again.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="main-header" onclick="toggleInline('empty-section-1', this)">
+            How do I save or upload my inventory files? <span class="arrow">▼</span>
+        </div>
+        <div id="empty-section-1" class="inline-content">
+            <p>Empty section</p>
+        </div>
+
+        <div class="main-header" onclick="toggleInline('empty-section-2', this)">
+            I don't see my inventory files when trying to upload them <span class="arrow">▼</span>
+        </div>
+        <div id="empty-section-2" class="inline-content">
+            <p>Empty section</p>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM RIGHT: FOCUS DETAILS -->
+    <div id="right-panel" class="bottom-right">
+        
+        <!-- Only shows when a detail panel is active -->
+        <button id="close-btn" class="close-btn" style="display: none;" onclick="closeRightPanel()">×</button>
+        
+        <!-- STEP 1 DETAILS -->
+        <div id="detail-step1" class="detail-content">
+            <h3 class="detail-title">Show me how:</h3>
+            <ol>
+                <li><strong>Log into warp as normal</strong> (use + new tab button on chrome)</li>
+                <li><strong>Go to Inventory Management > View Available Inventory.</strong></li>
+                <li><strong>Select a postpaid carrier (AT&T, Verizon Wireless, or T-Mobile)</strong> by clicking on it from the top navigation bar. You may need to use the top bar &lt; &gt; buttons to find it first.</li>
+                <li><strong>Make sure the “Instock” box is checked,</strong> then click More Options 
+                    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> 
+                    and choose <strong>Print.</strong>
+                </li>
+                <li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>” , then click <strong>save</strong>.<br>
+                <em>If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</em></li>
+                <li>Name the file after its carrier as <em>ATT.pdf</em> , <em>VZW.pdf</em> , or <em>TMO.pdf</em> . If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
+                <li>Repeat steps c-g with each carrier until you have successfully saved all three PDFs.</li>
+            </ol>
+        </div>
+
+        <!-- STEP 2 DETAILS -->
+        <div id="detail-step2" class="detail-content">
+            <h3 class="detail-title">Show me how:</h3>
+            <ul>
+                <li>Click <u>upload files</u> then select each carrier file (att.pdf, vzw.pdf, and tmo.pdf) and click open.<br>
+                💡 You can select multiple files at once by using Ctrl+left click or by dragging left click onto the files you'd like while in the open dialogue. You can also open each one individually.</li>
+                
+                <li>
+                    <span class="badge">NEW</span> <strong>Carrier files not showing in the Open dialogue?</strong><br>
+                    Text above. <span class="trigger-link" onclick="toggleInline('inline-expand-2a', this)">Expand.</span>
+                    
+                    <div id="inline-expand-2a" class="inline-content">
+                        This happens when Optimizer tries to open one directory (such as <em>mpt user mpt user</em>) instead of the directory where the carrier files are saved (usually <em>Desktop</em>). You can reassign the open dialogue to look in the right spot to show the files, optimizer will remember the correct directory.<br><br>
+                        To reassign the open dialogue directory:
+                        <ol>
+                            <li>click <u>upload files</u></li>
+                            <li>type <em>Desktop\testABC.pdf</em> into the file name field and press or open.</li>
+                            <li>If prompted “this file does not exist” and / or “your administrator has blocked this action,” press okay.</li>
+                            <li>If the open dialogue doesn't close by itself, manually close it by tapping its x on the top right of the window.</li>
+                            <li>Click <u>upload files</u> again, optimizer should now open to the correct path every time.</li>
+                        </ol>
+                        <em>NOTE: for this to work, the text preceding \testABC.pdf must be the same directory the carrier files are saving to. To check where they are saving, save a carrier PDF from warp and see what directory it lands in by reading it's directory above. If it isn't desktop, you can copy the directory by clicking on the file address bar and using <strong>Ctrl + c</strong>, then paste the directory into the step above.</em><br><br>
+                        <em>Example: if carrier PDFs are saving to mpt user mpt user instead of desktop, copy that directory then put it at the beginning of the step 2 directory above, so it shows as mpt user mpt user\testABC.pdf, then continue directions as normal.</em>
+                    </div>
+                </li>
+
+                <li>
+                    <strong>If preferred, you can instead drag and drop files into optimizer from the save dialogue on warp if WARP is open in a seperate window.</strong><br>
+                    Show me how. <span class="trigger-link" onclick="toggleInline('inline-expand-2b', this)">Expand.</span>
+                    
+                    <div id="inline-expand-2b" class="inline-content">
+                        To do this, keep WARP open in a separate window and begin to save a fourth (any carrier) pdf after saving the regular 3. Change window sizes so you can see both at once if easier. With the save dialogue open from warp, click and drag each file from the warp save dialogue into the <u>upload files</u> box on optimizer.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- STEP 3 DETAILS -->
+        <div id="detail-step3" class="detail-content">
+            <h3 class="detail-title">Show me how:</h3>
+            <ul>
+                <li>Hide ( toggle): Use this to hide unwanted listings, such as demo-only or unlocked devices That are not sellable.</li>
+                <li>Use the unhide all button 
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> 
+                    near the top to unhide all phones that were manually hidden</li>
+                <li>Click Done to save your customizations. The Walmart computer remembers which phones you hide, so they'll manually be hidden again the next day. You can always unhide a phone by returning to this screen.</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Handles Inline Accordions (Bottom-Left and Nested Bottom-Right)
+    function toggleInline(contentId, triggerElement) {
+        let content = document.getElementById(contentId);
+        
+        if (content.style.display === "block") {
+            content.style.display = "none";
+            if (triggerElement.classList.contains('main-header')) {
+                triggerElement.classList.remove('open');
+            }
+        } else {
+            content.style.display = "block";
+            if (triggerElement.classList.contains('main-header')) {
+                triggerElement.classList.add('open');
+            }
+        }
+    }
+
+    // Handles pushing Focus content to the Bottom-Right Panel & moving the Notch
+    function showRightPanel(detailId, linkElement) {
+        // 1. Hide all detail contents
+        let allDetails = document.querySelectorAll('.detail-content');
+        allDetails.forEach(function(el) {
+            el.style.display = 'none';
+        });
+
+        // 2. Reset font weight of all trigger links, then bold the active one
+        document.querySelectorAll('.trigger-link').forEach(el => el.style.fontWeight = '500');
+        linkElement.style.fontWeight = '700';
+
+        // 3. Show requested details and the Close button
+        document.getElementById(detailId).style.display = 'block';
+        document.getElementById('close-btn').style.display = 'block';
+
+        // 4. Align the Notch indicator precisely with the clicked link
+        let notch = document.getElementById('notch');
+        notch.style.display = 'block';
+        
+        // Calculate the exact vertical center of the link relative to the scrolling container
+        let relativeTop = linkElement.offsetTop + (linkElement.offsetHeight / 2) - 12; // 12 is half the notch height
+        notch.style.top = relativeTop + 'px';
+    }
+
+    // Handles the 'X' button to clear the Focus Panel
+    function closeRightPanel() {
+        // Hide all detail contents & the close button
+        document.querySelectorAll('.detail-content').forEach(function(el) {
+            el.style.display = 'none';
+        });
+        document.getElementById('close-btn').style.display = 'none';
+
+        // Hide the notch
+        document.getElementById('notch').style.display = 'none';
+
+        // Reset all link font weights
+        document.querySelectorAll('.trigger-link').forEach(el => el.style.fontWeight = '500');
+    }
+</script>
+
 </body>
 </html>
