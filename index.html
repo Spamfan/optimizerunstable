@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimizer Tutorial Concept - 4 Quadrants</title>
+    <title>Optimizer Tutorial Concept - Final Polish</title>
     <style>
-        /* Base Styling */
         body, html {
             margin: 0;
             padding: 0;
@@ -15,63 +14,38 @@
             background-color: #ffffff;
             color: #111;
             line-height: 1.5;
-            overflow: hidden; /* Lock main body, scroll inside quadrants */
+            overflow: hidden;
         }
 
-        /* 4-Quadrant Grid Layout */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 50vw 50vw;
-            grid-template-rows: 50vh 50vh;
+        .split-screen {
+            display: flex;
             height: 100vh;
             width: 100vw;
         }
 
-        /* Top Left: Optimizer Placeholder */
-        .top-left {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
+        .left-panel {
+            width: 50%;
+            height: 100%;
+            overflow-y: auto;
+            scrollbar-gutter: stable;
+            padding: 2.5rem 3rem;
+            box-sizing: border-box;
             border-right: 2px solid #e0e0e0;
-            border-bottom: 2px solid #e0e0e0;
-            background-color: #f9f9f9;
+            background-color: #ffffff;
+        }
+
+        .right-panel {
+            width: 50%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: #f9f9f9;
             color: #888;
             font-size: 1.3rem;
             font-weight: 500;
         }
 
-        /* Top Right: Empty */
-        .top-right {
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
-            border-bottom: 2px solid #e0e0e0;
-            background-color: #ffffff;
-        }
-
-        /* Bottom Left: FAQ List */
-        .bottom-left {
-            grid-column: 1 / 2;
-            grid-row: 2 / 3;
-            border-right: 2px solid #e0e0e0;
-            background-color: #ffffff;
-            overflow-y: auto;
-            padding: 2.5rem 3rem;
-            position: relative;
-        }
-
-        /* Bottom Right: Focus Details */
-        .bottom-right {
-            grid-column: 2 / 3;
-            grid-row: 2 / 3;
-            background-color: #ffffff;
-            overflow-y: auto;
-            padding: 2.5rem 3rem;
-            position: relative;
-        }
-
-        /* Scrollbar Styling for a cleaner look */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -83,82 +57,60 @@
             background-color: transparent;
         }
 
-        /* Close Button ('X') */
-        .close-btn {
-            position: absolute;
-            top: 1.5rem;
-            right: 2rem;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: #888;
-            cursor: pointer;
-            transition: color 0.2s;
-            line-height: 1;
-        }
-
-        .close-btn:hover {
-            color: #111;
-        }
-
-        /* Header & Info Box */
-        h2 {
-            margin-top: 0;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-box {
-            background-color: #f0f7ff;
-            border: 1px solid #cce0ff;
-            padding: 1rem 1.2rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
-        }
-
-        /* Left Main Headers (▼) */
         .main-header {
-            font-size: 1.15rem;
+            font-size: 1.4rem;
             font-weight: bold;
-            cursor: pointer;
             user-select: none;
-            margin-top: 1.5rem;
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
+            border-bottom: 2px solid #eee;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .main-header .arrow {
-            font-size: 0.8rem;
+        .main-header-title {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .main-header-title .arrow {
+            font-size: 0.9rem;
             transition: transform 0.2s ease;
             color: #0066cc;
+            margin-left: 0.5rem;
         }
 
         .main-header.open .arrow {
             transform: rotate(180deg);
         }
 
-        /* Left Steps Content */
+        .animation-toggle-container {
+            font-size: 0.8rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+        }
+
+        .animation-toggle-container input {
+            margin-right: 6px;
+        }
+
         .step-list {
-            display: block;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .step-container {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
         }
 
         .step-title {
             font-weight: 600;
             margin-bottom: 0.2rem;
+            font-size: 1.05rem;
         }
 
-        /* Clean Interactive Links */
         .trigger-link {
             color: #0066cc;
             cursor: pointer;
@@ -174,57 +126,33 @@
             text-decoration: underline;
         }
 
-        /* The dynamic "<" Notch Indicator */
-        .notch-indicator {
-            position: absolute;
-            right: 0; /* Flush against the right border */
-            width: 12px;
-            height: 24px;
-            overflow: hidden; /* Clips the square to make a perfect triangle */
-            display: none; /* Hidden until activated */
-            z-index: 10;
-        }
-
-        .notch-indicator::after {
-            content: '';
-            position: absolute;
-            right: -8px; /* Shift right so only the left point shows */
-            top: 4px; /* Center in the 24px wrapper */
-            width: 14px;
-            height: 14px;
-            background: #ffffff; /* Matches right panel */
-            border-left: 2px solid #e0e0e0;
-            border-bottom: 2px solid #e0e0e0;
-            transform: rotate(45deg);
-        }
-
-        /* Inline Accordion Content */
-        .inline-content {
-            display: none;
-            margin-top: 0.5rem;
-            padding-left: 1rem;
-            border-left: 2px solid #0066cc;
+        .expandable {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 200ms ease-out;
+            border-left: 3px solid #e0e0e0;
+            margin-left: 0.6rem;
+            padding-left: 1.2rem;
             font-size: 0.95rem;
-            color: #333;
         }
 
-        /* Right Side Detail Content */
-        .detail-content {
-            display: none;
+        .expandable.open {
+            margin-top: 0.8rem;
         }
 
-        .detail-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e0e0e0;
+        body.animations-disabled .expandable {
+            transition: none;
+        }
+
+        .deep-nest-container {
+            margin-top: 1rem;
+            padding: 0.5rem 0;
         }
 
         ul, ol {
             margin-top: 0.5rem;
             padding-left: 1.5rem;
+            margin-bottom: 0;
         }
 
         li {
@@ -253,57 +181,92 @@
 </head>
 <body>
 
-<div class="grid-container">
-    
-    <!-- TOP LEFT: OPTIMIZER INTERFACE -->
-    <div class="top-left">
-        [ Optimizer Interface Placeholder ]
-    </div>
+<div class="split-screen">
 
-    <!-- TOP RIGHT: EMPTY -->
-    <div class="top-right"></div>
+    <div class="left-panel">
 
-    <!-- BOTTOM LEFT: FAQ LIST -->
-    <div class="bottom-left" id="bottom-left-panel">
-        
-        <!-- The Dynamic Notch Indicator -->
-        <div id="notch" class="notch-indicator"></div>
-
-        <h2>❔ FAQ/Help</h2>
-        
-        <div class="info-box">
-            ℹ️ <strong>Optimizer works by rephrasing normal inventory prints into a more organized document.</strong> Because of this, it should use new inventory files every day or each time it is used.
+        <div class="main-header open" id="main-header">
+            <div class="main-header-title" onclick="toggleAccordion('main-steps', this.parentElement)">
+                How do I use optimizer? <span class="arrow">▼</span>
+            </div>
+            <div class="animation-toggle-container">
+                <input type="checkbox" id="animation-toggle">
+                <label for="animation-toggle">use animations</label>
+            </div>
         </div>
 
-        <div class="main-header open" onclick="toggleInline('main-steps', this)">
-            How do I use optimizer? <span class="arrow">▼</span>
-        </div>
-        
-        <div id="main-steps" class="step-list">
-            
-            <!-- STEP 1 (FOCUS RIGHT) -->
+        <div id="main-steps" class="step-list expandable open">
+
             <div class="step-container">
                 <div class="step-title">● Step 1: log into WARP and save each carrier's print as a PDF.</div>
-                <div class="trigger-link" onclick="showRightPanel('detail-step1', this)">Show me how.</div>
+                <div class="trigger-link" onclick="toggleAccordion('step1-content')">Show me how.</div>
+                <div id="step1-content" class="expandable">
+                    <ol>
+                        <li><strong>Log into warp as normal</strong> (use + new tab button on chrome)</li>
+                        <li><strong>Go to Inventory Management > View Available Inventory.</strong></li>
+                        <li><strong>Select a postpaid carrier (AT&T, Verizon Wireless, or T-Mobile)</strong> by clicking on it from the top navigation bar. You may need to use the top bar &lt; &gt; buttons to find it first.</li>
+                        <li><strong>Make sure the “Instock” box is checked,</strong> then click More Options <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> and choose <strong>Print.</strong></li>
+                        <li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>”, then click <strong>save</strong>.<br><em>If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</em></li>
+                        <li>Name the file after its carrier as <em>ATT.pdf</em>, <em>VZW.pdf</em>, or <em>TMO.pdf</em>. If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
+                        <li>Repeat steps 3-7 above with each carrier until you have successfully saved all three PDFs.</li>
+                    </ol>
+                </div>
             </div>
 
-            <!-- STEP 2 (FOCUS RIGHT) -->
             <div class="step-container">
                 <div class="step-title">● Step 2: upload each carrier's PDF into optimizer.</div>
-                <div class="trigger-link" onclick="showRightPanel('detail-step2', this)">Show me how.</div>
+                <div class="trigger-link" onclick="toggleAccordion('step2-content')">Show me how.</div>
+                <div id="step2-content" class="expandable">
+                    <ul>
+                        <li>Click <u>upload files</u> then select each carrier file (att.pdf, vzw.pdf, and tmo.pdf) and click open.<br>💡 You can select multiple files at once by using Ctrl+left click or by dragging left click onto the files you'd like while in the open dialogue. You can also open each one individually.</li>
+                        <div class="deep-nest-container">
+                            <li>
+                                <span class="badge">NEW</span>
+                                <span class="trigger-link" style="font-weight: 700;" onclick="toggleAccordion('step2a-content')">Carrier files not showing in the Open dialogue?</span>
+                                <div id="step2a-content" class="expandable">
+                                    This happens when Optimizer tries to open one directory (such as <em>mpt user mpt user</em>) instead of the directory where the carrier files are saved (usually <em>Desktop</em>). You can reassign the open dialogue to look in the right spot to show the files, optimizer will remember the correct directory.<br><br>
+                                    To reassign the open dialogue directory:
+                                    <ol>
+                                        <li>click <u>upload files</u></li>
+                                        <li>type <em>Desktop\testABC.pdf</em> into the file name field and press or open.</li>
+                                        <li>If prompted “this file does not exist” and / or “your administrator has blocked this action,” press okay.</li>
+                                        <li>If the open dialogue doesn't close by itself, manually close it by tapping its x on the top right of the window.</li>
+                                        <li>Click <u>upload files</u> again, optimizer should now open to the correct path every time.</li>
+                                    </ol>
+                                    <em>NOTE: for this to work, the text preceding \testABC.pdf must be the same directory the carrier files are saving to. To check where they are saving, save a carrier PDF from warp and see what directory it lands in by reading it's directory above. If it isn't desktop, you can copy the directory by clicking on the file address bar and using <strong>Ctrl + c</strong>, then paste the directory into the step above.</em><br><br>
+                                    <em>Example: if carrier PDFs are saving to mpt user mpt user instead of desktop, copy that directory then put it at the beginning of the step 2 directory above, so it shows as mpt user mpt user\testABC.pdf, then continue directions as normal.</em>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="deep-nest-container">
+                            <li>
+                                <strong>If preferred, you can instead drag and drop files into optimizer from the save dialogue on warp if WARP is open in a seperate window.</strong><br>
+                                <span class="trigger-link" onclick="toggleAccordion('step2b-content')">Show me how.</span>
+                                <div id="step2b-content" class="expandable">
+                                    To do this, keep WARP open in a separate window and begin to save a fourth (any carrier) pdf after saving the regular 3. Change window sizes so you can see both at once if easier. With the save dialogue open from warp, click and drag each file from the warp save dialogue into the <u>upload files</u> box on optimizer.
+                                </div>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
             </div>
 
-            <!-- STEP 3 (FOCUS RIGHT) -->
             <div class="step-container">
                 <div class="step-title">● Step 3: (optional) customize the list by hiding inaccurate listings</div>
-                <div class="trigger-link" onclick="showRightPanel('detail-step3', this)">Show me how.</div>
+                <div class="trigger-link" onclick="toggleAccordion('step3-content')">Show me how.</div>
+                <div id="step3-content" class="expandable">
+                    <ul>
+                        <li>Hide ( toggle): Use this to hide unwanted listings, such as demo-only or unlocked devices That are not sellable.</li>
+                        <li>Use the unhide all button <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> near the top to unhide all phones that were manually hidden.</li>
+                        <li>Click Done to save your customizations. The Walmart computer remembers which phones you hide, so they'll manually be hidden again the next day. You can always unhide a phone by returning to this screen.</li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- STEP 4 (INLINE) -->
             <div class="step-container">
                 <div class="step-title">● Step 4: (optional) change settings like “show EDLPs” and “isolate iPhones”</div>
-                <div class="trigger-link" onclick="toggleInline('inline-step4', this)">More info.</div>
-                <div id="inline-step4" class="inline-content">
+                <div class="trigger-link" onclick="toggleAccordion('step4-content')">More info</div>
+                <div id="step4-content" class="expandable">
                     <ul>
                         <li>EDLP data waits for a human to notice an installment change and manually post it to the optimizer database, so it can sometimes be inaccurate or outdated. ☁️✅ means the database is working and showing the latest reported prices, while ☁️❌ means Optimizer can't see the database, and is using a static price backup, usually only a month or so old. “Likely EDLPs” are usually accurate but aren't guaranteed, always check installment price on ESP before performing a sale.</li>
                         <li>When <strong>isolate Apple products</strong> is turned on, Apple devices will only appear once in their own category on the inventory report, rather than repeating for each carrier.</li>
@@ -311,11 +274,10 @@
                 </div>
             </div>
 
-            <!-- STEP 5 (INLINE) -->
             <div class="step-container">
                 <div class="step-title">● Step 5: (optional) customize the list by highlighting listings you think deserve more attention</div>
-                <div class="trigger-link" onclick="toggleInline('inline-step5', this)">Show me how.</div>
-                <div id="inline-step5" class="inline-content">
+                <div class="trigger-link" onclick="toggleAccordion('step5-content')">More info</div>
+                <div id="step5-content" class="expandable">
                     <ul>
                         <li>Partial Highlight (left checkbox): Highlights only the phone's name. (Recommended for good deals).</li>
                         <li>Full Highlight (right checkbox): Highlights the entire row for that device. (Recommended for extra good deals).</li>
@@ -324,22 +286,20 @@
                 </div>
             </div>
 
-            <!-- STEP 6 (INLINE) -->
             <div class="step-container">
                 <div class="step-title">● Step 6: (optional) add comments to your printout for others to read.</div>
-                <div class="trigger-link" onclick="toggleInline('inline-step6', this)">Show me how.</div>
-                <div id="inline-step6" class="inline-content">
+                <div class="trigger-link" onclick="toggleAccordion('step6-content')">More info</div>
+                <div id="step6-content" class="expandable">
                     <ul>
                         <li>Comments are visible near the top of the printout. This can be used for something fun or helpful you want others to know that day such as “We've got this team!” or “the stylus is free on T-Mobile right now,” etc.</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- STEP 7 (INLINE) -->
             <div class="step-container">
                 <div class="step-title">● Step 7: print the combined inventory list</div>
-                <div class="trigger-link" onclick="toggleInline('inline-step7', this)">Show me how.</div>
-                <div id="inline-step7" class="inline-content">
+                <div class="trigger-link" onclick="toggleAccordion('step7-content')">Show me how.</div>
+                <div id="step7-content" class="expandable">
                     <ul>
                         <li>Click the blue "Preview or Print" button.</li>
                         <li>A preview pane showing the combined PDF will appear. Right-click anywhere on the PDF preview and choose Print</li>
@@ -347,157 +307,96 @@
                     </ul>
                 </div>
             </div>
-
         </div>
-
-        <div class="main-header" onclick="toggleInline('empty-section-1', this)">
-            How do I save or upload my inventory files? <span class="arrow">▼</span>
-        </div>
-        <div id="empty-section-1" class="inline-content">
-            <p>Empty section</p>
-        </div>
-
-        <div class="main-header" onclick="toggleInline('empty-section-2', this)">
-            I don't see my inventory files when trying to upload them <span class="arrow">▼</span>
-        </div>
-        <div id="empty-section-2" class="inline-content">
-            <p>Empty section</p>
-        </div>
-
     </div>
 
-    <!-- BOTTOM RIGHT: FOCUS DETAILS -->
-    <div id="right-panel" class="bottom-right">
-        
-        <!-- Only shows when a detail panel is active -->
-        <button id="close-btn" class="close-btn" style="display: none;" onclick="closeRightPanel()">×</button>
-        
-        <!-- STEP 1 DETAILS -->
-        <div id="detail-step1" class="detail-content">
-            <h3 class="detail-title">Show me how:</h3>
-            <ol>
-                <li><strong>Log into warp as normal</strong> (use + new tab button on chrome)</li>
-                <li><strong>Go to Inventory Management > View Available Inventory.</strong></li>
-                <li><strong>Select a postpaid carrier (AT&T, Verizon Wireless, or T-Mobile)</strong> by clicking on it from the top navigation bar. You may need to use the top bar &lt; &gt; buttons to find it first.</li>
-                <li><strong>Make sure the “Instock” box is checked,</strong> then click More Options 
-                    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> 
-                    and choose <strong>Print.</strong>
-                </li>
-                <li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>” , then click <strong>save</strong>.<br>
-                <em>If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</em></li>
-                <li>Name the file after its carrier as <em>ATT.pdf</em> , <em>VZW.pdf</em> , or <em>TMO.pdf</em> . If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
-                <li>Repeat steps c-g with each carrier until you have successfully saved all three PDFs.</li>
-            </ol>
-        </div>
-
-        <!-- STEP 2 DETAILS -->
-        <div id="detail-step2" class="detail-content">
-            <h3 class="detail-title">Show me how:</h3>
-            <ul>
-                <li>Click <u>upload files</u> then select each carrier file (att.pdf, vzw.pdf, and tmo.pdf) and click open.<br>
-                💡 You can select multiple files at once by using Ctrl+left click or by dragging left click onto the files you'd like while in the open dialogue. You can also open each one individually.</li>
-                
-                <li>
-                    <span class="badge">NEW</span> <strong>Carrier files not showing in the Open dialogue?</strong><br>
-                    Text above. <span class="trigger-link" onclick="toggleInline('inline-expand-2a', this)">Expand.</span>
-                    
-                    <div id="inline-expand-2a" class="inline-content">
-                        This happens when Optimizer tries to open one directory (such as <em>mpt user mpt user</em>) instead of the directory where the carrier files are saved (usually <em>Desktop</em>). You can reassign the open dialogue to look in the right spot to show the files, optimizer will remember the correct directory.<br><br>
-                        To reassign the open dialogue directory:
-                        <ol>
-                            <li>click <u>upload files</u></li>
-                            <li>type <em>Desktop\testABC.pdf</em> into the file name field and press or open.</li>
-                            <li>If prompted “this file does not exist” and / or “your administrator has blocked this action,” press okay.</li>
-                            <li>If the open dialogue doesn't close by itself, manually close it by tapping its x on the top right of the window.</li>
-                            <li>Click <u>upload files</u> again, optimizer should now open to the correct path every time.</li>
-                        </ol>
-                        <em>NOTE: for this to work, the text preceding \testABC.pdf must be the same directory the carrier files are saving to. To check where they are saving, save a carrier PDF from warp and see what directory it lands in by reading it's directory above. If it isn't desktop, you can copy the directory by clicking on the file address bar and using <strong>Ctrl + c</strong>, then paste the directory into the step above.</em><br><br>
-                        <em>Example: if carrier PDFs are saving to mpt user mpt user instead of desktop, copy that directory then put it at the beginning of the step 2 directory above, so it shows as mpt user mpt user\testABC.pdf, then continue directions as normal.</em>
-                    </div>
-                </li>
-
-                <li>
-                    <strong>If preferred, you can instead drag and drop files into optimizer from the save dialogue on warp if WARP is open in a seperate window.</strong><br>
-                    Show me how. <span class="trigger-link" onclick="toggleInline('inline-expand-2b', this)">Expand.</span>
-                    
-                    <div id="inline-expand-2b" class="inline-content">
-                        To do this, keep WARP open in a separate window and begin to save a fourth (any carrier) pdf after saving the regular 3. Change window sizes so you can see both at once if easier. With the save dialogue open from warp, click and drag each file from the warp save dialogue into the <u>upload files</u> box on optimizer.
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- STEP 3 DETAILS -->
-        <div id="detail-step3" class="detail-content">
-            <h3 class="detail-title">Show me how:</h3>
-            <ul>
-                <li>Hide ( toggle): Use this to hide unwanted listings, such as demo-only or unlocked devices That are not sellable.</li>
-                <li>Use the unhide all button 
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> 
-                    near the top to unhide all phones that were manually hidden</li>
-                <li>Click Done to save your customizations. The Walmart computer remembers which phones you hide, so they'll manually be hidden again the next day. You can always unhide a phone by returning to this screen.</li>
-            </ul>
-        </div>
-
+    <div class="right-panel">
+        [ Optimizer Interface Placeholder ]
     </div>
+
 </div>
 
 <script>
-    // Handles Inline Accordions (Bottom-Left and Nested Bottom-Right)
-    function toggleInline(contentId, triggerElement) {
-        let content = document.getElementById(contentId);
-        
-        if (content.style.display === "block") {
-            content.style.display = "none";
-            if (triggerElement.classList.contains('main-header')) {
-                triggerElement.classList.remove('open');
-            }
-        } else {
-            content.style.display = "block";
-            if (triggerElement.classList.contains('main-header')) {
-                triggerElement.classList.add('open');
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        const animationToggleButton = document.getElementById('animation-toggle');
+
+        function applyAnimationSetting() {
+            const useAnimations = localStorage.getItem('useAnimations') !== 'false';
+            document.body.classList.toggle('animations-disabled', !useAnimations);
+            animationToggleButton.checked = useAnimations;
+        }
+
+        animationToggleButton.addEventListener('change', function () {
+            localStorage.setItem('useAnimations', animationToggleButton.checked);
+            applyAnimationSetting();
+        });
+
+        applyAnimationSetting();
+
+        const mainSteps = document.getElementById('main-steps');
+        if (mainSteps.classList.contains('open')) {
+            mainSteps.style.maxHeight = mainSteps.scrollHeight + 'px';
+        }
+    });
+
+    function updateParentMaxHeight(element) {
+        let parent = element.parentElement.closest('.expandable');
+        if (parent && parent.classList.contains('open')) {
+            const newHeight = parent.scrollHeight;
+            parent.style.maxHeight = newHeight + 'px';
+            setTimeout(function() {
+                if(parent.classList.contains('open')) {
+                    parent.style.maxHeight = 'none';
+                }
+            }, 210);
+            updateParentMaxHeight(parent);
         }
     }
 
-    // Handles pushing Focus content to the Bottom-Right Panel & moving the Notch
-    function showRightPanel(detailId, linkElement) {
-        // 1. Hide all detail contents
-        let allDetails = document.querySelectorAll('.detail-content');
-        allDetails.forEach(function(el) {
-            el.style.display = 'none';
-        });
+    function toggleAccordion(contentId, headerElement) {
+        const targetContentElement = document.getElementById(contentId);
+        if (!targetContentElement) {
+            return;
+        }
 
-        // 2. Reset font weight of all trigger links, then bold the active one
-        document.querySelectorAll('.trigger-link').forEach(el => el.style.fontWeight = '500');
-        linkElement.style.fontWeight = '700';
+        const isOpening = !targetContentElement.classList.contains('open');
 
-        // 3. Show requested details and the Close button
-        document.getElementById(detailId).style.display = 'block';
-        document.getElementById('close-btn').style.display = 'block';
+        if (isOpening) {
+            document.querySelectorAll('.expandable.open').forEach(function (openContent) {
+                if (!openContent.contains(targetContentElement)) {
+                    openContent.classList.remove('open');
+                    openContent.style.transition = 'max-height 200ms ease-out';
+                    requestAnimationFrame(function() {
+                         openContent.style.maxHeight = '0px';
+                    });
+                }
+            });
 
-        // 4. Align the Notch indicator precisely with the clicked link
-        let notch = document.getElementById('notch');
-        notch.style.display = 'block';
-        
-        // Calculate the exact vertical center of the link relative to the scrolling container
-        let relativeTop = linkElement.offsetTop + (linkElement.offsetHeight / 2) - 12; // 12 is half the notch height
-        notch.style.top = relativeTop + 'px';
-    }
+            targetContentElement.classList.add('open');
+            targetContentElement.style.maxHeight = targetContentElement.scrollHeight + 'px';
 
-    // Handles the 'X' button to clear the Focus Panel
-    function closeRightPanel() {
-        // Hide all detail contents & the close button
-        document.querySelectorAll('.detail-content').forEach(function(el) {
-            el.style.display = 'none';
-        });
-        document.getElementById('close-btn').style.display = 'none';
+            setTimeout(function() {
+                if(targetContentElement.classList.contains('open')) {
+                    targetContentElement.style.maxHeight = 'none';
+                }
+            }, 210);
+            
+            updateParentMaxHeight(targetContentElement);
 
-        // Hide the notch
-        document.getElementById('notch').style.display = 'none';
+        } else {
+            const childrenToClose = [targetContentElement, ...targetContentElement.querySelectorAll('.expandable.open')];
+            childrenToClose.forEach(function (content) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.classList.remove('open');
+                 requestAnimationFrame(function() {
+                     content.style.maxHeight = '0px';
+                });
+            });
+        }
 
-        // Reset all link font weights
-        document.querySelectorAll('.trigger-link').forEach(el => el.style.fontWeight = '500');
+        if (headerElement && headerElement.classList.contains('main-header')) {
+            headerElement.classList.toggle('open', isOpening);
+        }
     }
 </script>
 
