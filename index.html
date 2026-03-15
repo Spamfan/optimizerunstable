@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimizer (v61)</title>
+    <title>Optimizer (v62)</title>
     
     <!-- PDF.js and jsPDF library CDNs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
@@ -208,97 +208,6 @@
         #how-to-use-container ul { margin-top: 5px; }
         .inline-svg { width: 1em; height: 1em; vertical-align: middle; margin: 0 2px; }
 
-        /* v61: Tutorial Accordion Styles */
-        .main-header {
-            font-size: 1em;
-            font-weight: bold;
-            user-select: none;
-            padding-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #606770; /* Harmonized color */
-        }
-        .main-header-title {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-        .main-header-title .arrow {
-            font-size: 0.8rem;
-            transition: transform 0.2s ease;
-            color: #1877f2; /* Harmonized color */
-            margin-left: 0.5rem;
-        }
-        .main-header.open .arrow {
-            transform: rotate(180deg);
-        }
-        .animation-toggle-container {
-            font-size: 0.8rem;
-            color: #555;
-            display: flex;
-            align-items: center;
-            font-weight: normal;
-        }
-        .animation-toggle-container input {
-            margin-right: 6px;
-            accent-color: #606770; /* v61: Discreet gray checkbox */
-        }
-        .step-list {
-            margin-top: 1rem;
-        }
-        .step-container {
-            margin-bottom: 1.2rem;
-        }
-        .step-title {
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-            font-size: 0.95em;
-            color: #1c1e21; /* Harmonized color */
-        }
-        .trigger-link {
-            color: #1877f2; /* Harmonized color */
-            cursor: pointer;
-            user-select: none;
-            font-size: 0.9em;
-            font-weight: 500;
-            display: inline-block;
-            transition: color 0.2s;
-        }
-        .trigger-link:hover {
-            text-decoration: underline;
-        }
-        .expandable {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 200ms ease-out;
-            border-left: 2px solid #e0e0e0;
-            margin-left: 0.5rem;
-            padding-left: 1rem;
-            font-size: 0.9em;
-        }
-        .expandable.open {
-            margin-top: 0.6rem;
-        }
-        body.tutorial-animations-disabled .expandable,
-        body.tutorial-animations-disabled .arrow {
-            transition: none;
-        }
-        .deep-nest-container {
-            margin-top: 0.8rem;
-            padding: 0.3rem 0;
-        }
-        .badge {
-            background: #606770;
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 5px;
-            border-radius: 4px;
-            margin-right: 4px;
-            font-weight: bold;
-            vertical-align: middle;
-        }
-
         /* v48: Dev Options Toggle Area */
         #dev-options-wrapper {
             margin-top: 20px;
@@ -308,6 +217,7 @@
         }
 
         #dev-console-container {
+            /* Now inside sidebar */
             text-align: left;
         }
         #dev-console-output {
@@ -315,7 +225,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 10px;
-            max-height: 400px;
+            max-height: 400px; /* Taller for sidebar */
             overflow-y: auto;
             white-space: pre-wrap;
             word-break: break-all;
@@ -376,14 +286,32 @@
         .emphasis-item.item-hidden .emphasis-item-text { color: #ccc; text-decoration: line-through; }
         .emphasis-list-carrier-header { font-weight: bold; font-size: 1.1em; margin-top: 15px; margin-bottom: 5px; padding-bottom: 5px; border-bottom: 2px solid #050505; }
         .modal-footer { padding: 15px 20px; border-top: 1px solid #ddd; text-align: right; }
-        #download-btn { display: none; }
+#download-btn { display: none; }
         .modal-footer button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
+
+        /* --- NEW TUTORIAL STYLES --- */
+        .tutorial-container { margin-top: 25px; padding-top: 15px; border-top: 1px solid #e4e6eb; text-align: left; box-sizing: border-box; width: 100%; }
+        .main-header { font-size: 1.1em; font-weight: bold; user-select: none; padding-bottom: 0.5rem; border-bottom: 2px solid #eee; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #606770; }
+        .main-header .arrow { font-size: 0.9rem; transition: transform 0.2s ease; color: #1877f2; margin-left: 0.5rem; }
+        .main-header.open .arrow { transform: rotate(180deg); }
+        .step-list { margin-top: 1.5rem; }
+        .step-container { margin-bottom: 1.5rem; }
+        .step-title { font-weight: 600; margin-bottom: 0.2rem; font-size: 0.95em; color: #1c1e21; }
+        .trigger-link { color: #1877f2; cursor: pointer; user-select: none; font-size: 0.85em; font-weight: 500; display: inline-block; transition: color 0.2s; }
+        .trigger-link:hover { color: #166fe5; text-decoration: underline; }
+        .expandable { max-height: 0; overflow: hidden; transition: max-height 250ms cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid #e0e0e0; margin-left: 0.6rem; padding-left: 1.2rem; font-size: 0.85em; color: #606770; }
+        .expandable.open { margin-top: 0.8rem; }
+        .deep-nest-container { margin-top: 1rem; padding: 0.5rem 0; }
+        .step-list ul, .step-list ol { margin-top: 0.5rem; padding-left: 1.5rem; margin-bottom: 0; }
+        .step-list li { margin-bottom: 0.8rem; }
+        .badge { background: #666; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold; vertical-align: middle; }
+        .icon-svg { width: 18px; height: 18px; fill: #606770; vertical-align: middle; margin: 0 4px; }
     </style>
 </head>
 <body>
 
     <div id="version-wrapper">
-        <span id="version-text">Beta V61</span>
+        <span id="version-text">Beta V62</span>
         <span id="status-icon" title="Offline Mode">❌☁</span>
     </div>
 
@@ -409,6 +337,7 @@
                     <input type="checkbox" id="isolate-iphones">
                     <label for="isolate-iphones">Isolate Apple Devices</label>
                 </div>
+                <!-- v56: Reverted to simple structure for alignment -->
                 <div class="toggle-option">
                     <input type="checkbox" id="show-edlps-toggle">
                     <label for="show-edlps-toggle">Show likely EDLPs</label>
@@ -423,6 +352,7 @@
                 </div>
             </div>
             
+            <!-- v48: Comments moved above buttons -->
             <div class="control-section" id="comments-section">
                 <textarea id="comments" placeholder="Add your print out comments here."></textarea>
                 <p id="konami-message">Also try Tank Tycoon!</p>
@@ -433,46 +363,37 @@
                 <button id="process-btn">Preview or Print</button>
             </div>
 
-            <div id="how-to-use-container">
-                <!-- v61: NEW INTERACTIVE TUTORIAL -->
-                <div class="main-header open" id="main-header">
-                    <div class="main-header-title" onclick="toggleAccordion('main-steps', this.parentElement)">
-                        How do I use optimizer? <span class="arrow">▼</span>
-                    </div>
-                    <div class="animation-toggle-container">
-                        <input type="checkbox" id="animation-toggle">
-                        <label for="animation-toggle">Use tutorial animations</label>
-                    </div>
+            <div class="tutorial-container">
+                <div class="main-header" onclick="window.toggleAccordion('main-steps', this)">
+                    HOW TO USE <span class="arrow">▼</span>
                 </div>
-        
-                <div id="main-steps" class="step-list expandable open">
-        
+                <div id="main-steps" class="step-list expandable">
                     <div class="step-container">
                         <div class="step-title">● Step 1: log into WARP and save each carrier's print as a PDF.</div>
-                        <div class="trigger-link" onclick="toggleAccordion('step1-content')">Show me how.</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step1-content')">Show me how.</div>
                         <div id="step1-content" class="expandable">
                             <ol>
                                 <li><strong>Log into warp as normal</strong> (use + new tab button on chrome)</li>
                                 <li><strong>Go to Inventory Management > View Available Inventory.</strong></li>
                                 <li><strong>Select a postpaid carrier (AT&T, Verizon Wireless, or T-Mobile)</strong> by clicking on it from the top navigation bar. You may need to use the top bar &lt; &gt; buttons to find it first.</li>
-                                <li><strong>Make sure the “Instock” box is checked,</strong> then click More Options ${MORE_OPTIONS_SVG} and choose <strong>Print.</strong></li>
-                                <li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>”, then click <strong>save</strong>.<br><em>If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</em></li>
-                                <li>Name the file after its carrier as <em>ATT.pdf</em>, <em>VZW.pdf</em>, or <em>TMO.pdf</em>. If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
-                                <li>Repeat steps 3-7 above with each carrier until you have successfully saved all three PDFs.</li>
+                                <li><strong>Make sure the “Instock” box is checked,</strong> then click More Options <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> and choose <strong>Print.</strong></li>
+                                <li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>”, then click <strong>save</strong>.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</span></li>
+                                <li><strong>Name the file after its carrier as <em>ATT.pdf</em>, <em>VZW.pdf</em>, or <em>TMO.pdf</em>.</strong> If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
+                                <li><strong>For each carrier, repeat steps 1-7 above</strong> until you have all three PDFs.</li>
                             </ol>
                         </div>
                     </div>
-        
+
                     <div class="step-container">
                         <div class="step-title">● Step 2: upload each carrier's PDF into optimizer.</div>
-                        <div class="trigger-link" onclick="toggleAccordion('step2-content')">Show me how.</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step2-content')">Show me how.</div>
                         <div id="step2-content" class="expandable">
                             <ul>
-                                <li>Click <u>upload files</u> then select each carrier file (att.pdf, vzw.pdf, and tmo.pdf) and click open.<br>💡 You can select multiple files at once by using Ctrl+left click or by dragging left click onto the files you'd like while in the open dialogue. You can also open each one individually.</li>
+                                <li><strong>Click <u>upload files</u> then select each carrier file (att.pdf, vzw.pdf, and tmo.pdf) and click open.</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;💡 <strong>TIP:</strong> You can select multiple files at once by using Ctrl+left click or by dragging left click onto the files you'd like while in the open dialogue. You can also open each one individually.</li>
                                 <div class="deep-nest-container">
                                     <li>
                                         <span class="badge">NEW</span>
-                                        <span class="trigger-link" style="font-weight: 700;" onclick="toggleAccordion('step2a-content')">Carrier files not showing in the Open dialogue?</span>
+                                        <span class="trigger-link" style="font-weight: 700;" onclick="window.toggleAccordion('step2a-content')">Carrier files not showing in the Open dialogue?</span>
                                         <div id="step2a-content" class="expandable">
                                             This happens when Optimizer tries to open one directory (such as <em>mpt user mpt user</em>) instead of the directory where the carrier files are saved (usually <em>Desktop</em>). You can reassign the open dialogue to look in the right spot to show the files, optimizer will remember the correct directory.<br><br>
                                             To reassign the open dialogue directory:
@@ -491,7 +412,7 @@
                                 <div class="deep-nest-container">
                                     <li>
                                         <strong>If preferred, you can instead drag and drop files into optimizer from the save dialogue on warp if WARP is open in a seperate window.</strong><br>
-                                        <span class="trigger-link" onclick="toggleAccordion('step2b-content')">Show me how.</span>
+                                        <span class="trigger-link" onclick="window.toggleAccordion('step2b-content')">Show me how.</span>
                                         <div id="step2b-content" class="expandable">
                                             To do this, keep WARP open in a separate window and begin to save a fourth (any carrier) pdf after saving the regular 3. Change window sizes so you can see both at once if easier. With the save dialogue open from warp, click and drag each file from the warp save dialogue into the <u>upload files</u> box on optimizer.
                                         </div>
@@ -500,22 +421,22 @@
                             </ul>
                         </div>
                     </div>
-        
+
                     <div class="step-container">
                         <div class="step-title">● Step 3: (optional) customize the list by hiding inaccurate listings</div>
-                        <div class="trigger-link" onclick="toggleAccordion('step3-content')">Show me how.</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step3-content')">Show me how.</div>
                         <div id="step3-content" class="expandable">
                             <ul>
-                                <li>Hide (${HIDE_ICON_SVG} toggle): Use this to hide unwanted listings, such as demo-only or unlocked devices That are not sellable.</li>
-                                <li>Use the unhide all button ${SHOW_ICON_SVG} near the top to unhide all phones that were manually hidden.</li>
+                                <li>Hide (<svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg> toggle): Use this to hide unwanted listings, such as demo-only or unlocked devices That are not sellable.</li>
+                                <li>Use the unhide all button <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> near the top to unhide all phones that were manually hidden.</li>
                                 <li>Click Done to save your customizations. The Walmart computer remembers which phones you hide, so they'll manually be hidden again the next day. You can always unhide a phone by returning to this screen.</li>
                             </ul>
                         </div>
                     </div>
-        
+
                     <div class="step-container">
                         <div class="step-title">● Step 4: (optional) change settings like “show EDLPs” and “isolate iPhones”</div>
-                        <div class="trigger-link" onclick="toggleAccordion('step4-content')">More info</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step4-content')">More info</div>
                         <div id="step4-content" class="expandable">
                             <ul>
                                 <li>EDLP data waits for a human to notice an installment change and manually post it to the optimizer database, so it can sometimes be inaccurate or outdated. ☁️✅ means the database is working and showing the latest reported prices, while ☁️❌ means Optimizer can't see the database, and is using a static price backup, usually only a month or so old. “Likely EDLPs” are usually accurate but aren't guaranteed, always check installment price on ESP before performing a sale.</li>
@@ -523,10 +444,10 @@
                             </ul>
                         </div>
                     </div>
-        
+
                     <div class="step-container">
                         <div class="step-title">● Step 5: (optional) customize the list by highlighting listings you think deserve more attention</div>
-                        <div class="trigger-link" onclick="toggleAccordion('step5-content')">More info</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step5-content')">More info</div>
                         <div id="step5-content" class="expandable">
                             <ul>
                                 <li>Partial Highlight (left checkbox): Highlights only the phone's name. (Recommended for good deals).</li>
@@ -535,32 +456,30 @@
                             </ul>
                         </div>
                     </div>
-        
+
                     <div class="step-container">
                         <div class="step-title">● Step 6: (optional) add comments to your printout for others to read.</div>
-                        <div class="trigger-link" onclick="toggleAccordion('step6-content')">More info</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step6-content')">More info</div>
                         <div id="step6-content" class="expandable">
                             <ul>
                                 <li>Comments are visible near the top of the printout. This can be used for something fun or helpful you want others to know that day such as “We've got this team!” or “the stylus is free on T-Mobile right now,” etc.</li>
                             </ul>
                         </div>
                     </div>
-        
+
                     <div class="step-container">
                         <div class="step-title">● Step 7: print the combined inventory list</div>
-                        <div class="trigger-link" onclick="toggleAccordion('step7-content')">Show me how.</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step7-content')">Show me how.</div>
                         <div id="step7-content" class="expandable">
                             <ul>
                                 <li>Click the blue "Preview or Print" button.</li>
-                                <li>A preview pane showing the combined PDF will appear. Right-click anywhere on the PDF preview and choose Print</li>
+                                <li>A preview pane showing the combined PDF will appear. Right-click anywhere on the PDF preview and choose Print.</li>
                                 <li>Important: Be sure to re-select your store's printer (e.g., "CPR1") as the destination so you print the combined file instead of saving it as a PDF again.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <!-- END v61 TUTORIAL -->
             </div>
-        </div>
 
         <!-- v48: Dev Toggle stays here -->
         <div id="dev-options-wrapper">
@@ -595,80 +514,17 @@
     <div id="dev-mode-modal" class="modal-container"></div>
 
     <script>
-    // --- v61: TUTORIAL ACCORDION LOGIC ---
-    function toggleAccordion(contentId, headerElement) {
-        const content = document.getElementById(contentId);
-        if (!content) return;
-
-        const isOpening = !content.classList.contains('open');
-
-        // Close all other open sections at the same level (if not a deep nest)
-        if (content.parentElement.classList.contains('step-list')) {
-            const allToplevelSteps = document.querySelectorAll('#main-steps > .step-container > .expandable.open');
-            allToplevelSteps.forEach(openContent => {
-                if (openContent !== content) {
-                    openContent.classList.remove('open');
-                    openContent.style.maxHeight = '0px';
-                }
-            });
-        }
-        
-        if (isOpening) {
-            content.classList.add('open');
-            content.style.maxHeight = content.scrollHeight + 'px';
-            // Optional: after animation, allow content to grow
-            setTimeout(() => { if (content.classList.contains('open')) content.style.maxHeight = 'none'; }, 210);
-        } else {
-            content.style.maxHeight = content.scrollHeight + 'px'; // Set height before closing
-            requestAnimationFrame(() => { // allow browser to paint before animating
-                 content.classList.remove('open');
-                 content.style.maxHeight = '0px';
-            });
-        }
-
-        if (headerElement && headerElement.classList.contains('main-header')) {
-            headerElement.classList.toggle('open', isOpening);
-        }
-    }
-
-
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'Beta V61';
+        const APP_VERSION = 'Beta V62';
         document.getElementById('version-text').textContent = APP_VERSION;
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
-        
-        // --- v61: Tutorial Animation Persistence ---
-        const animationToggleButton = document.getElementById('animation-toggle');
-        const applyAnimationSetting = () => {
-            const useAnimations = localStorage.getItem('optimizerTutorialAnimations') !== 'false';
-            document.body.classList.toggle('tutorial-animations-disabled', !useAnimations);
-            animationToggleButton.checked = useAnimations;
-        };
-        animationToggleButton.addEventListener('change', () => {
-            localStorage.setItem('optimizerTutorialAnimations', animationToggleButton.checked);
-            applyAnimationSetting();
-        });
-        applyAnimationSetting(); // Apply on load
-        // Set initial open height for main tutorial
-        const mainSteps = document.getElementById('main-steps');
-        if (mainSteps.classList.contains('open')) {
-            mainSteps.style.maxHeight = mainSteps.scrollHeight + 'px';
-        }
-
-
-        // --- Standard SVG ---
-        const HIDE_ICON_SVG = `<svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg>`;
-        const SHOW_ICON_SVG = `<svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
+        // Standard SVG
+        const HIDE_ICON_SVG = `<svg class="hide-icon inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg>`;
+        const SHOW_ICON_SVG = `<svg class="hide-icon inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
         const MORE_OPTIONS_SVG = `<svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#606770"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>`;
         
-        const tutorialContainer = document.getElementById('how-to-use-container');
-        tutorialContainer.innerHTML = tutorialContainer.innerHTML
-            .replace(/\$\{MORE_OPTIONS_SVG\}/g, MORE_OPTIONS_SVG)
-            .replace(/\$\{HIDE_ICON_SVG\}/g, HIDE_ICON_SVG)
-            .replace(/\$\{SHOW_ICON_SVG\}/g, SHOW_ICON_SVG);
-
-        // --- GLOBAL LOGGING HELPER ---
+        // --- GLOBAL LOGGING HELPER (V38) ---
         const debugLog = (msg, type = 'sys') => {
             const consoleOut = document.getElementById('dev-console-output');
             if (!consoleOut) return;
@@ -738,6 +594,7 @@
             'Apple Watch Ultra 2': 'AW ULT2',
             'Apple Watch Ultra': 'AW ULT',
             'Galaxy S23 128GB': 'S23',
+            // v57 Generic Additions
             'Galaxy A54': 'A54', 'Galaxy A35': 'A35', 'Galaxy A14': 'A14', 'Galaxy A13': 'A13', 'Galaxy A12': 'A12', 'Galaxy A11': 'A11', 'Galaxy A71': 'A71', 'Galaxy Note9': 'Note9', 'Galaxy A42 5G': 'A42 5G',
             'Moto G Stylus': 'STYL', 'Moto G Power': 'PWR', 'Moto G': 'MG', 'Moto E6': 'E6', 'Revvl': 'REVVL'
         };
@@ -765,9 +622,10 @@
             'Demo - iPhone 17 Pro DEMO 256GB': 'Demo IP17PR',
             'Demo - iPhone 17 Plus DEMO 256GB': 'Demo IP17+',
             'Demo - Galaxy S25 128GB': 'Demo S25'
+            // v55: Removed "Unlocked" entries to allow dynamic capacity handling
         };
 
-        // Offline Backup Data
+        // Offline Backup Data (v60 Updated)
         let EDLP_DATA = {
             att: {
                 'Classic': { last_updated: 1771177642254, monthly: 1.53, total: 55 },
@@ -909,7 +767,7 @@
             }
         };
 
-        // --- LIVE FETCH LOGIC ---
+        // --- LIVE FETCH LOGIC (v33: Stable Repo) ---
         const fetchLivePricing = () => {
             const statusIcon = document.getElementById('status-icon');
             const consoleOut = document.getElementById('dev-console-output');
@@ -920,8 +778,10 @@
                 const ts = new Date().toLocaleTimeString();
                 div.textContent = `[${ts}] ${msg}`;
                 consoleOut.appendChild(div);
+                // consoleOut.scrollTop = consoleOut.scrollHeight; // Auto-scroll
             };
 
+            // v33: STABLE REPO
             const url = 'https://cdn.jsdelivr.net/gh/spamfan/optimizer@main/edlp_data.json?t=' + Date.now();
             log(`🔄 FETCH START: ${url}`, 'edlp');
 
@@ -958,25 +818,27 @@
                         });
 
                         EDLP_DATA = newEdlp;
-                        statusIcon.textContent = "✅☁";
+                        statusIcon.textContent = "✅☁"; // v33
                         statusIcon.title = "Live Data Active (Cloud)";
                         log(`✅ LIVE DATA APPLIED.`, 'edlp');
                     }
                 })
                 .catch(err => {
                     log(`❌ ERROR: ${err.message}`, 'edlp');
-                    statusIcon.textContent = "❌☁";
+                    statusIcon.textContent = "❌☁"; // v33
                     statusIcon.title = "Offline / Connection Failed";
                 });
         };
 
         // --- BUTTON LISTENERS ---
+        // v42: Added confirmation logic
         document.getElementById('btn-force-fetch').addEventListener('click', () => {
             if(confirm("Press OK to force refetch data.")) {
                 fetchLivePricing();
             }
         });
 
+        // v33: Console Filters Logic (Fixed)
         const consoleOut = document.getElementById('dev-console-output');
         document.getElementById('cb-log-pdf').addEventListener('change', (e) => {
              e.target.checked ? consoleOut.classList.remove('hide-pdf') : consoleOut.classList.add('hide-pdf');
@@ -985,6 +847,7 @@
              e.target.checked ? consoleOut.classList.remove('hide-edlp') : consoleOut.classList.add('hide-edlp');
         });
 
+        // v36.1: Reset Cache Button
         document.getElementById('btn-reset-settings').addEventListener('click', () => {
             if (confirm("Click OK to reset local preferences. This will wipe saved highlights/hidden items.")) {
                 localStorage.removeItem('betterInvSettings');
@@ -992,7 +855,7 @@
             }
         });
 
-        // --- TOGGLE LISTENERS ---
+        // v47: Toggle Listeners
         const isolateIphonesCheckbox = document.getElementById('isolate-iphones');
         const showEdlpsToggle = document.getElementById('show-edlps-toggle');
         const showCommentsToggle = document.getElementById('show-comments-toggle');
@@ -1006,6 +869,7 @@
             });
         });
 
+        // v48: Dev Console Toggle Logic (Sidebar)
         const devConsoleToggle = document.getElementById('dev-console-toggle');
         const devSidebar = document.getElementById('dev-sidebar');
         devConsoleToggle.addEventListener('change', () => { 
@@ -1016,21 +880,24 @@
         // --- LOCALSTORAGE FUNCTIONS ---
         const saveSettings = () => {
             try {
+                // V38 Logging
                 debugLog("--- SAVE TRIGGERED ---", "sys");
                 
                 const cleanEmphasis = (emphasisMap) => {
                     const cleanEntries = Array.from(emphasisMap.entries()).map(([key, value]) => {
+                        // v52: Safety check for null value
                         if (!value) return [key, { partial: false, full: false, hidden: false }];
                         const { partial, full, hidden } = value; 
-                        return [key, { partial: !!partial, full: !!full, hidden: !!hidden }];
+                        return [key, { partial: !!partial, full: !!full, hidden: !!hidden }]; // v36: Persistence Fix
                     });
                     return new Map(cleanEntries);
                 };
 
                 const settings = {
                     isolate: isolateIphonesCheckbox.checked,
-                    showEdlps: showEdlpsToggle.checked,
-                    showComments: showCommentsToggle.checked,
+                    showEdlps: showEdlpsToggle.checked, // v35 Sticky Toggle
+                    showComments: showCommentsToggle.checked, // v47
+                    // v48: Save wearables preference even if disabled (unless locked by logic, but we trust user pref here)
                     showWearables: showWearablesToggle.disabled ? (localStorage.getItem('betterInvSettings') ? JSON.parse(localStorage.getItem('betterInvSettings')).showWearables : true) : showWearablesToggle.checked,
                     emphasis: {
                         att: Array.from(cleanEmphasis(appState.att.emphasis).entries()),
@@ -1040,10 +907,12 @@
                 };
                 localStorage.setItem('betterInvSettings', JSON.stringify(settings));
                 
+                // v48: Persistence Debug Log
                 let totalHidden = 0;
                 ['att', 'vzw', 'tmo'].forEach(c => {
                     let count = 0;
                     appState[c].emphasis.forEach(v => { 
+                        // v52: Safety check
                         if(v && v.hidden) count++; 
                     });
                     totalHidden += count;
@@ -1058,7 +927,9 @@
                 debugLog("--- LOAD SETTINGS START ---", "sys");
                 const savedSettings = localStorage.getItem('betterInvSettings');
                 
+                // V38 Logging
                 if (savedSettings) {
+                    // v52: Removed substring limit for better debugging
                     debugLog(`RAW STORAGE FOUND: ${savedSettings}`, "sys");
                 } else {
                     debugLog("RAW STORAGE: null/empty", "sys");
@@ -1068,22 +939,31 @@
                     const settings = JSON.parse(savedSettings);
                     isolateIphonesCheckbox.checked = settings.isolate || false;
                     
+                    // v35 Sticky Toggle
                     if (settings.showEdlps !== undefined) {
                         showEdlpsToggle.checked = settings.showEdlps;
                     }
 
+                    // v47 Sticky Toggles
                     if (settings.showComments !== undefined) {
                         showCommentsToggle.checked = settings.showComments;
                         commentsSection.style.display = settings.showComments ? 'block' : 'none';
                     }
+                    // v48: Wearables state is loaded but UI is locked until file drop
+                    // We store the preference in a temp variable if needed, or just let the toggle sit.
+                    // The toggle is forced disabled/checked on load by HTML default.
 
                     appState.att.emphasis = new Map(settings.emphasis.att || []);
                     appState.vzw.emphasis = new Map(settings.emphasis.vzw || []);
                     appState.tmo.emphasis = new Map(settings.emphasis.tmo || []);
                     
+                    // V38: Log Hidden Counts
                     ['att', 'vzw', 'tmo'].forEach(c => {
                         let hiddenCount = 0;
                         appState[c].emphasis.forEach((val, key) => {
+                            // v51: Log exact keys to check for mismatch
+                            // debugLog(`LOAD KEY [${c}]: '${key}' -> Hidden: ${val.hidden}`, "sys");
+                            // v52: Safety check for null value
                             if (val && val.hidden) {
                                 debugLog(`LOAD HIDDEN [${c}]: '${key}'`, "sys");
                                 hiddenCount++;
@@ -1146,32 +1026,42 @@
             if (dataStartIndex === -1) return { preFilterList: [], postFilterList: [] }; 
             const dataText = text.substring(dataStartIndex + 'Quantity'.length); 
             
+            // v45: Updated Regex to allow N/A capacity and slash in color
+            // v46: Updated Regex to allow 'mm' for watches
             const inventoryRegex = /(.+?)\s+(\d+\s?GB|N\/?A|\d+\s?mm)\s+([a-zA-Z\s\/]+?)\s+(\d+\s+available)/g; 
             const matches = [...dataText.matchAll(inventoryRegex)]; 
             const preFilterList = []; 
             const postFilterList = []; 
             const autoHidden = []; 
 
+           // v25: Updated regex to catch "unloc ked"
             const excludeRegex = /demo|un\s?-?\s?loc\s?k\s?e\s?d/i; 
+            // v60: Vaporize legacy iPhones
             const vaporizeRegex = /iPhone\s*(11|12|13)(?!\d)/i; 
             
             for (const match of matches) { 
-                if (vaporizeRegex.test(match[0])) continue;
-                const model = match[1].replace(/\s+/g, ' ').trim(); 
-                let capacityRaw = match[2].replace(/\s+/g, ' ').trim();
-                let capacity = "";
+                if (vaporizeRegex.test(match[0])) continue; // Erase from existence
+            // v51: Aggressive Whitespace Normalization
+            const model = match[1].replace(/\s+/g, ' ').trim(); 
+            let capacityRaw = match[2].replace(/\s+/g, ' ').trim();
+            let capacity = "";
 
-                if (!/^N\/?A$/i.test(capacityRaw)) {
-                    capacity = capacityRaw.replace(/\s+GB/i, 'GB').replace(/\s+mm/i, 'mm');
-                }
+            // v45: Handle N/A capacity
+            if (!/^N\/?A$/i.test(capacityRaw)) {
+                // v46: Handle mm as well as GB
+                capacity = capacityRaw.replace(/\s+GB/i, 'GB').replace(/\s+mm/i, 'mm');
+            }
             
-                let color = match[3].replace(/\s+/g, ' ').trim();
+            // v45: Handle N/A color
+            let color = match[3].replace(/\s+/g, ' ').trim();
                 if (/^N\/?A$/i.test(color)) {
                     color = "";
                 }
 
+                // v45: Trim result to avoid trailing space if capacity is empty
                 const modelAndCapacity = (capacity ? `${model} ${capacity}` : model).trim(); 
                 
+                // v47: Fix for "Blu" bug. If regex fails to parse quantity, default to 1.
                 const quantityMatch = match[4].match(/\d+/);
                 const quantity = quantityMatch ? parseInt(quantityMatch[0], 10) : 1;
 
@@ -1184,26 +1074,32 @@
                 }
             } 
             
+            // v44: Logging removed from here to prevent crash
             return { preFilterList, postFilterList, autoHidden }; 
         };
         
         const abbreviateColor = (color, modelName = '') => {
+            // v47: Context-aware abbreviations
             const isWatch = modelName.includes('AW ') || modelName.includes('Apple Watch');
             const cLower = color.toLowerCase();
             
+            // Global overrides
             if (cLower.includes('silver')) return 'SLVR';
 
+            // Watch specific overrides
             if (isWatch) {
                 if (cLower.includes('starlight')) return 'BEIGE';
                 if (cLower.includes('midnight')) return 'MDNGHT';
             } else {
+                // Non-watch specific
                 if (cLower.includes('midnight')) return 'NAVY';
             }
 
+            // v41: Prioritize longest key match first to handle "Awesome Black" vs "Black"
             const sortedKeys = Object.keys(COLOR_ABBREVIATIONS).sort((a, b) => b.length - a.length);
             for (const key of sortedKeys) {
                 if (color.toLowerCase().includes(key.toLowerCase())) {
-                    return COLOR_ABBREVIATIONS[key];
+                    return COLOR_ABBREVIATIONS[key]; // Return ONLY the abbreviation
                 }
             }
             return color;
@@ -1221,6 +1117,7 @@
             return abbreviateColor(details, modelName); 
         };
 
+        // v57: Smart Footer Formatter (Added Whitespace Normalizer)
         const formatHiddenName = (name) => {
             let processedName = name;
             
@@ -1259,6 +1156,7 @@
             else if (isDemo) category = 'demo';
 
             let finalName = processedName.trim();
+            // v57: Whitespace collapse
             finalName = finalName.replace(/\s+/g, ' ');
             
             return { name: finalName, category: category };
@@ -1270,10 +1168,12 @@
         
         const prepareDataForDisplay = () => { 
             const preparedState = { att: {}, vzw: {}, tmo: {} }; 
+            // v47: Isolate Apple Devices (Includes Watches)
             if (isolateIphonesCheckbox.checked) { 
                 const priorityOrder = ['att', 'vzw', 'tmo']; 
                 let iphoneSource = null; 
                 for (const carrier of priorityOrder) { 
+                    // Check for iPhones OR Watches
                     if (appState[carrier].consolidatedList.some(item => 
                         item[0].toLowerCase().startsWith('iphone') || 
                         item[0].startsWith('AW ') || 
@@ -1282,6 +1182,7 @@
                 } 
                 preparedState.apple = { consolidatedList: [] }; 
                 for (const carrier of ['att', 'vzw', 'tmo']) { 
+                    // Filter out BOTH iPhones and Watches from carrier lists
                     preparedState[carrier].consolidatedList = appState[carrier].consolidatedList.filter(item => 
                         !item[0].toLowerCase().startsWith('iphone') &&
                         !item[0].startsWith('AW ') &&
@@ -1294,6 +1195,7 @@
                             item[0].toLowerCase().includes('apple watch')
                         ).map(item => ({ modelAndCapacity: item[0], details: item[1], sourceCarrier: carrier })); 
                         
+                        // v47: Sort Watches to TOP
                         appleItems.sort((a, b) => {
                             const isWatchA = a.modelAndCapacity.startsWith('AW ') || a.modelAndCapacity.toLowerCase().includes('watch');
                             const isWatchB = b.modelAndCapacity.startsWith('AW ') || b.modelAndCapacity.toLowerCase().includes('watch');
@@ -1311,12 +1213,16 @@
                 preparedState.tmo.consolidatedList = appState.tmo.consolidatedList; 
             } 
             
+            // v47: Wearables Filter (Remove from display if toggled off)
             if (!showWearablesToggle.checked) {
+                // Helper to check if item is a watch
                 const isWatch = (name) => name.startsWith('AW ') || name.toLowerCase().includes('apple watch');
                 
+                // Filter Apple list
                 if (preparedState.apple) {
                     preparedState.apple.consolidatedList = preparedState.apple.consolidatedList.filter(item => !isWatch(item.modelAndCapacity));
                 }
+                // Filter Carrier lists
                 ['att', 'vzw', 'tmo'].forEach(c => {
                     preparedState[c].consolidatedList = preparedState[c].consolidatedList.filter(item => !isWatch(item[0]));
                 });
@@ -1325,6 +1231,7 @@
             return preparedState; 
         };
         
+        // --- RICH TEXT HELPER FOR FOOTER ---
         const drawRichText = (doc, x, y, segments, maxWidth, lineHeight) => {
             let cursorX = x;
             let cursorY = y;
@@ -1358,6 +1265,12 @@
             let yPosition = topMargin;
             const showEdlps = showEdlpsToggle.checked;
             
+            // --- HEADER (v59: Spacing Fixes) ---
+            // ... (Sources logic remains same) ...
+            
+            // ... (Skipping to drawSmartLayout implementation) ...
+
+            // --- PASS 1: COLLECT CITATIONS ---
             const citationMap = new Map();
             const getPriceObj = (cData, mName) => {
                 if (!cData) return null;
@@ -1369,9 +1282,10 @@
             };
 
             const now = new Date();
-            const currentMonth = now.getMonth();
+            const currentMonth = now.getMonth(); // 0-11
             const currentYear = now.getFullYear();
             
+            // Collection Set
             const collectedCitations = new Map();
 
             const collectDates = (carrier, list) => {
@@ -1438,6 +1352,7 @@
                 return citationMap.get(label);
             };
 
+            // --- HEADER RENDER ---
             const dateStr = now.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase().replace(' ', '');
             
@@ -1450,6 +1365,7 @@
             });
             const storeString = Array.from(storeSet).join(' '); 
 
+            // Line 1
             const headerText1 = `${dateStr} ${timeStr} ${storeString} Inventory Report`;
             const headerText2 = ` - Made with Optimizer, an unofficial app by Abraham.`;
             
@@ -1462,6 +1378,7 @@
             doc.text(headerText2, sideMargin + w1, yPosition);
             yPosition += lineHeight;
 
+            // Line 2
             const sourceDates = [];
             ['att', 'vzw', 'tmo'].forEach(c => {
                 const rawDate = appState[c].fileDate;
@@ -1469,7 +1386,8 @@
                     try {
                         const datePart = rawDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
                         if (datePart) {
-                            sourceDates.push({ carrier: c.toUpperCase(), date: new Date(datePart[0]) });
+                            const dObj = new Date(datePart[0]);
+                            sourceDates.push({ carrier: c.toUpperCase(), date: dObj });
                         } else {
                             sourceDates.push({ carrier: c.toUpperCase(), date: null }); 
                         }
@@ -1504,12 +1422,18 @@
             const formatTime = (d) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase().replace(' ', '');
             
             const formatCompactRange = (start, end) => {
-                const sH = start.getHours(), sM = start.getMinutes(), eH = end.getHours();
-                const sAmPm = sH >= 12 ? 'pm' : 'am', eAmPm = eH >= 12 ? 'pm' : 'am';
+                const sH = start.getHours();
+                const sM = start.getMinutes();
+                const eH = end.getHours();
+                const eM = end.getMinutes();
+                const sAmPm = sH >= 12 ? 'pm' : 'am';
+                const eAmPm = eH >= 12 ? 'pm' : 'am';
                 const sH12 = sH % 12 || 12;
                 
                 if (sH === eH) {
-                    return `${sH12}:${sM.toString().padStart(2, '0')}-${eM.toString().padStart(2, '0')}${sAmPm}`;
+                    const sMStr = sM.toString().padStart(2, '0');
+                    const eMStr = eM.toString().padStart(2, '0');
+                    return `${sH12}:${sMStr}-${eMStr}${sAmPm}`;
                 } else {
                     return `${formatTime(start)}-${formatTime(end)}`;
                 }
@@ -1519,12 +1443,14 @@
                 let timeLabel = "N/A";
                 if (g.startTime) {
                      const datePart = g.startTime.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
-                     const startStr = formatTime(g.startTime), endStr = formatTime(g.endTime);
+                     const startStr = formatTime(g.startTime);
+                     const endStr = formatTime(g.endTime);
                      
                      if (startStr === endStr) {
                         timeLabel = (i === 0) ? `${datePart} ${startStr}` : `${startStr}`;
                      } else {
-                        timeLabel = (i === 0) ? `${datePart} ${formatCompactRange(g.startTime, g.endTime)}` : `${formatCompactRange(g.startTime, g.endTime)}`;
+                        const rangeStr = formatCompactRange(g.startTime, g.endTime);
+                        timeLabel = (i === 0) ? `${datePart} ${rangeStr}` : `${rangeStr}`;
                      }
                 }
                 sourcesContent += `${timeLabel} (${g.carriers.join(", ")})`;
@@ -1538,7 +1464,10 @@
             
             doc.setFont("helvetica", "normal");
             doc.text(sourcesContent, line2X, yPosition);
-            line2X += doc.getTextWidth(sourcesContent) + doc.getTextWidth("    ");
+            line2X += doc.getTextWidth(sourcesContent);
+            
+            // v59: 4 spaces padding
+            line2X += doc.getTextWidth("    ");
 
             if (showEdlps && citationMap.size > 0) {
                 doc.setFont("helvetica", "bold");
@@ -1554,7 +1483,14 @@
                     doc.text(`[${index}]`, line2X + 0.5, yPosition - 1);
                     line2X += doc.getTextWidth(`[${index}]`) + 1;
                     doc.setFontSize(8);
-                    let sep = (i === sortedCitations.length - 1) ? "." : (i === sortedCitations.length - 2) ? (sortedCitations.length === 2 ? " and " : ", and ") : ", ";
+                    let sep = "";
+                    if (i === sortedCitations.length - 1) {
+                        sep = ".";
+                    } else if (i === sortedCitations.length - 2) {
+                        sep = (sortedCitations.length === 2) ? " and " : ", and ";
+                    } else {
+                        sep = ", ";
+                    }
                     doc.text(sep, line2X, yPosition);
                     line2X += doc.getTextWidth(sep);
                 });
@@ -1565,49 +1501,81 @@
             yPosition += sectionSpacing;
             const contentStartY = yPosition;
 
+            // --- v59: SMART FLOW ENGINE ---
             let startRightX = 100;
-            if (showEdlps) startRightX = isolateIphonesCheckbox.checked ? 75 : 95;
+            if (showEdlps) {
+                if (isolateIphonesCheckbox.checked) {
+                    startRightX = 75;
+                } else {
+                    startRightX = 95;
+                }
+            }
 
-            let cursors = { left: { page: 1, y: contentStartY }, right: { page: 1, y: contentStartY } };
+            // Define Layout State
+            let cursors = {
+                left: { page: 1, y: contentStartY },
+                right: { page: 1, y: contentStartY }
+            };
             let maxPage = 1;
 
+            // Queue: ATT -> TMO -> VZW -> Apple
             const processQueue = [];
             if (state.att) processQueue.push({ id: 'att', pref: 'left', alt: 'right' });
             if (state.tmo) processQueue.push({ id: 'tmo', pref: 'right', alt: 'left' });
             if (state.vzw) processQueue.push({ id: 'vzw', pref: 'left', alt: 'right' });
             if (state.apple) processQueue.push({ id: 'apple', pref: 'right', alt: 'left' });
 
+            // Helper: Draw Carrier Block
             const drawCarrierBlock = (carrier, xPos, startY, pageNum) => {
                 doc.setPage(pageNum);
                 let cursorY = startY;
                 const data = state[carrier];
 
+                // Header
                 doc.setFont("helvetica", "bold").setFontSize(10);
                 const headerText = (carrier === 'apple') ? 'Apple Devices' : carrier.toUpperCase();
                 const headerWidth = doc.getTextWidth(headerText);
                 doc.text(headerText, xPos, cursorY);
                 doc.setLineWidth(0.2).line(xPos, cursorY + 0.5, xPos + headerWidth, cursorY + 0.5);
-                cursorY += 6;
+                cursorY += 6; // headerHeight
 
+                // Legend
                 if (showEdlps) {
                     doc.setFontSize(6).setFont("helvetica", "bold");
                     if (carrier === 'apple') {
-                        doc.text("EDLPs", xPos + 30, cursorY); cursorY += lineHeight;
-                        doc.text("ITEM", xPos, cursorY); doc.text("ATT, VZW, TMO (dp + /mo)", xPos + 30, cursorY); doc.text("QTY", xPos + 85, cursorY);
+                        const curEdlpX = xPos + 30;
+                        const curDetailsX = xPos + 85;
+                        doc.text("EDLPs", curEdlpX, cursorY);
+                        cursorY += lineHeight;
+                        doc.text("ITEM", xPos, cursorY);
+                        doc.text("ATT, VZW, TMO (dp + /mo)", curEdlpX, cursorY);
+                        doc.text("QTY", curDetailsX, cursorY);
+                        cursorY += lineHeight;
                     } else if (carrier === 'tmo') {
-                        doc.text("ITEM", xPos, cursorY); doc.text("EDLP (dp + /mo)", xPos + 30, cursorY); doc.text("QTY", xPos + (isolateIphonesCheckbox.checked ? 85 : 65), cursorY);
+                        const curEdlpX = xPos + 30; 
+                        const curDetailsX = xPos + (isolateIphonesCheckbox.checked ? 85 : 65);
+                        doc.text("ITEM", xPos, cursorY);
+                        doc.text("EDLP (dp + /mo)", curEdlpX, cursorY);
+                        doc.text("QTY", curDetailsX, cursorY);
+                        cursorY += lineHeight;
                     } else {
-                        doc.text("ITEM", xPos, cursorY); doc.text("EDLP", xPos + 28, cursorY); doc.text("QTY", xPos + 38, cursorY); 
+                        const curEdlpX = xPos + 28;
+                        const curDetailsX = xPos + 38; 
+                        doc.text("ITEM", xPos, cursorY);
+                        doc.text("EDLP", curEdlpX, cursorY);
+                        doc.text("QTY", curDetailsX, cursorY); 
+                        cursorY += lineHeight;
                     }
-                    cursorY += lineHeight;
                 } else {
                     doc.setFontSize(6).setFont("helvetica", "bold");
-                    doc.text("ITEM", xPos, cursorY); doc.text("QTY", xPos + 50, cursorY); 
+                    doc.text("ITEM", xPos, cursorY);
+                    doc.text("QTY", xPos + 50, cursorY); 
                     cursorY += lineHeight;
                 }
 
                 doc.setFontSize(8);
 
+                // Items
                 data.consolidatedList.forEach(item => {
                     const rawModel = (carrier === 'apple') ? item.modelAndCapacity : item[0];
                     const rawDetails = (carrier === 'apple') ? item.details : item[1];
@@ -1616,31 +1584,53 @@
                     
                     if (emphasisState.hidden) return;
 
+                    // Page Break Check inside block
                     if (cursorY + lineHeight > pageHeight - bottomMargin) {
-                        pageNum++; if (pageNum > doc.internal.getNumberOfPages()) doc.addPage();
-                        doc.setPage(pageNum); cursorY = topMargin; if (pageNum > maxPage) maxPage = pageNum;
+                        pageNum++;
+                        if (pageNum > doc.internal.getNumberOfPages()) doc.addPage();
+                        doc.setPage(pageNum);
+                        cursorY = topMargin;
+                        if (pageNum > maxPage) maxPage = pageNum;
                     }
 
-                    let displayModel = rawModel, displayDetails = rawDetails, edlpSegments = []; 
+                    // Render Item (Same Logic as v58)
+                    let displayModel = rawModel;
+                    let displayDetails = rawDetails;
+                    let edlpSegments = []; 
 
                     if (showEdlps) {
                         displayModel = abbreviateModel(rawModel);
                         displayDetails = abbreviateDetails(rawDetails, rawModel); 
                         const findPrice = (cData, mName) => getPriceObj(cData, mName);
-                        const formatCurrency = (val) => (val === 0 || val === "0" || !val) ? "___" : `$${val}`;
+                        const formatCurrency = (val) => {
+                            if (val === 0 || val === "0" || val === null || val === undefined || val === "???" || val === "??") return "___";
+                            return `$${val}`;
+                        };
 
                         if (carrier === 'apple') {
-                           const pAtt = findPrice(EDLP_DATA.att, rawModel), pVzw = findPrice(EDLP_DATA.vzw, rawModel), pTmo = findPrice(EDLP_DATA.tmo, rawModel);
+                           const pAtt = findPrice(EDLP_DATA.att, rawModel);
+                           const pVzw = findPrice(EDLP_DATA.vzw, rawModel);
+                           const pTmo = findPrice(EDLP_DATA.tmo, rawModel);
                            
-                           edlpSegments.push({ text: (pAtt && pAtt.total > 0) ? formatCurrency(pAtt.total) : "___", citation: (pAtt && pAtt.total > 0) ? getCitation(pAtt.last_updated) : null });
+                           const tAtt = (pAtt && pAtt.total > 0) ? formatCurrency(pAtt.total) : "___";
+                           const citAtt = (pAtt && pAtt.total > 0) ? getCitation(pAtt.last_updated) : null;
+                           edlpSegments.push({ text: tAtt, citation: citAtt });
                            edlpSegments.push({ text: ", ", citation: null });
-                           edlpSegments.push({ text: (pVzw && pVzw.total > 0) ? formatCurrency(pVzw.total) : "___", citation: (pVzw && pVzw.total > 0) ? getCitation(pVzw.last_updated) : null });
+
+                           const tVzw = (pVzw && pVzw.total > 0) ? formatCurrency(pVzw.total) : "___";
+                           const citVzw = (pVzw && pVzw.total > 0) ? getCitation(pVzw.last_updated) : null;
+                           edlpSegments.push({ text: tVzw, citation: citVzw });
                            edlpSegments.push({ text: ", ", citation: null });
                            
-                           let tTmoText = "___", citTmo = null;
+                           let tTmoText = "___";
+                           let citTmo = null;
                            if (pTmo && pTmo.total > 0) {
                                citTmo = getCitation(pTmo.last_updated);
-                               tTmoText = (pTmo.dp !== undefined) ? `${formatCurrency(pTmo.total)} (${formatCurrency(pTmo.dp)} + ${formatCurrency(pTmo.mo)}/mo)` : formatCurrency(pTmo.total);
+                               if (pTmo.dp !== undefined) {
+                                   tTmoText = `${formatCurrency(pTmo.total)} (${formatCurrency(pTmo.dp)} + ${formatCurrency(pTmo.mo)}/mo)`;
+                               } else {
+                                   tTmoText = formatCurrency(pTmo.total);
+                               }
                            }
                            edlpSegments.push({ text: tTmoText, citation: citTmo });
 
@@ -1650,7 +1640,11 @@
                                const cit = getCitation(priceData.last_updated);
                                let txt = "";
                                if (sourceCarrier === 'tmo') {
-                                   txt = (priceData.dp !== undefined) ? `${formatCurrency(priceData.total)} (${formatCurrency(priceData.dp)} + ${formatCurrency(priceData.mo)}/mo)` : formatCurrency(priceData.total);
+                                   if (priceData.dp !== undefined) {
+                                       txt = `${formatCurrency(priceData.total)} (${formatCurrency(priceData.dp)} + ${formatCurrency(priceData.mo)}/mo)`;
+                                   } else {
+                                       txt = formatCurrency(priceData.total);
+                                   }
                                } else {
                                    txt = priceData.total !== undefined ? formatCurrency(priceData.total) : "";
                                }
@@ -1660,25 +1654,38 @@
                     }
 
                     doc.setFont('helvetica', 'normal'); 
-                    let curModelX = xPos, curEdlpX = 0, curDetailsX = 0;
+                    let curModelX = xPos;
+                    let curEdlpX = 0;
+                    let curDetailsX = 0;
 
                     if (showEdlps) {
-                        if (carrier === 'apple') { curEdlpX = xPos + 30; curDetailsX = xPos + 85; } 
-                        else if (carrier === 'tmo') { curEdlpX = xPos + 30; curDetailsX = xPos + (isolateIphonesCheckbox.checked ? 85 : 65); } 
-                        else { curEdlpX = xPos + 28; curDetailsX = xPos + 38; }
-                    } else { curDetailsX = xPos + 50; }
+                        if (carrier === 'apple') {
+                            curEdlpX = xPos + 30; curDetailsX = xPos + 85; 
+                        } else if (carrier === 'tmo') {
+                            curEdlpX = xPos + 30; curDetailsX = xPos + (isolateIphonesCheckbox.checked ? 85 : 65);
+                        } else {
+                            curEdlpX = xPos + 28; curDetailsX = xPos + 38;
+                        }
+                    } else {
+                        curDetailsX = xPos + 50; 
+                    }
 
                     if (emphasisState.full || emphasisState.partial) { 
                         doc.setFillColor(150, 150, 150); 
                         const textDimensions = doc.getTextDimensions(displayDetails, { fontSize: 8 }); 
-                        const rectY = cursorY - textDimensions.h + 0.2, rectHeight = textDimensions.h + 0.5; 
+                        const rectY = cursorY - textDimensions.h + 0.2; 
+                        const rectHeight = textDimensions.h + 0.5; 
                         let widthSpan = 75;
                         if (showEdlps) {
                             if (carrier === 'att' || carrier === 'vzw') widthSpan = 60; 
                             else if (carrier === 'apple') widthSpan = 110; 
                             else if (carrier === 'tmo') widthSpan = isolateIphonesCheckbox.checked ? 110 : 90; 
                         }
-                        let rectWidth = emphasisState.full ? widthSpan : doc.getTextDimensions(displayModel, { fontSize: 8 }).w + 2; 
+                        let rectWidth = widthSpan; 
+                        if (!emphasisState.full) {
+                             const modelDimensions = doc.getTextDimensions(displayModel, { fontSize: 8 }); 
+                             rectWidth = modelDimensions.w + 2; 
+                        }
                         doc.rect(curModelX - 1, rectY, rectWidth, rectHeight, 'F'); 
                     } 
                     
@@ -1692,9 +1699,13 @@
                             doc.text(seg.text, segX, cursorY);
                             const w = doc.getTextWidth(seg.text);
                             if (seg.citation) {
-                                doc.setFontSize(5); doc.text(`[${seg.citation}]`, segX + w + 0.5, cursorY - 1); 
-                                doc.setFontSize(7); segX += w + 2.5; 
-                            } else { segX += w; }
+                                doc.setFontSize(5);
+                                doc.text(`[${seg.citation}]`, segX + w + 0.5, cursorY - 1); 
+                                doc.setFontSize(7); 
+                                segX += w + 2.5; 
+                            } else {
+                                segX += w;
+                            }
                         });
                         doc.setFontSize(8);
                     }
@@ -1706,10 +1717,12 @@
                 return { y: cursorY, page: pageNum };
             };
 
+            // Process Queue
             processQueue.forEach(item => {
                 const data = state[item.id];
                 if (!data.consolidatedList || data.consolidatedList.length === 0) return;
 
+                // Calculate Height
                 let visibleCount = 0;
                 data.consolidatedList.forEach(i => {
                     const m = (item.id === 'apple') ? i.modelAndCapacity : i[0];
@@ -1717,23 +1730,40 @@
                     if (!(appState[s].emphasis.get(m) || {}).hidden) visibleCount++;
                 });
                 
-                let legendH = showEdlps && item.id === 'apple' && isolateIphonesCheckbox.checked ? lineHeight * 2 : lineHeight;
+                let legendH = lineHeight;
+                if (showEdlps && item.id === 'apple' && isolateIphonesCheckbox.checked) legendH = lineHeight * 2;
                 const height = 6 + legendH + (visibleCount * lineHeight) + sectionSpacing;
 
-                let targetCol = item.pref, targetX = (targetCol === 'left') ? sideMargin : startRightX;
+                // Decision Logic
+                let targetCol = item.pref;
+                let targetX = (targetCol === 'left') ? sideMargin : startRightX;
                 let cursor = cursors[targetCol];
-                
-                if (height > pageHeight - bottomMargin - cursor.y) {
-                    let altCursor = cursors[item.alt];
-                    if (height < pageHeight - bottomMargin - altCursor.y && altCursor.page === cursor.page) {
-                        targetCol = item.alt; targetX = (targetCol === 'left') ? sideMargin : startRightX; cursor = altCursor;
+                let remainingSpace = pageHeight - bottomMargin - cursor.y;
+
+                if (height < remainingSpace) {
+                    // Fits in Preferred
+                } else {
+                    // Try Alternate
+                    let altCol = item.alt;
+                    let altCursor = cursors[altCol];
+                    let altRemaining = pageHeight - bottomMargin - altCursor.y;
+                    
+                    // Only switch to alt if it fits on the CURRENT page
+                    // And only if the alternate column isn't way behind (on a previous page)
+                    if (height < altRemaining && altCursor.page === cursor.page) {
+                        targetCol = altCol;
+                        targetX = (targetCol === 'left') ? sideMargin : startRightX;
+                        cursor = altCursor;
                     } else {
-                        cursor.page++; cursor.y = topMargin;
+                        // Force New Page on Preferred
+                        cursor.page++;
+                        cursor.y = topMargin;
                         if (cursor.page > maxPage) maxPage = cursor.page;
                         if (cursor.page > doc.internal.getNumberOfPages()) doc.addPage();
                     }
                 }
 
+                // Draw
                 const result = drawCarrierBlock(item.id, targetX, cursor.y, cursor.page);
                 cursors[targetCol] = result;
                 if (result.page > maxPage) maxPage = result.page;
@@ -1741,32 +1771,53 @@
 
             if (processQueue.length === 0) { doc.setFont("helvetica", "normal").setFontSize(12).text("No inventory found.", sideMargin, contentStartY); } 
             
+            // --- FOOTER (Hidden Items v57 Dynamic Position) ---
             doc.setPage(maxPage);
+            
+            // Find lowest Y on the final page
             let finalY = topMargin;
             if (cursors.left.page === maxPage) finalY = Math.max(finalY, cursors.left.y);
             if (cursors.right.page === maxPage) finalY = Math.max(finalY, cursors.right.y);
+            
             const footerY = finalY + lineHeight;
 
             doc.setFontSize(7);
             
-            const buckets = { unlocked: { att: new Map(), vzw: new Map(), tmo: new Map() }, manual: { att: [], vzw: [], tmo: [] } };
+            // v60: Smart Footer Buckets
+            const buckets = {
+                unlocked: { att: new Map(), vzw: new Map(), tmo: new Map() },
+                manual: { att: [], vzw: [], tmo: [] }
+            };
+
             const isWatchCheck = (name) => name.startsWith('AW ') || name.toLowerCase().includes('apple watch');
 
+            // 1. Process Auto-Hidden (Unlocked only, skip Demos & Watches)
             ['att', 'vzw', 'tmo'].forEach(c => {
                 appState[c].autoHidden.forEach(item => {
-                    if (isWatchCheck(item.name)) return;
+                    if (isWatchCheck(item.name)) return; // Skip watches
+
                     const formatted = formatHiddenName(item.name);
                     if (formatted.category === 'unlocked') {
                         buckets.unlocked[c].set(formatted.name, (buckets.unlocked[c].get(formatted.name) || 0) + item.count);
                     }
+                    // Demos are intentionally ignored in v60
                 });
             });
 
+            // 2. Process Manual Hidden
             ['att', 'vzw', 'tmo'].forEach(c => {
                 appState[c].consolidatedList.forEach(item => {
-                    const name = item[0], emphasis = appState[c].emphasis.get(name);
-                    if (isWatchCheck(name) || formatHiddenName(name).category === 'demo') return;
-                    if (emphasis && emphasis.hidden) buckets.manual[c].push(formatHiddenName(name).name);
+                    const name = item[0];
+                    const emphasis = appState[c].emphasis.get(name);
+                    
+                    if (isWatchCheck(name)) return; // Skip watches for footer
+                    
+                    const formatted = formatHiddenName(name);
+                    if (formatted.category === 'demo') return; // v60: Never show demos in manual list
+
+                    if (emphasis && emphasis.hidden) {
+                        buckets.manual[c].push(formatted.name); // Ignore quantity
+                    }
                 });
             });
 
@@ -1776,28 +1827,52 @@
                 richSegments.push({ text: normalText + " ", bold: false });
             };
 
-            const allUnlockedNames = new Set([...buckets.unlocked.att.keys(), ...buckets.unlocked.vzw.keys(), ...buckets.unlocked.tmo.keys()]);
+            // 3. Consolidate Unlocked (Priority Merge: ATT > VZW > TMO)
+            const allUnlockedNames = new Set([
+                ...buckets.unlocked.att.keys(),
+                ...buckets.unlocked.vzw.keys(),
+                ...buckets.unlocked.tmo.keys()
+            ]);
+            
             const unlockedList = [];
             allUnlockedNames.forEach(name => {
                 const count = buckets.unlocked.att.get(name) || buckets.unlocked.vzw.get(name) || buckets.unlocked.tmo.get(name) || 0;
-                if (count > 0) unlockedList.push({ name: name, count: count });
+                if (count > 0) {
+                    unlockedList.push({ name: name, count: count });
+                }
             });
-            unlockedList.sort((a, b) => b.count - a.count);
-            if (unlockedList.length > 0) addSegment("Unlocked phones: ", unlockedList.map(i => `${i.count}x ${i.name}`).join(", "));
 
+            // Sort by count descending
+            unlockedList.sort((a, b) => b.count - a.count);
+            
+            if (unlockedList.length > 0) {
+                const formattedUnlocked = unlockedList.map(i => `${i.count}x ${i.name}`);
+                addSegment("Unlocked phones: ", formattedUnlocked.join(", "));
+            }
+
+            // 4. Format Manual (Smart Grouping)
             const manualStrings = [];
             ['att', 'vzw', 'tmo'].forEach(c => {
                 const uniqueItems = [...new Set(buckets.manual[c])];
-                if (uniqueItems.length === 1) manualStrings.push(`${uniqueItems[0]} (${c.toUpperCase()})`);
-                else if (uniqueItems.length > 1) manualStrings.push(`${c.toUpperCase()}: ${uniqueItems.join(", ")}`);
+                if (uniqueItems.length === 1) {
+                    manualStrings.push(`${uniqueItems[0]} (${c.toUpperCase()})`);
+                } else if (uniqueItems.length > 1) {
+                    manualStrings.push(`${c.toUpperCase()}: ${uniqueItems.join(", ")}`);
+                }
             });
-            if (manualStrings.length > 0) addSegment("Manually hidden devices: ", manualStrings.join(", "));
 
-            if (richSegments.length === 0) richSegments.push({ text: "No phones were hidden for this report.", bold: true });
+            if (manualStrings.length > 0) {
+                addSegment("Manually hidden devices: ", manualStrings.join(", "));
+            }
+
+            if (richSegments.length === 0) {
+                richSegments.push({ text: "No phones were hidden for this report.", bold: true });
+            }
 
             drawRichText(doc, sideMargin, footerY, richSegments, 190, 3.5);
 
             return doc.output('datauristring');
+
         };
 
         // --- EVENT HANDLER FUNCTIONS ---
@@ -1811,46 +1886,63 @@
                     const carrier = categorizePdf(text); 
                     if (carrier === 'unknown') { alert(`Could not determine carrier for file: ${file.name}`); continue; } 
                     
+                    // Date Extraction
                     const dateMatch = text.match(/Date:\s*(.*?)(?=\s+Store)/);
-                    if (dateMatch && dateMatch[1]) appState[carrier].fileDate = dateMatch[1].trim();
+                    if (dateMatch && dateMatch[1]) {
+                        appState[carrier].fileDate = dateMatch[1].trim();
+                    }
                     
+                    // Store Extraction (v19)
                     const storeMatch = text.match(/Store:\s*(\d+)/);
-                    if (storeMatch && storeMatch[1]) appState[carrier].storeNumber = storeMatch[1].trim();
+                    if (storeMatch && storeMatch[1]) {
+                        appState[carrier].storeNumber = storeMatch[1].trim();
+                    }
 
                     const { preFilterList, postFilterList, autoHidden } = parseInventoryText(text); 
                     appState[carrier].consolidatedList = consolidateInventory(postFilterList); 
                     appState[carrier].autoHidden = autoHidden; 
 
+                    // V44: Verbose Logging (Correct Location)
                     let logContent = `--- DEBUG LOG FOR: ${file.name} (detected as ${carrier.toUpperCase()}) ---\n\n`; 
                     logContent += `== RAW TEXT EXTRACTED ==\n${text}\n\n`; 
                     logContent += `== ITEMS FOUND (PRE-FILTER) ==\n${preFilterList.map(item => item.join(' | ')).join('\n')}\n\n`; 
                     logContent += `== ITEMS KEPT (POST-FILTER) ==\n${postFilterList.map(item => item.join(' | ')).join('\n')}\n\n`; 
                     debugLog(logContent, 'pdf');
-                    debugLog(`PARSED [${carrier}]: ${postFilterList.length} items found.`, "sys");
+                    debugLog(`PARSED [${carrier}]: ${postFilterList.length} items found.`, "sys"); // Summary log
 
                     const statusSection = document.getElementById(`${carrier}-status`); 
                     statusSection.querySelector('.status-filename').textContent = file.name; 
                     statusSection.style.display = 'block'; 
                     
-                    if (postFilterList.some(item => item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch'))) hasWatches = true;
+                    // v47: Check for watches
+                    const fileHasWatches = postFilterList.some(item => 
+                        item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch')
+                    );
+                    if (fileHasWatches) hasWatches = true;
 
                 } catch (error) { 
+                    // v43: Explicit error logging
                     debugLog("❌ CRASH: " + error.message, 'sys');
                     alert(`Failed to process file: ${file.name}`); 
                     console.error(error); 
                 } 
             } 
 
+            // v48: Update Wearables Toggle (Smart Logic)
             const wearablesToggle = document.getElementById('show-wearables-toggle');
             const wearablesLabel = document.getElementById('wearables-label');
             
             if (hasWatches) {
+                // If watches exist, unlock the toggle
                 wearablesToggle.disabled = false;
                 wearablesLabel.textContent = "Show wearables";
                 wearablesToggle.parentElement.classList.remove('disabled');
+                
+                // Restore user preference if it exists, otherwise default to true
                 const savedSettings = JSON.parse(localStorage.getItem('betterInvSettings') || '{}');
                 wearablesToggle.checked = (savedSettings.showWearables !== undefined) ? savedSettings.showWearables : true;
             } else {
+                // If no watches, lock it to "Checked" (Standard behavior) but Disabled
                 wearablesToggle.checked = true;
                 wearablesToggle.disabled = true;
                 wearablesLabel.textContent = "Show wearables (not applicable)";
@@ -1861,13 +1953,16 @@
         };
         
         const openEmphasisModal = () => { 
+            // V38 Logging
             debugLog("--- OPENING MODAL (Key Lookup Check) ---", "sys");
             
             const listContainer = document.getElementById('emphasis-list-container'); listContainer.innerHTML = ''; const processedData = prepareDataForDisplay(); const carriersToDisplay = Object.keys(processedData).filter(c => processedData[c].consolidatedList.length > 0); carriersToDisplay.forEach(carrier => { const header = document.createElement('div'); header.className = 'emphasis-list-carrier-header'; header.textContent = (carrier === 'apple') ? 'Apple Devices' : carrier.toUpperCase(); listContainer.appendChild(header); processedData[carrier].consolidatedList.forEach(item => { const isApple = carrier === 'apple'; const modelAndCapacity = isApple ? item.modelAndCapacity : item[0]; const details = isApple ? item.details : item[1]; const sourceCarrier = isApple ? item.sourceCarrier : carrier; 
             
+            // V38 Logging
             const existingState = appState[sourceCarrier].emphasis.get(modelAndCapacity);
             debugLog(`LOOKUP: Carrier [${sourceCarrier}] Key '[${modelAndCapacity}]' -> Found: ${existingState ? JSON.stringify(existingState) : 'undefined'}`, "sys");
 
+            // v40: Ensure full fallback object includes hidden:false
             const currentEmphasis = existingState || { partial: false, full: false, hidden: false }; 
             
             const itemDiv = document.createElement('div'); itemDiv.className = 'emphasis-item'; if (currentEmphasis.hidden) itemDiv.classList.add('item-hidden'); const hideDiv = document.createElement('div'); hideDiv.className = 'emphasis-item-hide'; hideDiv.innerHTML = HIDE_ICON_SVG; hideDiv.dataset.key = modelAndCapacity; hideDiv.dataset.carrier = sourceCarrier; const partialCheckbox = document.createElement('input'); partialCheckbox.type = 'checkbox'; partialCheckbox.checked = currentEmphasis.partial; partialCheckbox.disabled = currentEmphasis.hidden; partialCheckbox.dataset.key = modelAndCapacity; partialCheckbox.dataset.carrier = sourceCarrier; partialCheckbox.dataset.type = 'partial'; const fullCheckbox = document.createElement('input'); fullCheckbox.type = 'checkbox'; fullCheckbox.checked = currentEmphasis.full; fullCheckbox.disabled = currentEmphasis.hidden; fullCheckbox.dataset.key = modelAndCapacity; fullCheckbox.dataset.carrier = sourceCarrier; fullCheckbox.dataset.type = 'full'; const textDiv = document.createElement('div'); textDiv.className = 'emphasis-item-text'; textDiv.textContent = `${modelAndCapacity} - ${details}`; itemDiv.appendChild(hideDiv); itemDiv.appendChild(partialCheckbox); itemDiv.appendChild(fullCheckbox); itemDiv.appendChild(textDiv); listContainer.appendChild(itemDiv); }); }); emphasisModal.style.display = 'flex'; };
@@ -1891,7 +1986,23 @@
         uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
         uploadArea.addEventListener('dragleave', (e) => { e.preventDefault(); uploadArea.classList.remove('dragover'); });
         uploadArea.addEventListener('drop', (e) => { e.preventDefault(); uploadArea.classList.remove('dragover'); handleFileUploads(e.dataTransfer.files); });
+        isolateIphonesCheckbox.addEventListener('change', saveSettings);
         
+        // Listener for EDLP toggle to show/hide warning
+        showEdlpsToggle.addEventListener('change', () => {
+             saveSettings(); // v35 Save on Toggle
+        });
+        
+        // v33: Console Filter Logic
+        const devConsole = document.getElementById('dev-console-output');
+        document.getElementById('cb-log-pdf').addEventListener('change', (e) => {
+             e.target.checked ? consoleOut.classList.remove('hide-pdf') : consoleOut.classList.add('hide-pdf');
+        });
+        document.getElementById('cb-log-edlp').addEventListener('change', (e) => {
+             e.target.checked ? consoleOut.classList.remove('hide-edlp') : consoleOut.classList.add('hide-edlp');
+        });
+
+        // v52: Fixed Copy Log Button (Specific Selector)
         copyLogBtn.addEventListener('click', () => { 
             const logText = document.getElementById('dev-console-output').textContent; 
             if (navigator.clipboard && navigator.clipboard.writeText) { 
@@ -1900,7 +2011,7 @@
                 legacyCopy(logText); 
             } 
         });
-        const legacyCopy = (text) => { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.opacity = 0; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); if (!successful) { alert('Failed to copy log.'); } } catch (err) { alert('Failed to copy log.'); } document.body.removeChild(textArea); };
+        const legacyCopy = (text) => { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.top = 0; textArea.style.left = 0; textArea.style.opacity = 0; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); if (!successful) { alert('Failed to copy log.'); } } catch (err) { alert('Failed to copy log.'); } document.body.removeChild(textArea); };
         
         previewCloseBtn.addEventListener('click', () => previewModal.style.display = 'none');
         emphasisCloseBtn.addEventListener('click', () => emphasisModal.style.display = 'none');
@@ -1909,21 +2020,63 @@
         window.addEventListener('click', (event) => { if (event.target == previewModal) previewModal.style.display = 'none'; if (event.target == emphasisModal) emphasisModal.style.display = 'none'; if (event.target == devModeModal && devModalCloseable.backdrop) devModeModal.style.display = 'none'; });
         downloadBtn.addEventListener('click', () => { const link = document.createElement('a'); link.href = iframe.src; link.download = 'Combined_Inventory.pdf'; link.click(); });
         
+        // v48 Persistence Debug: Added logging to the click listener
         emphasisModal.addEventListener('click', (e) => { const target = e.target.closest('.emphasis-item-hide'); if (!target) return; const { key, carrier } = target.dataset; const state = appState[carrier].emphasis.get(key) || { partial: false, full: false, hidden: false }; 
         
+        // V48 Log
         debugLog(`HIDE CLICK: Key '${key}' | Pre-State: ${JSON.stringify(state)}`, "sys");
 
         state.hidden = !state.hidden; appState[carrier].emphasis.set(key, state); const parentItem = target.closest('.emphasis-item'); parentItem.classList.toggle('item-hidden'); parentItem.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = state.hidden); saveSettings(); });
-        
+        // v40: Updated fallback object in change listener
         emphasisModal.addEventListener('change', (e) => { const target = e.target; if (target.type !== 'checkbox') return; const isMaster = target.id.startsWith('master-'); if (isMaster) { const masterType = target.id.includes('partial') ? 'partial' : 'full'; const isChecking = target.checked; const allItems = emphasisModal.querySelectorAll('.emphasis-item:not(.item-hidden)'); allItems.forEach(item => { const partialBox = item.querySelector('[data-type="partial"]'); const fullBox = item.querySelector('[data-type="full"]'); const key = partialBox.dataset.key; const carrier = partialBox.dataset.carrier; const state = appState[carrier].emphasis.get(key) || { partial: false, full: false, hidden: false }; if (masterType === 'partial') { partialBox.checked = isChecking; state.partial = isChecking; if (!isChecking) { fullBox.checked = false; state.full = false; } } else { fullBox.checked = isChecking; state.full = isChecking; if (isChecking) { partialBox.checked = true; state.partial = true; } } appState[carrier].emphasis.set(key, state); }); const masterPartial = document.getElementById('master-partial-checkbox'); const masterFull = document.getElementById('master-full-checkbox'); if (masterType === 'full' && isChecking) masterPartial.checked = true; if (masterType === 'partial' && !isChecking) masterFull.checked = false; } else if (target.dataset.key) { const { key, carrier, type } = target.dataset; const state = appState[carrier].emphasis.get(key) || { partial: false, full: false, hidden: false }; state[type] = target.checked; const parentItem = target.closest('.emphasis-item'); if (parentItem) { const partialBox = parentItem.querySelector('[data-type="partial"]'); const fullBox = parentItem.querySelector('[data-type="full"]'); if (type === 'full' && target.checked) { state.partial = true; if (partialBox) partialBox.checked = true; } if (type === 'partial' && !target.checked) { state.full = false; if (fullBox) fullBox.checked = false; } } appState[carrier].emphasis.set(key, state); } saveSettings(); });
         
         let clickCount = 0, lastClick = 0;
         versionText.addEventListener('click', () => { const now = Date.now(); if (now - lastClick > 500) { clickCount = 0; } lastClick = now; clickCount++; if (clickCount === 7) { devModalCloseable.button = false; devModalCloseable.backdrop = false; devModeModal.style.display = 'flex'; setTimeout(() => { devModalCloseable.button = true; }, 500); setTimeout(() => { devModalCloseable.backdrop = true; }, 1000); clickCount = 0; } });
         commentsInput.addEventListener('input', (e) => { const konami = "upupdowndownleftrightleftrightba"; const input = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ''); konamiMessage.style.display = input.includes(konami) ? 'block' : 'none'; });
 
-        // Initial load
+        // --- INTERACTIVE TUTORIAL LOGIC ---
+        window.setHeight = function(element, height) { element.style.maxHeight = height + 'px'; };
+        window.closeAccordion = function(element) {
+            if (!element.classList.contains('open')) return;
+            window.setHeight(element, element.scrollHeight);
+            element.classList.remove('open');
+            requestAnimationFrame(function() { window.setHeight(element, 0); });
+        };
+        window.openAccordion = function(element) {
+            if (element.classList.contains('open')) return;
+            element.classList.add('open');
+            window.setHeight(element, element.scrollHeight);
+            element.addEventListener('transitionend', function onTransitionEnd() {
+                if (element.classList.contains('open')) element.style.maxHeight = 'none';
+                element.removeEventListener('transitionend', onTransitionEnd);
+            });
+        };
+        window.toggleAccordion = function(contentId, headerElement) {
+            const targetContentElement = document.getElementById(contentId);
+            if (!targetContentElement) return;
+            const isOpening = !targetContentElement.classList.contains('open');
+            if (isOpening) {
+                document.querySelectorAll('.expandable.open').forEach(function (openContent) {
+                    if (!openContent.contains(targetContentElement)) window.closeAccordion(openContent);
+                });
+                window.openAccordion(targetContentElement);
+            } else {
+                const childrenToClose =[targetContentElement, ...targetContentElement.querySelectorAll('.expandable.open')];
+                childrenToClose.forEach(window.closeAccordion);
+            }
+            if (headerElement && headerElement.classList.contains('main-header')) {
+                headerElement.classList.toggle('open', isOpening);
+            }
+        };
+        
+        const mainSteps = document.getElementById('main-steps');
+        if (mainSteps && mainSteps.classList.contains('open')) {
+            mainSteps.style.maxHeight = mainSteps.scrollHeight + 'px';
+        }
+
+        // Initial load of settings from localStorage
         loadSettings();
-        fetchLivePricing();
+        fetchLivePricing(); // v33: Fetch from Stable Repo
     });
     </script>
 
