@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimizer (v65)</title>
+    <title>Optimizer</title>
     
     <!-- PDF.js and jsPDF library CDNs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
@@ -210,9 +210,7 @@
 
         /* v48: Dev Options Toggle Area */
         #dev-options-wrapper {
-            margin-top: 20px;
-            border-top: 1px solid #ddd;
-            padding-top: 15px;
+            margin-bottom: 15px;
             text-align: left;
         }
 
@@ -291,16 +289,16 @@
         .modal-footer button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
 
         /* --- NEW TUTORIAL STYLES --- */
-        .tutorial-container { margin-top: 25px; padding-top: 15px; border-top: 1px solid #e4e6eb; text-align: left; box-sizing: border-box; width: 100%; }
+        .tutorial-container { text-align: left; box-sizing: border-box; width: 100%; margin-bottom: 15px; }
         .main-header { font-size: 1.1em; font-weight: bold; user-select: none; padding-bottom: 0.5rem; border-bottom: 2px solid #eee; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #606770; }
         .main-header .arrow { font-size: 0.9rem; transition: transform 0.2s ease; color: #1877f2; margin-left: 0.5rem; }
         .main-header.open .arrow { transform: rotate(180deg); }
         .step-list { margin-top: 1.5rem; }
         .step-container { margin-bottom: 1.5rem; }
-        .step-title { font-weight: 600; margin-bottom: 0.2rem; font-size: 0.95em; color: #1c1e21; }
-        .trigger-link { color: #1877f2; cursor: pointer; user-select: none; font-size: 0.85em; font-weight: 500; display: inline-block; transition: color 0.2s; }
+        .step-title { font-weight: 600; margin-bottom: 0.2rem; font-size: 1em; color: #1c1e21; }
+        .trigger-link { color: #1877f2; cursor: pointer; user-select: none; font-size: 1em; font-weight: 500; display: inline-block; transition: color 0.2s; }
         .trigger-link:hover { color: #166fe5; text-decoration: underline; }
-        .expandable { max-height: 0; overflow: hidden; transition: max-height 250ms cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid #e0e0e0; margin-left: 0.6rem; padding-left: 1.2rem; font-size: 0.85em; color: #606770; }
+.expandable { max-height: 0; overflow: hidden; transition: max-height 250ms cubic-bezier(0.4, 0, 0.2, 1); border-left: 3px solid #e0e0e0; margin-left: 0.6rem; padding-left: 1.2rem; font-size: 1em; color: #606770; }
         .expandable.open { margin-top: 0.8rem; }
         .deep-nest-container { margin-top: 1rem; padding: 0.5rem 0; }
         .step-list ul, .step-list ol { margin-top: 0.5rem; padding-left: 1.5rem; margin-bottom: 0; }
@@ -312,7 +310,7 @@
 <body>
 
     <div id="version-wrapper">
-        <span id="version-text">Beta V65</span>
+        <span id="version-text">Loading...</span>
         <span id="status-icon" title="Offline Mode">❌☁</span>
     </div>
 
@@ -362,6 +360,13 @@
             <div class="action-buttons">
                 <button id="highlight-btn">Customize</button>
                 <button id="process-btn">Preview or Print</button>
+            </div>
+
+            <div id="dev-options-wrapper">
+                <div class="toggle-option">
+                    <input type="checkbox" id="dev-console-toggle">
+                    <label for="dev-console-toggle">Show developer options</label>
+                </div>
             </div>
 
             <div class="tutorial-container">
@@ -482,13 +487,6 @@
                 </div>
             </div>
 
-        <!-- v48: Dev Toggle stays here -->
-        <div id="dev-options-wrapper">
-            <div class="toggle-option">
-                <input type="checkbox" id="dev-console-toggle">
-                <label for="dev-console-toggle">Show developer options</label>
-            </div>
-        </div>
     </div>
 
     <!-- v48: Dev Console Sidebar -->
@@ -517,8 +515,9 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'Beta V65';
+        const APP_VERSION = 'RC 3';
         document.getElementById('version-text').textContent = APP_VERSION;
+        document.title = `Optimizer (${APP_VERSION})`;
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
         // Standard SVG
         const HIDE_ICON_SVG = `<svg class="hide-icon inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg>`;
@@ -989,23 +988,26 @@
         // --- DYNAMIC HTML INJECTION ---
         document.getElementById('preview-modal').innerHTML = `
             <div class="modal-content">
-                <div class="modal-header"><h2>PDF Preview</h2><span class="close-btn" id="preview-close-btn">&times;</span></div>
-                <div class="modal-body">
-                    <div style="text-align: left; margin-bottom: 10px; color: #333; padding-left: 20px;">
-                        <strong>To print:</strong>
-                        <ul style="margin: 5px 0 10px 20px; padding: 0;">
-                            <li><strong>Right click preview pane</strong></li>
-                            <li><strong>Click print</strong></li>
-                            <li>Remember to change the destination printer back to CKPR1.</li>
-                        </ul>
+                <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                    <h2></h2><span class="close-btn" id="preview-close-btn">&times;</span>
+                </div>
+                <div class="modal-body" style="padding-top: 0;">
+                    <div style="text-align: left; margin-bottom: 10px; color: #333; padding-left: 20px; padding-right: 20px;">
+                        <div id="print-help-toggle" style="color: #1877f2; text-decoration: underline; cursor: pointer; font-weight: 600; display: flex; align-items: center; font-size: 0.9em; margin-bottom: 5px;">
+                            <svg style="width: 16px; height: 16px; fill: #1877f2; margin-right: 5px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                            Print button not working?
+                        </div>
+                        <ul id="print-help-content" style="display: none; margin: 5px 0 10px 0; padding-left: 20px; font-size: 0.85em; color: #606770;">
+                            <li>If the print button isn't working, right click the PDF preview below and click print. If there is currently no PDF preview showing, please try optimizer on another Walmart computer instead.</li>
+                            <br>
+                            </ul>
                     </div>
                     <iframe id="pdf-preview-iframe" frameborder="0"></iframe>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="download-btn">Download</button>
-                            <button id="print-btn">Print</button>
-                        </div>
-                    </div>`;
+                </div>
+                <div class="modal-footer">
+                    <button id="print-btn">Print</button>
+                </div>
+            </div>`;
         document.getElementById('emphasis-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 id="emphasis-modal-title">Highlight Inventory</h2><span class="close-btn" id="emphasis-close-btn">&times;</span></div><div class="modal-body"><div class="emphasis-header"><div class="emphasis-header-unhide" id="unhide-all-btn" title="Unhide All">${SHOW_ICON_SVG}</div><div class="emphasis-header-hide"></div><div class="emphasis-header-partial"><input type="checkbox" id="master-partial-checkbox" title="Select/Deselect All Partial"></div><div class="emphasis-header-full"><input type="checkbox" id="master-full-checkbox" title="Select/Deselect All Full"></div><div class="emphasis-header-text">(Highlight partial/full)</div></div><div id="emphasis-list-container"></div></div><div class="modal-footer"><button id="emphasis-done-btn">Done</button></div></div>`;
         document.getElementById('dev-mode-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2>Dev Mode</h2><span class="close-btn" id="dev-mode-close-btn">&times;</span></div><div class="modal-body"><div id="dev-mode-text"><p><strong>developer mode activated lol</strong></p><p>(this doesn't do anything)</p></div></div></div>`;
         
@@ -1018,7 +1020,8 @@
         const emphasisCloseBtn = document.getElementById('emphasis-close-btn');
         const emphasisDoneBtn = document.getElementById('emphasis-done-btn');
         const devModeCloseBtn = document.getElementById('dev-mode-close-btn');
-        const downloadBtn = document.getElementById('download-btn');
+        const printHelpToggle = document.getElementById('print-help-toggle');
+        const printHelpContent = document.getElementById('print-help-content');
         const printBtn = document.getElementById('print-btn');
         const unhideAllBtn = document.getElementById('unhide-all-btn');
 
@@ -2040,11 +2043,8 @@
         devModeCloseBtn.addEventListener('click', () => { if (devModalCloseable.button) devModeModal.style.display = 'none'; });
         window.addEventListener('click', (event) => { if (event.target == previewModal) previewModal.style.display = 'none'; if (event.target == emphasisModal) emphasisModal.style.display = 'none'; if (event.target == devModeModal && devModalCloseable.backdrop) devModeModal.style.display = 'none'; });
         
-        downloadBtn.addEventListener('click', () => { 
-            const link = document.createElement('a'); 
-            link.href = currentPdfBlobUri || iframe.src; 
-            link.download = 'Combined_Inventory.pdf'; 
-            link.click(); 
+        printHelpToggle.addEventListener('click', () => {
+            printHelpContent.style.display = printHelpContent.style.display === 'none' ? 'block' : 'none';
         });
 
         printBtn.addEventListener('click', () => {
