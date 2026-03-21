@@ -105,21 +105,16 @@
         #upload-input { display: none; }
 
         .status-section {
-            display: none; /* Flex when visible */
-            padding: 10px 15px;
+            display: none;
+            padding: 10px;
             border: 1px solid #dddfe2;
             border-radius: 6px;
             margin-bottom: 10px;
-            justify-content: space-between;
-            align-items: center;
+            text-align: left;
         }
         
-        .status-left { display: flex; align-items: center; text-align: left; }
-        .status-text { font-weight: 600; color: #1c1e21; }
+        .status-text { font-weight: 600; }
         .status-filename { font-weight: normal; font-style: italic; color: #606770; margin-left: 8px; }
-        
-        .status-warning { font-size: 0.85em; color: #606770; display: flex; align-items: center; gap: 6px; font-weight: 500; }
-        .status-warning.outdated { color: #d93025; }
         
         .toggles-grid {
             display: grid;
@@ -330,10 +325,15 @@
                 <p style="text-decoration: underline;">upload files</p>
             </div>
 
+            <div id="global-outdated-warning" style="display: none; color: #d93025; font-weight: 600; font-size: 0.9em; margin-bottom: 15px; align-items: center; justify-content: center; gap: 8px;">
+                <svg style="width: 18px; height: 18px; fill: #d93025;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                Some file(s) could be outdated.
+            </div>
+
             <div id="status-container">
-                <div class="status-section" id="att-status"><div class="status-left"><span class="status-text">AT&T:</span><span class="status-filename"></span></div><div class="status-warning"></div></div>
-                <div class="status-section" id="vzw-status"><div class="status-left"><span class="status-text">Verizon:</span><span class="status-filename"></span></div><div class="status-warning"></div></div>
-                <div class="status-section" id="tmo-status"><div class="status-left"><span class="status-text">T-Mobile:</span><span class="status-filename"></span></div><div class="status-warning"></div></div>
+                <div class="status-section" id="att-status"><div><span class="status-text">AT&T:</span><span class="status-filename"></span></div></div>
+                <div class="status-section" id="vzw-status"><div><span class="status-text">Verizon:</span><span class="status-filename"></span></div></div>
+                <div class="status-section" id="tmo-status"><div><span class="status-text">T-Mobile:</span><span class="status-filename"></span></div></div>
             </div>
 
             <div class="toggles-grid">
@@ -519,9 +519,9 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v100';
+        const APP_VERSION = 'v102';
         document.getElementById('version-text').textContent = APP_VERSION;
-        document.title = `Optimizer (${APP_VERSION})`;
+        document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
         // Standard SVG
         const HIDE_ICON_SVG = `<svg class="hide-icon inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg>`;
@@ -1365,21 +1365,24 @@
             // Line 2
             const sourceDates = [];
             ['att', 'vzw', 'tmo'].forEach(c => {
-                const rawDate = appState[c].fileDate;
-                if (rawDate) {
-                    try {
-                        const datePart = rawDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
-                        if (datePart) {
-                            const dObj = new Date(datePart[0]);
-                            sourceDates.push({ carrier: c.toUpperCase(), date: dObj });
-                        } else {
-                            sourceDates.push({ carrier: c.toUpperCase(), date: null }); 
+                // v102: Only process dates for carriers that actually have inventory loaded
+                if (state[c] && state[c].consolidatedList && state[c].consolidatedList.length > 0) {
+                    const rawDate = appState[c].fileDate;
+                    if (rawDate) {
+                        try {
+                            const datePart = rawDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
+                            if (datePart) {
+                                const dObj = new Date(datePart[0]);
+                                sourceDates.push({ carrier: c.toUpperCase(), date: dObj });
+                            } else {
+                                sourceDates.push({ carrier: c.toUpperCase(), date: null }); 
+                            }
+                        } catch (e) {
+                             sourceDates.push({ carrier: c.toUpperCase(), date: null });
                         }
-                    } catch (e) {
-                         sourceDates.push({ carrier: c.toUpperCase(), date: null });
+                    } else {
+                        sourceDates.push({ carrier: c.toUpperCase(), date: null });
                     }
-                } else {
-                    sourceDates.push({ carrier: c.toUpperCase(), date: null });
                 }
             });
 
@@ -1874,6 +1877,12 @@
                     const carrier = categorizePdf(text); 
                     if (carrier === 'unknown') { alert(`Could not determine carrier for file: ${file.name}`); continue; } 
                     
+                    // v102: CLEAN SLATE WIPE (Kills Ghost Data)
+                    appState[carrier].fileDate = '';
+                    appState[carrier].storeNumber = '';
+                    appState[carrier].consolidatedList = [];
+                    appState[carrier].autoHidden =[];
+                    
                     // Date Extraction
                     const dateMatch = text.match(/Date:\s*(.*?)(?=\s+Store)/);
                     if (dateMatch && dateMatch[1]) {
@@ -1900,31 +1909,7 @@
 
                     const statusSection = document.getElementById(`${carrier}-status`); 
                     statusSection.querySelector('.status-filename').textContent = file.name; 
-                    
-                    const warningBox = statusSection.querySelector('.status-warning');
-                    warningBox.innerHTML = '';
-                    warningBox.className = 'status-warning';
-                    
-                    if (appState[carrier].fileDate) {
-                        try {
-                            const datePart = appState[carrier].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
-                            if (datePart) {
-                                const fileTime = new Date(datePart[0]).getTime();
-                                const nowTime = Date.now();
-                                const hoursOld = (nowTime - fileTime) / (1000 * 60 * 60);
-                                
-                                if (hoursOld >= 8 || new Date(fileTime).getDate() !== new Date(nowTime).getDate()) {
-                                    warningBox.innerHTML = `<svg style="width:14px;height:14px;fill:#d93025;" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> File outdated`;
-                                    warningBox.classList.add('outdated');
-                                } else if (hoursOld >= 4) {
-                                    const displayHours = Math.floor(hoursOld);
-                                    warningBox.innerHTML = `<svg style="width:14px;height:14px;fill:#606770;" viewBox="0 0 24 24"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg> File is ${displayHours}hr old`;
-                                }
-                            }
-                        } catch(e) { console.warn("Date parsing failed", e); }
-                    }
-                    
-                    statusSection.style.display = 'flex'; 
+                    statusSection.style.display = 'block'; 
                     
                     // v47: Check for watches
                     const fileHasWatches = postFilterList.some(item => 
@@ -1960,6 +1945,27 @@
                 wearablesLabel.textContent = "Show wearables (not applicable)";
                 wearablesToggle.parentElement.classList.add('disabled');
             }
+
+            // v102: Global File Age Check
+            let hasOutdatedFile = false;['att', 'vzw', 'tmo'].forEach(c => {
+                if (appState[c].consolidatedList.length > 0 && appState[c].fileDate) {
+                    try {
+                        const datePart = appState[c].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
+                        if (datePart) {
+                            const fileTime = new Date(datePart[0]).getTime();
+                            const nowTime = Date.now();
+                            const hoursOld = (nowTime - fileTime) / (1000 * 60 * 60);
+                            // Flag if 4+ hours old OR from a previous calendar day
+                            if (hoursOld >= 4 || new Date(fileTime).getDate() !== new Date(nowTime).getDate()) {
+                                hasOutdatedFile = true;
+                            }
+                        }
+                    } catch(e) {}
+                }
+            });
+            
+            const warningEl = document.getElementById('global-outdated-warning');
+            if (warningEl) warningEl.style.display = hasOutdatedFile ? 'flex' : 'none';
 
             uploadArea.querySelector('p').textContent = 'upload files'; 
         };
