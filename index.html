@@ -105,16 +105,21 @@
         #upload-input { display: none; }
 
         .status-section {
-            display: none;
-            padding: 10px;
+            display: none; /* Flex when visible */
+            padding: 10px 15px;
             border: 1px solid #dddfe2;
             border-radius: 6px;
             margin-bottom: 10px;
-            text-align: left;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .status-text { font-weight: 600; }
+        .status-left { display: flex; align-items: center; text-align: left; }
+        .status-text { font-weight: 600; color: #1c1e21; }
         .status-filename { font-weight: normal; font-style: italic; color: #606770; margin-left: 8px; }
+        
+        .status-warning { font-size: 0.85em; color: #606770; display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        .status-warning.outdated { color: #d93025; }
         
         .toggles-grid {
             display: grid;
@@ -310,8 +315,8 @@
 <body>
 
     <div id="version-wrapper">
-        <span id="version-text">Loading...</span>
         <span id="status-icon" title="Offline Mode">❌☁</span>
+        <span id="version-text" style="font-size: 0.5em; margin-top: 3px; opacity: 0.7;">Loading...</span>
     </div>
 
     <!-- v48: Split Layout Wrapper -->
@@ -326,9 +331,9 @@
             </div>
 
             <div id="status-container">
-                <div class="status-section" id="att-status"><div><span class="status-text">AT&T:</span><span class="status-filename"></span></div></div>
-                <div class="status-section" id="vzw-status"><div><span class="status-text">Verizon:</span><span class="status-filename"></span></div></div>
-                <div class="status-section" id="tmo-status"><div><span class="status-text">T-Mobile:</span><span class="status-filename"></span></div></div>
+                <div class="status-section" id="att-status"><div class="status-left"><span class="status-text">AT&T:</span><span class="status-filename"></span></div><div class="status-warning"></div></div>
+                <div class="status-section" id="vzw-status"><div class="status-left"><span class="status-text">Verizon:</span><span class="status-filename"></span></div><div class="status-warning"></div></div>
+                <div class="status-section" id="tmo-status"><div class="status-left"><span class="status-text">T-Mobile:</span><span class="status-filename"></span></div><div class="status-warning"></div></div>
             </div>
 
             <div class="toggles-grid">
@@ -508,14 +513,13 @@
     </div> <!-- End main-wrapper -->
 
     <!-- Modals are empty here, populated by script -->
-    <div id="preview-modal" class="modal-container"></div>
     <div id="emphasis-modal" class="modal-container"></div>
     <div id="dev-mode-modal" class="modal-container"></div>
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'RC 3';
+        const APP_VERSION = 'v100';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = `Optimizer (${APP_VERSION})`;
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -986,43 +990,15 @@
         const copyLogBtn = document.getElementById('copy-log-btn');
 
         // --- DYNAMIC HTML INJECTION ---
-        document.getElementById('preview-modal').innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
-                    <h2></h2><span class="close-btn" id="preview-close-btn">&times;</span>
-                </div>
-                <div class="modal-body" style="padding-top: 0;">
-                    <div style="text-align: left; margin-bottom: 10px; color: #333; padding-left: 20px; padding-right: 20px;">
-                        <div id="print-help-toggle" style="color: #1877f2; text-decoration: underline; cursor: pointer; font-weight: 600; display: flex; align-items: center; font-size: 0.9em; margin-bottom: 5px;">
-                            <svg style="width: 16px; height: 16px; fill: #1877f2; margin-right: 5px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
-                            Print button not working?
-                        </div>
-                        <ul id="print-help-content" style="display: none; margin: 5px 0 10px 0; padding-left: 20px; font-size: 0.85em; color: #606770;">
-                            <li>If the print button isn't working, right click the PDF preview below and click print. If there is currently no PDF preview showing, please try optimizer on another Walmart computer instead.</li>
-                            <br>
-                            </ul>
-                    </div>
-                    <iframe id="pdf-preview-iframe" frameborder="0"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <button id="print-btn">Print</button>
-                </div>
-            </div>`;
         document.getElementById('emphasis-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 id="emphasis-modal-title">Highlight Inventory</h2><span class="close-btn" id="emphasis-close-btn">&times;</span></div><div class="modal-body"><div class="emphasis-header"><div class="emphasis-header-unhide" id="unhide-all-btn" title="Unhide All">${SHOW_ICON_SVG}</div><div class="emphasis-header-hide"></div><div class="emphasis-header-partial"><input type="checkbox" id="master-partial-checkbox" title="Select/Deselect All Partial"></div><div class="emphasis-header-full"><input type="checkbox" id="master-full-checkbox" title="Select/Deselect All Full"></div><div class="emphasis-header-text">(Highlight partial/full)</div></div><div id="emphasis-list-container"></div></div><div class="modal-footer"><button id="emphasis-done-btn">Done</button></div></div>`;
         document.getElementById('dev-mode-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2>Dev Mode</h2><span class="close-btn" id="dev-mode-close-btn">&times;</span></div><div class="modal-body"><div id="dev-mode-text"><p><strong>developer mode activated lol</strong></p><p>(this doesn't do anything)</p></div></div></div>`;
         
         // --- DYNAMIC UI ELEMENT SELECTORS ---
-        const previewModal = document.getElementById('preview-modal');
         const emphasisModal = document.getElementById('emphasis-modal');
         const devModeModal = document.getElementById('dev-mode-modal');
-        const iframe = document.getElementById('pdf-preview-iframe');
-        const previewCloseBtn = document.getElementById('preview-close-btn');
         const emphasisCloseBtn = document.getElementById('emphasis-close-btn');
         const emphasisDoneBtn = document.getElementById('emphasis-done-btn');
         const devModeCloseBtn = document.getElementById('dev-mode-close-btn');
-        const printHelpToggle = document.getElementById('print-help-toggle');
-        const printHelpContent = document.getElementById('print-help-content');
-        const printBtn = document.getElementById('print-btn');
         const unhideAllBtn = document.getElementById('unhide-all-btn');
 
         // --- CORE LOGIC & HELPER FUNCTIONS ---
@@ -1924,7 +1900,31 @@
 
                     const statusSection = document.getElementById(`${carrier}-status`); 
                     statusSection.querySelector('.status-filename').textContent = file.name; 
-                    statusSection.style.display = 'block'; 
+                    
+                    const warningBox = statusSection.querySelector('.status-warning');
+                    warningBox.innerHTML = '';
+                    warningBox.className = 'status-warning';
+                    
+                    if (appState[carrier].fileDate) {
+                        try {
+                            const datePart = appState[carrier].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
+                            if (datePart) {
+                                const fileTime = new Date(datePart[0]).getTime();
+                                const nowTime = Date.now();
+                                const hoursOld = (nowTime - fileTime) / (1000 * 60 * 60);
+                                
+                                if (hoursOld >= 8 || new Date(fileTime).getDate() !== new Date(nowTime).getDate()) {
+                                    warningBox.innerHTML = `<svg style="width:14px;height:14px;fill:#d93025;" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> File outdated`;
+                                    warningBox.classList.add('outdated');
+                                } else if (hoursOld >= 4) {
+                                    const displayHours = Math.floor(hoursOld);
+                                    warningBox.innerHTML = `<svg style="width:14px;height:14px;fill:#606770;" viewBox="0 0 24 24"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg> File is ${displayHours}hr old`;
+                                }
+                            }
+                        } catch(e) { console.warn("Date parsing failed", e); }
+                    }
+                    
+                    statusSection.style.display = 'flex'; 
                     
                     // v47: Check for watches
                     const fileHasWatches = postFilterList.some(item => 
@@ -1991,18 +1991,39 @@
         });
 
         // --- ATTACH EVENT LISTENERS ---
-        let currentPdfBlobUri = null; // Stores the secure blob for printing/downloading
-
         highlightBtn.addEventListener('click', openEmphasisModal);
         
         processBtn.addEventListener('click', () => { 
-            const processedData = prepareDataForDisplay(); 
-            const comments = commentsInput.value; 
-            const pdfOutput = generateFinalPdf(processedData, comments); 
-            
-            iframe.src = pdfOutput.dataUri; 
-            currentPdfBlobUri = pdfOutput.blobUri;
-            previewModal.style.display = 'flex'; 
+            try {
+                const processedData = prepareDataForDisplay(); 
+                const comments = commentsInput.value; 
+                const pdfOutput = generateFinalPdf(processedData, comments); 
+                const blobUri = pdfOutput.blobUri;
+                
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                    window.open(blobUri, '_blank');
+                } else {
+                    const printFrame = document.createElement('iframe');
+                    printFrame.style.display = 'none';
+                    printFrame.src = blobUri;
+                    document.body.appendChild(printFrame);
+                    
+                    printFrame.onload = function() {
+                        try { 
+                            printFrame.contentWindow.print(); 
+                        } catch (e) { 
+                            window.open(blobUri, '_blank'); 
+                        }
+                        // Cleanup invisible frame after 5 seconds
+                        setTimeout(() => document.body.removeChild(printFrame), 5000);
+                    };
+                }
+            } catch (err) {
+                debugLog(`❌ CRASH: ${err.message}`, "sys");
+                alert("Failed to generate PDF. Check Dev Console.");
+            }
         });
         
         uploadArea.addEventListener('click', () => uploadInput.click());
@@ -2037,44 +2058,11 @@
         });
         const legacyCopy = (text) => { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; textArea.style.top = 0; textArea.style.left = 0; textArea.style.opacity = 0; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { const successful = document.execCommand('copy'); if (!successful) { alert('Failed to copy log.'); } } catch (err) { alert('Failed to copy log.'); } document.body.removeChild(textArea); };
         
-        previewCloseBtn.addEventListener('click', () => previewModal.style.display = 'none');
         emphasisCloseBtn.addEventListener('click', () => emphasisModal.style.display = 'none');
         emphasisDoneBtn.addEventListener('click', () => emphasisModal.style.display = 'none');
         devModeCloseBtn.addEventListener('click', () => { if (devModalCloseable.button) devModeModal.style.display = 'none'; });
-        window.addEventListener('click', (event) => { if (event.target == previewModal) previewModal.style.display = 'none'; if (event.target == emphasisModal) emphasisModal.style.display = 'none'; if (event.target == devModeModal && devModalCloseable.backdrop) devModeModal.style.display = 'none'; });
-        
-        printHelpToggle.addEventListener('click', () => {
-            printHelpContent.style.display = printHelpContent.style.display === 'none' ? 'block' : 'none';
-        });
+        window.addEventListener('click', (event) => { if (event.target == emphasisModal) emphasisModal.style.display = 'none'; if (event.target == devModeModal && devModalCloseable.backdrop) devModeModal.style.display = 'none'; });
 
-        printBtn.addEventListener('click', () => {
-            if (!currentPdfBlobUri) return;
-            
-            // Mobile Detection: Mobile browsers silently ignore hidden iframe print commands.
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                // Mobile Fallback: Open in new tab for native printing
-                window.open(currentPdfBlobUri, '_blank');
-            } else {
-                // Desktop: Hidden iframe for direct print dialog
-                const printFrame = document.createElement('iframe');
-                printFrame.style.display = 'none';
-                printFrame.src = currentPdfBlobUri;
-                document.body.appendChild(printFrame);
-                
-                printFrame.onload = function() {
-                    try { 
-                        printFrame.contentWindow.print(); 
-                    } catch (e) { 
-                        window.open(currentPdfBlobUri, '_blank'); 
-                    }
-                    // Cleanup
-                    setTimeout(() => document.body.removeChild(printFrame), 5000);
-                };
-            }
-        });
-        
         // v48 Persistence Debug: Added logging to the click listener
         emphasisModal.addEventListener('click', (e) => { const target = e.target.closest('.emphasis-item-hide'); if (!target) return; const { key, carrier } = target.dataset; const state = appState[carrier].emphasis.get(key) || { partial: false, full: false, hidden: false }; 
         
