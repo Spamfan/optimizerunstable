@@ -519,7 +519,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v102';
+        const APP_VERSION = 'v105';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -1365,84 +1365,86 @@
             // Line 2
             const sourceDates = [];
             ['att', 'vzw', 'tmo'].forEach(c => {
-                // v102: Only process dates for carriers that actually have inventory loaded
-                if (state[c] && state[c].consolidatedList && state[c].consolidatedList.length > 0) {
+                // v105: Look at raw appState to avoid missing dates when phones are isolated to Apple
+                if (appState[c] && appState[c].consolidatedList && appState[c].consolidatedList.length > 0) {
                     const rawDate = appState[c].fileDate;
                     if (rawDate) {
                         try {
-                            const datePart = rawDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
+                            // v105: Tolerant Regex (allows 2-digit years and missing seconds)
+                            const datePart = rawDate.match(/(\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}:\d{2}(:\d{2})?\s+[AP]M)/i);
                             if (datePart) {
                                 const dObj = new Date(datePart[0]);
                                 sourceDates.push({ carrier: c.toUpperCase(), date: dObj });
-                            } else {
-                                sourceDates.push({ carrier: c.toUpperCase(), date: null }); 
                             }
-                        } catch (e) {
-                             sourceDates.push({ carrier: c.toUpperCase(), date: null });
-                        }
-                    } else {
-                        sourceDates.push({ carrier: c.toUpperCase(), date: null });
+                        } catch (e) {}
                     }
                 }
             });
 
-            sourceDates.sort((a, b) => (a.date || 0) - (b.date || 0));
+            sourceDates.sort((a, b) => a.date - b.date);
 
-            let groups = [];
-            if (sourceDates.length > 0) {
-                let currentGroup = { anchor: sourceDates[0].date, startTime: sourceDates[0].date, endTime: sourceDates[0].date, carriers: [sourceDates[0].carrier] };
-                
-                for (let i = 1; i < sourceDates.length; i++) {
-                    const item = sourceDates[i];
-                    if (item.date && currentGroup.anchor && (item.date - currentGroup.anchor <= 30 * 60 * 1000)) {
-                         currentGroup.carriers.push(item.carrier);
-                         currentGroup.endTime = item.date;
-                    } else {
-                         groups.push(currentGroup);
-                         currentGroup = { anchor: item.date, startTime: item.date, endTime: item.date, carriers: [item.carrier] };
-                    }
-                }
-                groups.push(currentGroup);
-            }
+            // v105: 2D Day/Time Mapping Algorithm
+            const daysMap = new Map();
+            sourceDates.forEach(item => {
+                if (!item.date) return;
+                const dayKey = `${item.date.getMonth() + 1}/${item.date.getDate()}`;
+                if (!daysMap.has(dayKey)) daysMap.set(dayKey,[]);
+                daysMap.get(dayKey).push(item);
+            });
 
             let sourcesContent = "";
+            const dayKeys = Array.from(daysMap.keys());
             const formatTime = (d) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase().replace(' ', '');
             
-            const formatCompactRange = (start, end) => {
-                const sH = start.getHours();
-                const sM = start.getMinutes();
-                const eH = end.getHours();
-                const eM = end.getMinutes();
-                const sAmPm = sH >= 12 ? 'pm' : 'am';
-                const eAmPm = eH >= 12 ? 'pm' : 'am';
-                const sH12 = sH % 12 || 12;
+            dayKeys.forEach((dayKey, dayIndex) => {
+                const dayItems = daysMap.get(dayKey);
+                let timeGroups = [];
+                let currentGroup = { start: dayItems[0].date, end: dayItems[0].date, carriers: [dayItems[0].carrier] };
                 
-                if (sH === eH) {
-                    const sMStr = sM.toString().padStart(2, '0');
-                    const eMStr = eM.toString().padStart(2, '0');
-                    return `${sH12}:${sMStr}-${eMStr}${sAmPm}`;
-                } else {
-                    return `${formatTime(start)}-${formatTime(end)}`;
+                for (let i = 1; i < dayItems.length; i++) {
+                    const item = dayItems[i];
+                    // 30 minute window
+                    if (item.date - currentGroup.start <= 30 * 60 * 1000) {
+                        currentGroup.carriers.push(item.carrier);
+                        currentGroup.end = item.date;
+                    } else {
+                        timeGroups.push(currentGroup);
+                        currentGroup = { start: item.date, end: item.date, carriers:[item.carrier] };
+                    }
                 }
-            };
-
-            groups.forEach((g, i) => {
-                let timeLabel = "N/A";
-                if (g.startTime) {
-                     const datePart = g.startTime.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
-                     const startStr = formatTime(g.startTime);
-                     const endStr = formatTime(g.endTime);
-                     
-                     if (startStr === endStr) {
-                        timeLabel = (i === 0) ? `${datePart} ${startStr}` : `${startStr}`;
-                     } else {
-                        const rangeStr = formatCompactRange(g.startTime, g.endTime);
-                        timeLabel = (i === 0) ? `${datePart} ${rangeStr}` : `${rangeStr}`;
-                     }
-                }
-                sourcesContent += `${timeLabel} (${g.carriers.join(", ")})`;
-                if (i < groups.length - 1) sourcesContent += ", ";
+                timeGroups.push(currentGroup);
+                
+                let dayString = `${dayKey} `;
+                timeGroups.forEach((g, tIndex) => {
+                    const startStr = formatTime(g.start);
+                    const endStr = formatTime(g.end);
+                    let timeLabel = startStr;
+                    
+                    if (startStr !== endStr) {
+                        const sH = g.start.getHours();
+                        const eH = g.end.getHours();
+                        const sAmPm = sH >= 12 ? 'pm' : 'am';
+                        const eAmPm = eH >= 12 ? 'pm' : 'am';
+                        
+                        if (sH === eH && sAmPm === eAmPm) {
+                            const sH12 = sH % 12 || 12;
+                            const sMStr = g.start.getMinutes().toString().padStart(2, '0');
+                            const eMStr = g.end.getMinutes().toString().padStart(2, '0');
+                            timeLabel = `${sH12}:${sMStr}-${eMStr}${sAmPm}`;
+                        } else {
+                            timeLabel = `${startStr}-${endStr}`;
+                        }
+                    }
+                    
+                    dayString += `${timeLabel} (${g.carriers.join(", ")})`;
+                    if (tIndex < timeGroups.length - 1) dayString += ", ";
+                });
+                
+                sourcesContent += dayString;
+                if (dayIndex < dayKeys.length - 1) sourcesContent += ", ";
             });
+            
+            if (sourcesContent === "") sourcesContent = "N/A";
 
             let line2X = sideMargin;
             doc.setFont("helvetica", "bold");
@@ -1946,11 +1948,11 @@
                 wearablesToggle.parentElement.classList.add('disabled');
             }
 
-            // v102: Global File Age Check
+            // v105: Global File Age Check
             let hasOutdatedFile = false;['att', 'vzw', 'tmo'].forEach(c => {
                 if (appState[c].consolidatedList.length > 0 && appState[c].fileDate) {
                     try {
-                        const datePart = appState[c].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+[AP]M)/i);
+                        const datePart = appState[c].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}:\d{2}(:\d{2})?\s+[AP]M)/i);
                         if (datePart) {
                             const fileTime = new Date(datePart[0]).getTime();
                             const nowTime = Date.now();
