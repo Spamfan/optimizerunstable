@@ -519,7 +519,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v105';
+        const APP_VERSION = 'v106';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -1948,7 +1948,7 @@
                 wearablesToggle.parentElement.classList.add('disabled');
             }
 
-            // v105: Global File Age Check
+            // v106: Global File Age Check (Absolute Math)
             let hasOutdatedFile = false;['att', 'vzw', 'tmo'].forEach(c => {
                 if (appState[c].consolidatedList.length > 0 && appState[c].fileDate) {
                     try {
@@ -1957,8 +1957,8 @@
                             const fileTime = new Date(datePart[0]).getTime();
                             const nowTime = Date.now();
                             const hoursOld = (nowTime - fileTime) / (1000 * 60 * 60);
-                            // Flag if 4+ hours old OR from a previous calendar day
-                            if (hoursOld >= 4 || new Date(fileTime).getDate() !== new Date(nowTime).getDate()) {
+                            // Flag if file is 4+ hours old (or 4+ hours in the future due to bad clocks)
+                            if (Math.abs(hoursOld) >= 4) {
                                 hasOutdatedFile = true;
                             }
                         }
@@ -1970,6 +1970,9 @@
             if (warningEl) warningEl.style.display = hasOutdatedFile ? 'flex' : 'none';
 
             uploadArea.querySelector('p').textContent = 'upload files'; 
+            
+            // v106: Clear input value so re-uploading the same filename triggers the change event
+            document.getElementById('upload-input').value = '';
         };
         
         const openEmphasisModal = () => { 
