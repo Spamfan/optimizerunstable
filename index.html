@@ -15,6 +15,7 @@
             background-color: #f0f2f5;
             margin: 0;
             padding: 20px;
+            padding-bottom: 70px;
             box-sizing: border-box;
             min-height: 100vh;
         }
@@ -101,7 +102,8 @@
             background-color: #f0f8ff;
         }
         
-        #upload-area p { margin: 0; font-weight: 600; color: #606770; }
+        #upload-area p { margin: 0; font-weight: 600; color: #606770; transition: color 0.2s; }
+        #upload-area p:hover, #upload-area p:active { text-decoration: underline; color: #1877f2; }
         #upload-input { display: none; }
 
         .status-section {
@@ -288,6 +290,31 @@
         #print-btn { display: inline-block; background-color: #1877f2; color: white; }
         .modal-footer button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
 
+        /* --- V107 FOOTER & SETTINGS --- */
+        #more-settings-btn {
+            text-align: left; color: #606770; cursor: pointer; font-weight: bold; margin-bottom: 20px; font-size: 0.95em; user-select: none;
+        }
+        #more-settings-btn:hover { color: #1c1e21; }
+        
+        #app-footer {
+            position: fixed; bottom: 0; left: 0; width: 100%; background-color: #909090; padding: 12px 0;
+            display: flex; justify-content: space-around; align-items: center; z-index: 2000;
+        }
+        .footer-link-container { position: relative; display: flex; justify-content: center; }
+        .footer-link {
+            color: #000; font-weight: bold; text-decoration: underline; cursor: pointer; font-size: 1.1em; user-select: none;
+        }
+        .footer-popover {
+            position: absolute; bottom: 40px; width: 260px; background-color: #d3d3d3; color: #000;
+            padding: 15px; border-radius: 4px; font-size: 0.85em; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0; pointer-events: none; transition: opacity 0.2s; text-align: left; line-height: 1.4;
+        }
+        .footer-popover.active { opacity: 1; pointer-events: auto; }
+        .footer-popover::after {
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -10px;
+            border-width: 10px; border-style: solid; border-color: #d3d3d3 transparent transparent transparent;
+        }
+
         /* --- NEW TUTORIAL STYLES --- */
         .tutorial-container { text-align: left; box-sizing: border-box; width: 100%; margin-bottom: 15px; }
         .main-header { font-size: 1.1em; font-weight: bold; user-select: none; padding-bottom: 0.5rem; border-bottom: 2px solid #eee; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #606770; }
@@ -311,7 +338,7 @@
 
     <div id="version-wrapper">
         <span id="status-icon" title="Offline Mode">❌☁</span>
-        <span id="version-text" style="font-size: 0.5em; margin-top: 3px; opacity: 0.7;">Loading...</span>
+        <span id="version-text" style="opacity: 0.7;">Loading...</span>
     </div>
 
     <!-- v48: Split Layout Wrapper -->
@@ -322,7 +349,7 @@
             
             <div id="upload-area">
                 <input type="file" id="upload-input" multiple accept=".pdf">
-                <p style="text-decoration: underline;">upload files</p>
+                <p>Click here to upload files</p>
             </div>
 
             <div id="global-outdated-warning" style="display: none; color: #d93025; font-weight: 600; font-size: 0.9em; margin-bottom: 15px; align-items: center; justify-content: center; gap: 8px;">
@@ -336,41 +363,45 @@
                 <div class="status-section" id="tmo-status"><div><span class="status-text">T-Mobile:</span><span class="status-filename"></span></div></div>
             </div>
 
-            <div class="toggles-grid">
-                <div class="toggle-option">
-                    <input type="checkbox" id="isolate-iphones">
-                    <label for="isolate-iphones">Isolate Apple Devices</label>
-                </div>
-                <!-- v56: Reverted to simple structure for alignment -->
-                <div class="toggle-option">
-                    <input type="checkbox" id="show-edlps-toggle">
-                    <label for="show-edlps-toggle">Show likely EDLPs</label>
-                </div>
-                <div class="toggle-option">
-                    <input type="checkbox" id="show-comments-toggle">
-                    <label for="show-comments-toggle">Add comments to printout</label>
-                </div>
-                <div class="toggle-option" id="wearables-wrapper">
-                    <input type="checkbox" id="show-wearables-toggle" checked disabled>
-                    <label for="show-wearables-toggle" id="wearables-label">Show wearables (not applicable)</label>
-                </div>
-            </div>
-            
-            <!-- v48: Comments moved above buttons -->
-            <div class="control-section" id="comments-section">
-                <textarea id="comments" placeholder="Add your print out comments here."></textarea>
-                <p id="konami-message">Also try Tank Tycoon!</p>
-            </div>
-
             <div class="action-buttons">
-                <button id="highlight-btn">Customize</button>
+                <button id="highlight-btn">Customize Entries</button>
                 <button id="process-btn">Preview or Print</button>
             </div>
+            
+            <div id="more-settings-btn">Show more settings ▼</div>
 
-            <div id="dev-options-wrapper">
-                <div class="toggle-option">
-                    <input type="checkbox" id="dev-console-toggle">
-                    <label for="dev-console-toggle">Show developer options</label>
+            <div id="advanced-settings-wrapper" style="display: none;">
+                <div class="toggles-grid">
+                    <div class="toggle-option">
+                        <input type="checkbox" id="isolate-iphones" checked>
+                        <label for="isolate-iphones">Isolate Apple Devices</label>
+                    </div>
+                    <!-- v56: Reverted to simple structure for alignment -->
+                    <div class="toggle-option">
+                        <input type="checkbox" id="show-edlps-toggle" checked>
+                        <label for="show-edlps-toggle">Show likely EDLPs</label>
+                    </div>
+                    <div class="toggle-option">
+                        <input type="checkbox" id="show-comments-toggle">
+                        <label for="show-comments-toggle">Add comments to printout</label>
+                    </div>
+                    <div class="toggle-option" id="wearables-wrapper">
+                        <input type="checkbox" id="show-wearables-toggle" checked disabled>
+                        <label for="show-wearables-toggle" id="wearables-label">Show wearables (not applicable)</label>
+                    </div>
+                </div>
+                
+                <!-- v48: Comments moved above buttons -->
+                <div class="control-section" id="comments-section">
+                    <textarea id="comments" placeholder="Add your print out comments here."></textarea>
+                    <p id="konami-message">Also try Tank Tycoon!</p>
+                </div>
+
+                <div id="dev-options-wrapper">
+                    <div class="toggle-option">
+                        <input type="checkbox" id="dev-console-toggle">
+                        <label for="dev-console-toggle">Show developer options</label>
+                    </div>
                 </div>
             </div>
 
@@ -512,6 +543,27 @@
 
     </div> <!-- End main-wrapper -->
 
+    <footer id="app-footer">
+        <div class="footer-link-container">
+            <div class="footer-link" data-target="popover-about">About</div>
+            <div class="footer-popover" id="popover-about">
+                Optimizer is a secure application that streamlines Walmart Wireless inventory reports. OSLRS workers can reach out to Optimizer's development team by private messaging @Abraham Gable on Microsoft teams or by emailing AbrahamJohnGable@gmail.com.
+            </div>
+        </div>
+        <div class="footer-link-container">
+            <div class="footer-link" data-target="popover-terms">Terms of Use</div>
+            <div class="footer-popover" id="popover-terms">
+                Optimizer is provided on an "as-is" basis and is not affiliated with, endorsed by, or representative of Walmart or OSL Retail Services. Users assume all risk and liability for any operational errors or resulting consequences arising from the use of this application.
+            </div>
+        </div>
+        <div class="footer-link-container">
+            <div class="footer-link" data-target="popover-privacy">Privacy Policy</div>
+            <div class="footer-popover" id="popover-privacy">
+                This application utilizes local browser storage solely for persistent user preferences; this information remains strictly client-side and is never transmitted to external servers. Optimizer does not collect, share, or track any data, as all PDF optimization functions are performed exclusively on the local device.
+            </div>
+        </div>
+    </footer>
+
     <!-- Modals are empty here, populated by script -->
     <div id="emphasis-modal" class="modal-container"></div>
     <div id="dev-mode-modal" class="modal-container"></div>
@@ -519,7 +571,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v106';
+        const APP_VERSION = 'v108';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -941,11 +993,13 @@
 
                 if (savedSettings) {
                     const settings = JSON.parse(savedSettings);
-                    isolateIphonesCheckbox.checked = settings.isolate || false;
+                    isolateIphonesCheckbox.checked = settings.isolate !== undefined ? settings.isolate : true;
                     
                     // v35 Sticky Toggle
                     if (settings.showEdlps !== undefined) {
                         showEdlpsToggle.checked = settings.showEdlps;
+                    } else {
+                        showEdlpsToggle.checked = true;
                     }
 
                     // v47 Sticky Toggles
@@ -1534,7 +1588,7 @@
                     if (carrier === 'apple') {
                         const curEdlpX = xPos + 30;
                         const curDetailsX = xPos + 85;
-                        doc.text("EDLPs", curEdlpX, cursorY);
+                        doc.text("Likely EDLPs", curEdlpX, cursorY);
                         cursorY += lineHeight;
                         doc.text("ITEM", xPos, cursorY);
                         doc.text("ATT, VZW, TMO (dp + /mo)", curEdlpX, cursorY);
@@ -1544,15 +1598,19 @@
                         const curEdlpX = xPos + 30; 
                         const curDetailsX = xPos + (isolateIphonesCheckbox.checked ? 85 : 65);
                         doc.text("ITEM", xPos, cursorY);
-                        doc.text("EDLP (dp + /mo)", curEdlpX, cursorY);
+                        doc.text("Likely", curEdlpX, cursorY);
                         doc.text("QTY", curDetailsX, cursorY);
+                        cursorY += lineHeight;
+                        doc.text("EDLPs (dp + /mo)", curEdlpX, cursorY);
                         cursorY += lineHeight;
                     } else {
                         const curEdlpX = xPos + 28;
                         const curDetailsX = xPos + 38; 
                         doc.text("ITEM", xPos, cursorY);
-                        doc.text("EDLP", curEdlpX, cursorY);
+                        doc.text("Likely", curEdlpX, cursorY);
                         doc.text("QTY", curDetailsX, cursorY); 
+                        cursorY += lineHeight;
+                        doc.text("EDLPs", curEdlpX, cursorY);
                         cursorY += lineHeight;
                     }
                 } else {
@@ -2127,6 +2185,50 @@
         if (mainSteps && mainSteps.classList.contains('open')) {
             mainSteps.style.maxHeight = mainSteps.scrollHeight + 'px';
         }
+
+        // v107: Advanced Settings Toggle
+        const moreSettingsBtn = document.getElementById('more-settings-btn');
+        const advancedSettingsWrapper = document.getElementById('advanced-settings-wrapper');
+        if (moreSettingsBtn && advancedSettingsWrapper) {
+            moreSettingsBtn.addEventListener('click', () => {
+                if (advancedSettingsWrapper.style.display === 'none') {
+                    advancedSettingsWrapper.style.display = 'block';
+                    moreSettingsBtn.textContent = 'Show less settings ▲';
+                } else {
+                    advancedSettingsWrapper.style.display = 'none';
+                    moreSettingsBtn.textContent = 'Show more settings ▼';
+                }
+            });
+        }
+
+        // v107: Footer Popovers Logic
+        const footerLinks = document.querySelectorAll('.footer-link');
+        const footerPopovers = document.querySelectorAll('.footer-popover');
+        
+        footerLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent document click from immediately closing
+                const targetId = link.getAttribute('data-target');
+                const targetPopover = document.getElementById(targetId);
+                
+                // Close others
+                footerPopovers.forEach(p => {
+                    if (p !== targetPopover) p.classList.remove('active');
+                });
+                
+                // Toggle clicked
+                if (targetPopover) {
+                    targetPopover.classList.toggle('active');
+                }
+            });
+        });
+
+        // Click outside to close popovers
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.footer-popover') && !e.target.closest('.footer-link')) {
+                footerPopovers.forEach(p => p.classList.remove('active'));
+            }
+        });
 
         // Initial load of settings from localStorage
         loadSettings();
