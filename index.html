@@ -1584,36 +1584,36 @@
 
                 // Legend
                 if (showEdlps) {
-                    doc.setFontSize(6).setFont("helvetica", "bold");
-                    if (carrier === 'apple') {
-                        const curEdlpX = xPos + 30;
-                        const curDetailsX = xPos + 85;
-                        doc.text("Likely EDLPs", curEdlpX, cursorY);
-                        cursorY += lineHeight;
-                        doc.text("ITEM", xPos, cursorY);
-                        doc.text("ATT, VZW, TMO (dp + /mo)", curEdlpX, cursorY);
-                        doc.text("QTY", curDetailsX, cursorY);
-                        cursorY += lineHeight;
-                    } else if (carrier === 'tmo') {
-                        const curEdlpX = xPos + 30; 
-                        const curDetailsX = xPos + (isolateIphonesCheckbox.checked ? 85 : 65);
-                        doc.text("ITEM", xPos, cursorY);
-                        doc.text("Likely", curEdlpX, cursorY);
-                        doc.text("QTY", curDetailsX, cursorY);
-                        cursorY += lineHeight;
-                        doc.text("EDLPs (dp + /mo)", curEdlpX, cursorY);
-                        cursorY += lineHeight;
+                        doc.setFontSize(6).setFont("helvetica", "bold");
+                        if (carrier === 'apple') {
+                            const curEdlpX = xPos + 30;
+                            const curDetailsX = xPos + 85;
+                            doc.text("Likely EDLPs", curEdlpX, cursorY);
+                            cursorY += lineHeight;
+                            doc.text("ITEM", xPos, cursorY);
+                            doc.text("ATT, VZW, TMO (dp + /mo)", curEdlpX, cursorY);
+                            doc.text("QTY", curDetailsX, cursorY);
+                            cursorY += lineHeight;
+                        } else if (carrier === 'tmo') {
+                            const curEdlpX = xPos + 30; 
+                            const curDetailsX = xPos + (isolateIphonesCheckbox.checked ? 85 : 65);
+                            doc.text("Likely", curEdlpX, cursorY);
+                            cursorY += lineHeight;
+                            doc.text("ITEM", xPos, cursorY);
+                            doc.text("EDLPs (dp + /mo)", curEdlpX, cursorY);
+                            doc.text("QTY", curDetailsX, cursorY);
+                            cursorY += lineHeight;
+                        } else {
+                            const curEdlpX = xPos + 28;
+                            const curDetailsX = xPos + 38; 
+                            doc.text("Likely", curEdlpX, cursorY);
+                            cursorY += lineHeight;
+                            doc.text("ITEM", xPos, cursorY);
+                            doc.text("EDLPs", curEdlpX, cursorY);
+                            doc.text("QTY", curDetailsX, cursorY); 
+                            cursorY += lineHeight;
+                        }
                     } else {
-                        const curEdlpX = xPos + 28;
-                        const curDetailsX = xPos + 38; 
-                        doc.text("ITEM", xPos, cursorY);
-                        doc.text("Likely", curEdlpX, cursorY);
-                        doc.text("QTY", curDetailsX, cursorY); 
-                        cursorY += lineHeight;
-                        doc.text("EDLPs", curEdlpX, cursorY);
-                        cursorY += lineHeight;
-                    }
-                } else {
                     doc.setFontSize(6).setFont("helvetica", "bold");
                     doc.text("ITEM", xPos, cursorY);
                     doc.text("QTY", xPos + 50, cursorY); 
