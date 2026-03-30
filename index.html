@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Optimizer</title>
     
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" href="favicon.ico">
+    
     <!-- PDF.js and jsPDF library CDNs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
@@ -411,17 +418,18 @@
                 </div>
                 <div id="main-steps" class="step-list expandable">
                     <div class="step-container">
-                        <div class="step-title">● Step 1: log into WARP and save each carrier's print as a PDF.</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step1-content')">Show me how.</div>
+                        <div class="step-title"><strong>●Step 1: On WARP, </strong> navigate to the final print screen of the carrier you want, then change the destination printer to <strong>"Save as PDF"</strong>and click save. Do this once for each carrier.</div>
+                        <div class="trigger-link" onclick="window.toggleAccordion('step1-content')">Help with getting to the print screen.</div>
                         <div id="step1-content" class="expandable">
                             <ol>
                                 <li><strong>Log into warp as normal</strong> (use + new tab button on chrome)</li>
                                 <li><strong>Go to Inventory Management > View Available Inventory.</strong></li>
                                 <li><strong>Select a postpaid carrier (AT&T, Verizon Wireless, or T-Mobile)</strong> by clicking on it from the top navigation bar. You may need to use the top bar &lt; &gt; buttons to find it first.</li>
                                 <li><strong>Make sure the “Instock” box is checked,</strong> then click More Options <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> and choose <strong>Print.</strong></li>
-                                <li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>”, then click <strong>save</strong>.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</span></li>
+                                //heading: Help with saving the PDF//
+<li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>”, then click <strong>save</strong>.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</span></li>
                                 <li><strong>Name the file after its carrier as <em>ATT.pdf</em>, <em>VZW.pdf</em>, or <em>TMO.pdf</em>.</strong> If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
-                                <li><strong>For each carrier, repeat steps 1-7 above</strong> until you have all three PDFs.</li>
+                                <li><strong>For each carrier, repeat steps 1-7 above</strong> until you have all three PDFs.</li> //end of heading//
                             </ol>
                         </div>
                     </div>
@@ -1405,7 +1413,7 @@
 
             // Line 1
             const headerText1 = `${dateStr} ${timeStr} ${storeString} Inventory Report`;
-            const headerText2 = ` - Made with Optimizer, an unofficial app by Abraham.`;
+            const headerText2 = ` - Made with Optimizer, a secure application for Walmart Wireless associates.`;
             
             doc.setFontSize(8); 
             doc.setFont("helvetica", "bold");
