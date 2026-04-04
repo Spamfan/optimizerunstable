@@ -418,114 +418,137 @@
                 </div>
                 <div id="main-steps" class="step-list expandable">
                     <div class="step-container">
-                        <div class="step-title"><strong>●Step 1: On WARP, </strong> navigate to the final print screen of the carrier you want, then change the destination printer to <strong>"Save as PDF"</strong>and click save. Do this once for each carrier.</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step1-content')">Help with getting to the print screen.</div>
+                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content')">1) Use WARP to download pdfs for today's ATT, TMO, and VZW inventory prints.</div>
                         <div id="step1-content" class="expandable">
-                            <ol>
-                                <li><strong>Log into warp as normal</strong> (use + new tab button on chrome)</li>
-                                <li><strong>Go to Inventory Management > View Available Inventory.</strong></li>
-                                <li><strong>Select a postpaid carrier (AT&T, Verizon Wireless, or T-Mobile)</strong> by clicking on it from the top navigation bar. You may need to use the top bar &lt; &gt; buttons to find it first.</li>
-                                <li><strong>Make sure the “Instock” box is checked,</strong> then click More Options <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg> and choose <strong>Print.</strong></li>
-                                //heading: Help with saving the PDF//
-<li>Change the destination printer by clicking “<strong>CKPR1</strong>” and changing it to “<strong>Save as PDF</strong>”, then click <strong>save</strong>.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</span></li>
-                                <li><strong>Name the file after its carrier as <em>ATT.pdf</em>, <em>VZW.pdf</em>, or <em>TMO.pdf</em>.</strong> If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
-                                <li><strong>For each carrier, repeat steps 1-7 above</strong> until you have all three PDFs.</li> //end of heading//
-                            </ol>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step1a-content')">Help with viewing inventory on WARP</div>
+                                <div id="step1a-content" class="expandable">
+                                    <ul>
+                                        <li>Log into warp as normal (use + new tab button on chrome)</li>
+                                        <li>Go to Inventory Management > View Available Inventory.</li>
+                                        <li>Select a postpaid carrier (AT&T, Verizon Wireless, or T-Mobile) by clicking on it from the top navigation bar. You may need to use the top bar &lt; &gt; buttons to find it first.</li>
+                                        <li>Make sure the “Instock” box is checked, then click More Options (<svg class="inline-svg" viewBox="0 0 24 24" fill="#606770"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>) and choose Print.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step1b-content')">Help with saving an inventory print as a PDF</div>
+                                <div id="step1b-content" class="expandable">
+                                    <ul>
+                                        <li>Change the destination printer by clicking “CKPR1” and changing it to “Save as PDF”, then click save.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</span></li>
+                                        <li>Name the file after its carrier as ATT.pdf, VZW.pdf, or TMO.pdf. If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
+                                        <li>Don't forget, the steps above should be repeated for each carrier (navigate to the carriers Inventory print screen then save)</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="step-container">
-                        <div class="step-title">● Step 2: upload each carrier's PDF into optimizer.</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step2-content')">Show me how.</div>
+                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step2-content')">2) Upload those PDFs here and click print.</div>
                         <div id="step2-content" class="expandable">
-                            <ul>
-                                <li><strong>Click <u>upload files</u> then select each carrier file (att.pdf, vzw.pdf, and tmo.pdf) and click open.</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;💡 <strong>TIP:</strong> You can select multiple files at once by using Ctrl+left click or by dragging left click onto the files you'd like while in the open dialogue. You can also open each one individually.</li>
-                                <div class="deep-nest-container">
-                                    <li>
-                                        <span class="badge">NEW</span>
-                                        <span class="trigger-link" style="font-weight: 700;" onclick="window.toggleAccordion('step2a-content')">Carrier files not showing in the Open dialogue?</span>
-                                        <div id="step2a-content" class="expandable">
-                                            This happens when Optimizer tries to open one directory (such as <em>mpt user mpt user</em>) instead of the directory where the carrier files are saved (usually <em>Desktop</em>). You can reassign the open dialogue to look in the right spot to show the files, optimizer will remember the correct directory.<br><br>
-                                            To reassign the open dialogue directory:
-                                            <ol>
-                                                <li>click <u>upload files</u></li>
-                                                <li>type <em>Desktop\testABC.pdf</em> into the file name field and press or open.</li>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step2a-content')">Why can't I see or upload the PDFs I made?</div>
+                                <div id="step2a-content" class="expandable">
+                                    <div style="margin-top: 5px;">This happens when WARP files are saved in one directory while Optimizer tries to find them somewhere else.</div>
+                                    <div class="deep-nest-container">
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step2a1-content')">RECOMMENDED Quickest solution: drag and drop each file from the WARP save window into optimizer.</div>
+                                        <div id="step2a1-content" class="expandable">
+                                            <ul>
+                                                <li>Keep WARP open in a separate window. If helpful, rearrange the WARP and Optimizer windows so you can see both at once.</li>
+                                                <li>In the WARP window, after saving all needed carriers, start to save any one of the carriers a second time so that all carrier PDFs you need are visible in the save dialogue.</li>
+                                                <li>With the save dialogue open from warp, click and drag each file from the warp save dialogue box into the upload files box on optimizer.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="deep-nest-container">
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step2a2-content')">Long term solution: tell optimizer and WARP to save PDFs to the same location (experimental)</div>
+                                        <div id="step2a2-content" class="expandable">
+                                            <div style="margin-top: 5px;">Note: these instructions are a work in progress and may not work on every Walmart computer. To try and To reassign Optimizer's open dialogue directory:</div>
+                                            <ul>
+                                                <li>click upload files</li>
+                                                <li>type Desktop\testABC.pdf into the file name field and click open.</li>
                                                 <li>If prompted “this file does not exist” and / or “your administrator has blocked this action,” press okay.</li>
-                                                <li>If the open dialogue doesn't close by itself, manually close it by tapping its x on the top right of the window.</li>
-                                                <li>Click <u>upload files</u> again, optimizer should now open to the correct path every time.</li>
-                                            </ol>
-                                            <em>NOTE: for this to work, the text preceding \testABC.pdf must be the same directory the carrier files are saving to. To check where they are saving, save a carrier PDF from warp and see what directory it lands in by reading it's directory above. If it isn't desktop, you can copy the directory by clicking on the file address bar and using <strong>Ctrl + c</strong>, then paste the directory into the step above.</em><br><br>
-                                            <em>Example: if carrier PDFs are saving to mpt user mpt user instead of desktop, copy that directory then put it at the beginning of the step 2 directory above, so it shows as mpt user mpt user\testABC.pdf, then continue directions as normal.</em>
+                                                <li>If the open dialogue doesn't close by itself, manually close it by clicking its x on the top right of the window.</li>
+                                                <li>Click upload files again, optimizer should now open to the correct file path every time.</li>
+                                            </ul>
+                                            <div style="margin-top: 5px;">NOTE: for this to work, the text preceding \testABC.pdf must be the same directory the carrier files are saving to. To check where they are saving, save a carrier PDF from warp and see what directory it lands in by reading it's directory above. If it isn't desktop, you can copy the directory by clicking on the file address bar and using Ctrl + c, then paste the directory into the step above.</div>
+                                            <div style="margin-top: 5px;">Example: if carrier PDFs are saving to mpt user mpt user instead of desktop, copy that directory then put it at the beginning of the step 2 directory above, so it shows as mpt user mpt user\testABC.pdf, then continue directions as normal.</div>
                                         </div>
-                                    </li>
+                                    </div>
                                 </div>
-                                <div class="deep-nest-container">
-                                    <li>
-                                        <strong>If preferred, you can instead drag and drop files into optimizer from the save dialogue on warp if WARP is open in a seperate window.</strong><br>
-                                        <span class="trigger-link" onclick="window.toggleAccordion('step2b-content')">Show me how.</span>
-                                        <div id="step2b-content" class="expandable">
-                                            To do this, keep WARP open in a separate window and begin to save a fourth (any carrier) pdf after saving the regular 3. Change window sizes so you can see both at once if easier. With the save dialogue open from warp, click and drag each file from the warp save dialogue into the <u>upload files</u> box on optimizer.
-                                        </div>
-                                    </li>
+                            </div>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step2b-content')">How to upload multiple PDFs at once</div>
+                                <div id="step2b-content" class="expandable">
+                                    <ul><li>If carrier files are visible in the Optimizer open dialogue, you can upload them all simultaneously by using Ctrl + left click on each file then clicking open, or by dragging left click across all three then clicking open.</li></ul>
                                 </div>
-                            </ul>
+                            </div>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step2c-content')">Why does my output document only say save and not print?</div>
+                                <div id="step2c-content" class="expandable">
+                                    <ul><li>This happens if the user forgets to change the destination printer back from “Save as PDF” to your store's printer, such as “CKPR1.” Simply re-select your stores printer from that drop down menu then click print.</li></ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="step-container">
-                        <div class="step-title">● Step 3: (optional) customize the list by hiding inaccurate listings</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step3-content')">Show me how.</div>
+                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step3-content')">3) Optional: customize the list by marking devices unavailable, adding comments, and more.</div>
                         <div id="step3-content" class="expandable">
-                            <ul>
-                                <li>Hide (<svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg> toggle): Use this to hide unwanted listings, such as demo-only or unlocked devices That are not sellable.</li>
-                                <li>Use the unhide all button <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> near the top to unhide all phones that were manually hidden.</li>
-                                <li>Click Done to save your customizations. The Walmart computer remembers which phones you hide, so they'll manually be hidden again the next day. You can always unhide a phone by returning to this screen.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="step-container">
-                        <div class="step-title">● Step 4: (optional) change settings like “show EDLPs” and “isolate iPhones”</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step4-content')">More info</div>
-                        <div id="step4-content" class="expandable">
-                            <ul>
-                                <li>EDLP data waits for a human to notice an installment change and manually post it to the optimizer database, so it can sometimes be inaccurate or outdated. ☁️✅ means the database is working and showing the latest reported prices, while ☁️❌ means Optimizer can't see the database, and is using a static price backup, usually only a month or so old. “Likely EDLPs” are usually accurate but aren't guaranteed, always check installment price on ESP before performing a sale.</li>
-                                <li>When <strong>isolate Apple products</strong> is turned on, Apple devices will only appear once in their own category on the inventory report, rather than repeating for each carrier.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="step-container">
-                        <div class="step-title">● Step 5: (optional) customize the list by highlighting listings you think deserve more attention</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step5-content')">More info</div>
-                        <div id="step5-content" class="expandable">
-                            <ul>
-                                <li>Partial Highlight (left checkbox): Highlights only the phone's name. (Recommended for good deals).</li>
-                                <li>Full Highlight (right checkbox): Highlights the entire row for that device. (Recommended for extra good deals).</li>
-                                <li>Master Checkboxes: Use the main checkboxes at the top of the list to toggle partial or full highlights for all inventory at once.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="step-container">
-                        <div class="step-title">● Step 6: (optional) add comments to your printout for others to read.</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step6-content')">More info</div>
-                        <div id="step6-content" class="expandable">
-                            <ul>
-                                <li>Comments are visible near the top of the printout. This can be used for something fun or helpful you want others to know that day such as “We've got this team!” or “the stylus is free on T-Mobile right now,” etc.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="step-container">
-                        <div class="step-title">● Step 7: print the combined inventory list</div>
-                        <div class="trigger-link" onclick="window.toggleAccordion('step7-content')">Show me how.</div>
-                        <div id="step7-content" class="expandable">
-                            <ul>
-                                <li>Click the blue "Preview or Print" button.</li>
-                                <li>A preview pane showing the combined PDF will appear. Right-click anywhere on the PDF preview and choose Print.</li>
-                                <li>Important: Be sure to re-select your store's printer (e.g., "CPR1") as the destination so you print the combined file instead of saving it as a PDF again.</li>
-                            </ul>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step3a-content')">Hide or highlight devices with the customize entries button.</div>
+                                <div id="step3a-content" class="expandable">
+                                    <div style="margin-top: 5px;">Click the “Customize Entries” button to view all inventory detected devices.</div>
+                                    <div class="deep-nest-container">
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step3a1-content')">You can highlight phones slightly or partially to emphasize deals you think are better that day.</div>
+                                        <div id="step3a1-content" class="expandable">
+                                            <ul>
+                                                <li>Partial Highlight (left checkbox): Highlights only the phone's name. (Recommended for good deals).</li>
+                                                <li>Full Highlight (right checkbox): Highlights the entire row for that device. (Recommended for extra good deals).</li>
+                                                <li>Master Checkboxes: Use the main checkboxes at the top of the list to toggle partial or full highlights for all inventory at once.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="deep-nest-container">
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step3a2-content')">Unsellable devices can be hidden from the output list by using the hide buttons. Hidden devices are briefly summarized on the output document in case they were hidden by accident.</div>
+                                        <div id="step3a2-content" class="expandable">
+                                            <ul>
+                                                <li><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> Hide (toggle): Use this button to hide/unhide individual listings</li>
+                                                <li><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> Use the unhide all button at the top to unhide all phones that were manually hidden.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 5px;">Click Done to save your customizations. The Walmart computer remembers hide and highlight preferences until they're changed again. You can always change highlight or hide settings by going to this screen again.</div>
+                                </div>
+                            </div>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step3b-content')">Change formatting options like showing likely EDLPs or isolating Apple devices.</div>
+                                <div id="step3b-content" class="expandable">
+                                    <div class="deep-nest-container">
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step3b1-content')">Toggle likely EDLPs</div>
+                                        <div id="step3b1-content" class="expandable">
+                                            <ul>
+                                                <li>Likely EDLPs can be hidden from the output document to see fuller device names.</li>
+                                                <li>EDLP data waits for a human to notice an installment change and manually post it to the optimizer database, so it can sometimes be inaccurate or outdated. ☁️✅ means the database is working and showing the latest reported prices, while ☁️❌ means Optimizer can't see the database, and is using a static price backup, usually only a month or so old.</li>
+                                                <li>“Likely EDLPs” are usually accurate but aren't guaranteed, always check installment price on ESP before performing a sale.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="deep-nest-container">
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step3b2-content')">Isolating Apple devices</div>
+                                        <div id="step3b2-content" class="expandable">
+                                            <ul><li>When isolate Apple devices is set to on, Apple devices will only appear once in their own category on the inventory report, rather than repeating for each carrier.</li></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="deep-nest-container">
+                                <div class="trigger-link" onclick="window.toggleAccordion('step3c-content')">Add comments to your printout.</div>
+                                <div id="step3c-content" class="expandable">
+                                    <ul><li>Comments are visible near the top of the output PDF. This can be used for something fun or helpful you want others to know that day such as “We've got this team!” or “the stylus is free on T-Mobile right now,” etc.</li></ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -579,7 +602,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v108';
+        const APP_VERSION = 'v109';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
