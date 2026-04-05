@@ -372,7 +372,7 @@
 
             <div class="action-buttons">
                 <button id="highlight-btn">Customize Entries</button>
-                <button id="process-btn">Preview or Print</button>
+                <button id="process-btn">⠀⠀⠀Print⠀⠀⠀</button>
             </div>
             
             <div id="more-settings-btn">Show more settings ▼</div>
@@ -414,14 +414,14 @@
 
             <div class="tutorial-container">
                 <div class="main-header" onclick="window.toggleAccordion('main-steps', this)">
-                    HOW TO USE <span class="arrow">▼</span>
+                    How To Use / FAQ<span class="arrow">▼</span>
                 </div>
                 <div id="main-steps" class="step-list expandable">
                     <div class="step-container">
-                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content')">1) Use WARP to download pdfs for today's ATT, TMO, and VZW inventory prints.</div>
+                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content')">1) Use WARP to download an inventory print for each carrier.</div>
                         <div id="step1-content" class="expandable">
                             <div class="deep-nest-container">
-                                <div class="trigger-link" onclick="window.toggleAccordion('step1a-content')">Help with viewing inventory on WARP</div>
+                                <div class="trigger-link" onclick="window.toggleAccordion('step1a-content')">How to find a carrier's "print inventory" screen on WARP</div>
                                 <div id="step1a-content" class="expandable">
                                     <ul>
                                         <li>Log into warp as normal (use + new tab button on chrome)</li>
@@ -432,12 +432,12 @@
                                 </div>
                             </div>
                             <div class="deep-nest-container">
-                                <div class="trigger-link" onclick="window.toggleAccordion('step1b-content')">Help with saving an inventory print as a PDF</div>
+                                <div class="trigger-link" onclick="window.toggleAccordion('step1b-content')">How to save an inventory print as a PDF</div>
                                 <div id="step1b-content" class="expandable">
                                     <ul>
-                                        <li>Change the destination printer by clicking “CKPR1” and changing it to “Save as PDF”, then click save.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;If you modified printer settings like scale and margin, please reset both to their defaults to ensure the files can save correctly.</span></li>
-                                        <li>Name the file after its carrier as ATT.pdf, VZW.pdf, or TMO.pdf. If you've done this before, go ahead and do it again to overwrite the old save file(s) with fresh data.</li>
-                                        <li>Don't forget, the steps above should be repeated for each carrier (navigate to the carriers Inventory print screen then save)</li>
+                                        <li>Change the destination printer by clicking your stores printer (ie “CKPR1”) and changing it to “Save as PDF”, then click save.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;If you modified printer settings like scale and margin, reset these settings to their defaults before saving.</span></li>
+                                        <li>Name the file after its carrier (ie ATT.pdf, VZW.pdf, or TMO.pdf). If you've done this in the past, make sure to overwrite your previous save(s).</li>
+                                        <li>The above steps (navigating to the print screen then saving) should be done for each carrier whenever you want to print inventory.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -445,24 +445,24 @@
                     </div>
 
                     <div class="step-container">
-                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step2-content')">2) Upload those PDFs here and click print.</div>
+                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step2-content')">2) On Optimizer, click "upload files," select the three PDFs you made, then click print.</div>
                         <div id="step2-content" class="expandable">
                             <div class="deep-nest-container">
-                                <div class="trigger-link" onclick="window.toggleAccordion('step2a-content')">Why can't I see or upload the PDFs I made?</div>
+                                <div class="trigger-link" onclick="window.toggleAccordion('step2a-content')">I can't find the inventory files I'm trying to upload.</div>
                                 <div id="step2a-content" class="expandable">
                                     <div style="margin-top: 5px;">This happens when WARP files are saved in one directory while Optimizer tries to find them somewhere else.</div>
                                     <div class="deep-nest-container">
-                                        <div class="trigger-link" onclick="window.toggleAccordion('step2a1-content')">RECOMMENDED Quickest solution: drag and drop each file from the WARP save window into optimizer.</div>
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step2a1-content')">The recommended and quickest solution: drag and drop each file from the WARP save window into optimizer.</div>
                                         <div id="step2a1-content" class="expandable">
                                             <ul>
                                                 <li>Keep WARP open in a separate window. If helpful, rearrange the WARP and Optimizer windows so you can see both at once.</li>
                                                 <li>In the WARP window, after saving all needed carriers, start to save any one of the carriers a second time so that all carrier PDFs you need are visible in the save dialogue.</li>
-                                                <li>With the save dialogue open from warp, click and drag each file from the warp save dialogue box into the upload files box on optimizer.</li>
+                                                <li>With the save dialogue open from WARP, click and drag each file from the warp save dialogue box into the upload files box on optimizer.</li>
                                             </ul>
                                         </div>
                                     </div>
                                     <div class="deep-nest-container">
-                                        <div class="trigger-link" onclick="window.toggleAccordion('step2a2-content')">Long term solution: tell optimizer and WARP to save PDFs to the same location (experimental)</div>
+                                        <div class="trigger-link" onclick="window.toggleAccordion('step2a2-content')">Longer term solution: tell optimizer and WARP to save PDFs to the same location (experimental)</div>
                                         <div id="step2a2-content" class="expandable">
                                             <div style="margin-top: 5px;">Note: these instructions are a work in progress and may not work on every Walmart computer. To try and To reassign Optimizer's open dialogue directory:</div>
                                             <ul>
@@ -494,12 +494,12 @@
                     </div>
 
                     <div class="step-container">
-                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step3-content')">3) Optional: customize the list by marking devices unavailable, adding comments, and more.</div>
+                        <div class="step-title trigger-link" onclick="window.toggleAccordion('step3-content')">3) Optional: customize the list by marking devices as unavailable, adding comments, and more.</div>
                         <div id="step3-content" class="expandable">
                             <div class="deep-nest-container">
                                 <div class="trigger-link" onclick="window.toggleAccordion('step3a-content')">Hide or highlight devices with the customize entries button.</div>
                                 <div id="step3a-content" class="expandable">
-                                    <div style="margin-top: 5px;">Click the “Customize Entries” button to view all inventory detected devices.</div>
+                                    <div style="margin-top: 5px;">Click the “Customize Entries” button to view all detected devices.</div>
                                     <div class="deep-nest-container">
                                         <div class="trigger-link" onclick="window.toggleAccordion('step3a1-content')">You can highlight phones slightly or partially to emphasize deals you think are better that day.</div>
                                         <div id="step3a1-content" class="expandable">
@@ -519,7 +519,7 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div style="margin-top: 5px;">Click Done to save your customizations. The Walmart computer remembers hide and highlight preferences until they're changed again. You can always change highlight or hide settings by going to this screen again.</div>
+                                    <div style="margin-top: 5px;">Click Done to save your customizations. The Walmart computer remembers the hide and highlight preferences until they're changed again. You can always change highlight or hide settings by going to this screen again.</div>
                                 </div>
                             </div>
                             <div class="deep-nest-container">
