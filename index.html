@@ -339,6 +339,70 @@
         .step-list li { margin-bottom: 0.8rem; }
         .badge { background: #666; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-right: 6px; font-weight: bold; vertical-align: middle; }
         .icon-svg { width: 18px; height: 18px; fill: #606770; vertical-align: middle; margin: 0 4px; }
+
+        /* --- DARK MODE --- */
+        #theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            user-select: none;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        #theme-toggle:hover { transform: scale(1.1); }
+        
+        body.dark-mode { background-color: #18191a; color: #e4e6eb; }
+        body.dark-mode h1, body.dark-mode .step-title, body.dark-mode .status-text, body.dark-mode .footer-link { color: #e4e6eb; }
+        body.dark-mode #app-container, body.dark-mode #dev-sidebar, body.dark-mode .modal-content, body.dark-mode .status-section, body.dark-mode #comments, body.dark-mode #how-to-use-container h4 { background-color: #242526; border-color: #3e4042; color: #e4e6eb; }
+        body.dark-mode #upload-area { border-color: #3e4042; }
+        body.dark-mode #upload-area.dragover { background-color: #3a3b3c; border-color: #2d88ff; }
+        body.dark-mode .emphasis-header, body.dark-mode .emphasis-item { border-color: #3e4042; background-color: #242526; }
+        body.dark-mode .emphasis-list-carrier-header { border-bottom-color: #e4e6eb; }
+        body.dark-mode .footer-popover { background-color: #3e4042; color: #e4e6eb; }
+        body.dark-mode .footer-popover::after { border-top-color: #3e4042; }
+        body.dark-mode #app-footer { background-color: #242526; border-top: 1px solid #3e4042; }
+        body.dark-mode .inline-svg, body.dark-mode .hide-icon { fill: #b0b3b8; }
+        body.dark-mode #dev-console-output { background-color: #18191a; border-color: #3e4042; color: #b0b3b8; }
+        body.dark-mode .log-sys { color: #e4e6eb; }
+        body.dark-mode .log-pdf { color: #58a6ff; }
+        body.dark-mode .log-edlp { color: #ff7b72; }
+        body.dark-mode .expandable { border-left-color: #3e4042; color: #b0b3b8; }
+        body.dark-mode #highlight-btn, body.dark-mode #copy-log-btn, body.dark-mode #emphasis-done-btn { background-color: #3a3b3c; color: #e4e6eb; }
+        body.dark-mode #btn-force-fetch, body.dark-mode #btn-reset-settings { background-color: #242526; color: #ff7b72; border-color: #ff7b72; }
+        body.dark-mode #btn-force-fetch:hover, body.dark-mode #btn-reset-settings:hover { background-color: #3e4042; }
+        body.dark-mode .emphasis-item.item-hidden .emphasis-item-text { color: #8b9096; }
+
+        /* --- V110 TWEAKS --- */
+        body.dark-mode .trigger-link { color: #4aa1ff; }
+        body.dark-mode .trigger-link:hover { color: #7dc1ff; }
+        body.dark-mode #more-settings-btn { color: #b0b3b8; }
+        body.dark-mode #more-settings-btn:hover { color: #e4e6eb; }
+        body.dark-mode #process-btn { background-color: #2d88ff; }
+
+        /* --- THEME RIPPLE ANIMATION (VIEW TRANSITIONS API) --- */
+        @property --ripple-radius {
+            syntax: '<length-percentage>';
+            inherits: false;
+            initial-value: 0px;
+        }
+
+        ::view-transition-group(root) { animation-duration: 0.6s; animation-timing-function: ease-out; }
+        ::view-transition-new(root), ::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+        
+        ::view-transition-old(root) { z-index: 1; }
+        ::view-transition-new(root) { 
+            z-index: 9999; 
+            animation: theme-ripple-mask 0.6s ease-out forwards; 
+            -webkit-mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), black calc(var(--ripple-radius) - 64px), transparent var(--ripple-radius));
+            mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), black calc(var(--ripple-radius) - 64px), transparent var(--ripple-radius));
+        }
+        
+        @keyframes theme-ripple-mask {
+            from { --ripple-radius: 0px; }
+            to { --ripple-radius: 150vmax; }
+        }
     </style>
 </head>
 <body>
@@ -347,6 +411,8 @@
         <span id="status-icon" title="Offline Mode">❌☁</span>
         <span id="version-text" style="opacity: 0.7;">Loading...</span>
     </div>
+
+    <div id="theme-toggle" title="Toggle Dark Mode">🌙</div>
 
     <!-- v48: Split Layout Wrapper -->
     <div id="main-wrapper">
@@ -602,10 +668,58 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v109';
+        const APP_VERSION = 'v110';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
+
+        // --- DARK MODE INIT ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const applyTheme = (isDark) => {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '🔆';
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeToggle.textContent = '🌙';
+            }
+        };
+        const savedTheme = localStorage.getItem('optimizerTheme');
+        let isDarkMode = savedTheme === 'dark';
+
+        if (isDarkMode) {
+            applyTheme(false); // Force light mode visually to start
+            
+            setTimeout(() => {
+                if (document.startViewTransition) {
+                    const rect = themeToggle.getBoundingClientRect();
+                    document.documentElement.style.setProperty('--x', (rect.left + rect.width / 2) + 'px');
+                    document.documentElement.style.setProperty('--y', (rect.top + rect.height / 2) + 'px');
+                    document.startViewTransition(() => applyTheme(true));
+                } else {
+                    applyTheme(true);
+                }
+            }, 600); // 600ms delay so they catch the hint
+        } else {
+            applyTheme(false);
+        }
+
+        themeToggle.addEventListener('click', (e) => {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('optimizerTheme', isDarkMode ? 'dark' : 'light');
+
+            if (!document.startViewTransition) {
+                applyTheme(isDarkMode);
+                return;
+            }
+
+            document.documentElement.style.setProperty('--x', e.clientX + 'px');
+            document.documentElement.style.setProperty('--y', e.clientY + 'px');
+
+            document.startViewTransition(() => {
+                applyTheme(isDarkMode);
+            });
+        });
         // Standard SVG
         const HIDE_ICON_SVG = `<svg class="hide-icon inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg>`;
         const SHOW_ICON_SVG = `<svg class="hide-icon inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
@@ -1436,7 +1550,7 @@
 
             // Line 1
             const headerText1 = `${dateStr} ${timeStr} ${storeString} Inventory Report`;
-            const headerText2 = ` - Made with Optimizer, a secure application for Walmart Wireless associates.`;
+            const headerText2 = ` - Made with Optimizer.`;
             
             doc.setFontSize(8); 
             doc.setFont("helvetica", "bold");
