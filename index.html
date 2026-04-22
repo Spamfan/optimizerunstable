@@ -377,32 +377,45 @@
         /* --- V110 TWEAKS --- */
         body.dark-mode .trigger-link { color: #4aa1ff; }
         body.dark-mode .trigger-link:hover { color: #7dc1ff; }
-        body.dark-mode #more-settings-btn { color: #b0b3b8; }
+        body.dark-mode #more-settings-btn, body.dark-mode #version-text, body.dark-mode #upload-area p, body.dark-mode .main-header, body.dark-mode .status-filename { color: #b0b3b8; }
+        body.dark-mode span[style*="color: #555;"] { color: #b0b3b8 !important; }
         body.dark-mode #more-settings-btn:hover { color: #e4e6eb; }
         body.dark-mode #process-btn { background-color: #2d88ff; }
 
-        /* --- THEME RIPPLE ANIMATION (VIEW TRANSITIONS API) --- */
-        @property --ripple-radius {
-            syntax: '<length-percentage>';
-            inherits: false;
-            initial-value: 0px;
-        }
-
-        ::view-transition-group(root) { animation-duration: 0.6s; animation-timing-function: ease-out; }
-        ::view-transition-new(root), ::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+        /* --- SETTINGS STACK & TRANSITIONS --- */
+        body, #app-container, .modal-content, #dev-sidebar { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
-        ::view-transition-old(root) { z-index: 1; }
-        ::view-transition-new(root) { 
-            z-index: 9999; 
-            animation: theme-ripple-mask 0.6s ease-out forwards; 
-            -webkit-mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), black calc(var(--ripple-radius) - 64px), transparent var(--ripple-radius));
-            mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), black calc(var(--ripple-radius) - 64px), transparent var(--ripple-radius));
+        #top-settings-stack {
+            position: absolute; top: 15px; right: 15px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 1000;
         }
+        @media (max-width: 900px) {
+            #top-settings-stack {
+                position: static; flex-direction: row; justify-content: flex-end; 
+                width: 100%; margin-bottom: 15px;
+            }
+        }
+        .top-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: #e4e6eb; border: 1px solid #ccc; border-radius: 4px;
+            padding: 6px 10px; font-size: 0.9em; font-weight: bold; cursor: pointer; color: #1c1e21; user-select: none;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .top-btn:hover { background: #d8dadf; }
+        body.dark-mode .top-btn { background: #3a3b3c; border-color: #555; color: #e4e6eb; }
+        body.dark-mode .top-btn:hover { background: #4e4f50; }
         
-        @keyframes theme-ripple-mask {
-            from { --ripple-radius: 0px; }
-            to { --ripple-radius: 150vmax; }
+        #lang-dropdown {
+            position: absolute; top: 100%; right: 0; margin-top: 4px;
+            background: #ffffff; border: 1px solid #ccc; border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; flex-direction: column; overflow: hidden; min-width: 120px; text-align: left;
         }
+        body.dark-mode #lang-dropdown { background: #242526; border-color: #555; }
+        .lang-option { padding: 8px 12px; cursor: pointer; font-size: 0.9em; color: #1c1e21; transition: background-color 0.2s; }
+        body.dark-mode .lang-option { color: #e4e6eb; }
+        .lang-option:hover { background: #f0f2f5; }
+        body.dark-mode .lang-option:hover { background: #3a3b3c; }
+        .chevron-down { fill: none; stroke: #d93025; stroke-width: 3; width: 12px; height: 12px; }
     </style>
 </head>
 <body>
@@ -412,22 +425,42 @@
         <span id="version-text" style="opacity: 0.7;">Loading...</span>
     </div>
 
-    <div id="theme-toggle" title="Toggle Dark Mode">🌙</div>
 
     <!-- v48: Split Layout Wrapper -->
     <div id="main-wrapper">
         
+        <div id="top-settings-stack">
+            <button id="theme-toggle-btn" class="top-btn">
+                <svg id="theme-icon-moon" class="inline-svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg id="theme-icon-sun" class="inline-svg" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span id="theme-text">Dark mode</span>
+            </button>
+            <div style="position: relative;">
+                <button id="lang-toggle-btn" class="top-btn">
+                    <svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="#2d88ff" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span id="lang-text">English</span>
+                    <svg class="chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#d93025" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div id="lang-dropdown">
+                    <div class="lang-option">English</div>
+                    <div class="lang-option">Español</div>
+                    <div class="lang-option">Français</div>
+                </div>
+            </div>
+        </div>
+
         <div id="app-container">
+
             <h1>Optimizer</h1>
             
             <div id="upload-area">
                 <input type="file" id="upload-input" multiple accept=".pdf">
-                <p>Click here to upload files</p>
+                <p data-i18n="uploadFiles">Click here to upload files</p>
             </div>
 
             <div id="global-outdated-warning" style="display: none; color: #d93025; font-weight: 600; font-size: 0.9em; margin-bottom: 15px; align-items: center; justify-content: center; gap: 8px;">
                 <svg style="width: 18px; height: 18px; fill: #d93025;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                Some file(s) could be outdated.
+                <span data-i18n="outdated">Some file(s) could be outdated.</span>
             </div>
 
             <div id="status-container">
@@ -437,52 +470,112 @@
             </div>
 
             <div class="action-buttons">
-                <button id="highlight-btn">Customize Entries</button>
-                <button id="process-btn">⠀⠀⠀Print⠀⠀⠀</button>
+                <button id="highlight-btn" data-i18n="customizeBtn">Customize Entries</button>
+                <button id="process-btn" data-i18n="printBtn">⠀⠀⠀Print⠀⠀⠀</button>
             </div>
             
-            <div id="more-settings-btn">Show more settings ▼</div>
+            <div id="more-settings-btn" data-i18n="moreSettings">Show more settings ▼</div>
 
             <div id="advanced-settings-wrapper" style="display: none;">
                 <div class="toggles-grid">
                     <div class="toggle-option">
                         <input type="checkbox" id="isolate-iphones" checked>
-                        <label for="isolate-iphones">Isolate Apple Devices</label>
+                        <label for="isolate-iphones" data-i18n="isolateApple">Isolate Apple Devices</label>
                     </div>
-                    <!-- v56: Reverted to simple structure for alignment -->
                     <div class="toggle-option">
                         <input type="checkbox" id="show-edlps-toggle" checked>
-                        <label for="show-edlps-toggle">Show likely EDLPs</label>
+                        <label for="show-edlps-toggle" data-i18n="showEdlps">Show likely EDLPs</label>
                     </div>
                     <div class="toggle-option">
                         <input type="checkbox" id="show-comments-toggle">
-                        <label for="show-comments-toggle">Add comments to printout</label>
+                        <label for="show-comments-toggle" data-i18n="addComments">Add comments to printout</label>
                     </div>
                     <div class="toggle-option" id="wearables-wrapper">
                         <input type="checkbox" id="show-wearables-toggle" checked disabled>
-                        <label for="show-wearables-toggle" id="wearables-label">Show wearables (not applicable)</label>
+                        <label for="show-wearables-toggle" id="wearables-label" data-i18n="showWearablesNA">Show wearables (not applicable)</label>
                     </div>
                 </div>
                 
-                <!-- v48: Comments moved above buttons -->
                 <div class="control-section" id="comments-section">
-                    <textarea id="comments" placeholder="Add your print out comments here."></textarea>
+                    <textarea id="comments" data-i18n-placeholder="commentsPlaceholder" placeholder="Add your print out comments here."></textarea>
                     <p id="konami-message">Also try Tank Tycoon!</p>
                 </div>
 
                 <div id="dev-options-wrapper">
                     <div class="toggle-option">
                         <input type="checkbox" id="dev-console-toggle">
-                        <label for="dev-console-toggle">Show developer options</label>
+                        <label for="dev-console-toggle" data-i18n="showDevOptions">Show developer options</label>
                     </div>
                 </div>
             </div>
 
             <div class="tutorial-container">
                 <div class="main-header" onclick="window.toggleAccordion('main-steps', this)">
-                    How To Use / FAQ<span class="arrow">▼</span>
+                    <span data-i18n="howToUse">How To Use / FAQ</span><span class="arrow">▼</span>
                 </div>
-                <div id="main-steps" class="step-list expandable">
+                <div id="main-steps" class="step-list expandable" data-i18n-html="tutorialHtml">
+            <div id="upload-area">
+                <input type="file" id="upload-input" multiple accept=".pdf">
+                <p data-i18n="uploadFiles">Click here to upload files</p>
+            </div>
+
+            <div id="global-outdated-warning" style="display: none; color: #d93025; font-weight: 600; font-size: 0.9em; margin-bottom: 15px; align-items: center; justify-content: center; gap: 8px;">
+                <svg style="width: 18px; height: 18px; fill: #d93025;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                <span data-i18n="outdated">Some file(s) could be outdated.</span>
+            </div>
+
+            <div id="status-container">
+                <div class="status-section" id="att-status"><div><span class="status-text">AT&T:</span><span class="status-filename"></span></div></div>
+                <div class="status-section" id="vzw-status"><div><span class="status-text">Verizon:</span><span class="status-filename"></span></div></div>
+                <div class="status-section" id="tmo-status"><div><span class="status-text">T-Mobile:</span><span class="status-filename"></span></div></div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="highlight-btn" data-i18n="customizeBtn">Customize Entries</button>
+                <button id="process-btn" data-i18n="printBtn">⠀⠀⠀Print⠀⠀⠀</button>
+            </div>
+            
+            <div id="more-settings-btn" data-i18n="moreSettings">Show more settings ▼</div>
+
+            <div id="advanced-settings-wrapper" style="display: none;">
+                <div class="toggles-grid">
+                    <div class="toggle-option">
+                        <input type="checkbox" id="isolate-iphones" checked>
+                        <label for="isolate-iphones" data-i18n="isolateApple">Isolate Apple Devices</label>
+                    </div>
+                    <div class="toggle-option">
+                        <input type="checkbox" id="show-edlps-toggle" checked>
+                        <label for="show-edlps-toggle" data-i18n="showEdlps">Show likely EDLPs</label>
+                    </div>
+                    <div class="toggle-option">
+                        <input type="checkbox" id="show-comments-toggle">
+                        <label for="show-comments-toggle" data-i18n="addComments">Add comments to printout</label>
+                    </div>
+                    <div class="toggle-option" id="wearables-wrapper">
+                        <input type="checkbox" id="show-wearables-toggle" checked disabled>
+                        <label for="show-wearables-toggle" id="wearables-label" data-i18n="showWearablesNA">Show wearables (not applicable)</label>
+                    </div>
+                </div>
+                
+                <div class="control-section" id="comments-section">
+                    <textarea id="comments" data-i18n-placeholder="commentsPlaceholder" placeholder="Add your print out comments here."></textarea>
+                    <p id="konami-message">Also try Tank Tycoon!</p>
+                </div>
+
+                <div id="dev-options-wrapper">
+                    <div class="toggle-option">
+                        <input type="checkbox" id="dev-console-toggle">
+                        <label for="dev-console-toggle" data-i18n="showDevOptions">Show developer options</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-container">
+                <div class="main-header" onclick="window.toggleAccordion('main-steps', this)">
+                    <span data-i18n="howToUse">How To Use / FAQ</span><span class="arrow">▼</span>
+                </div>
+                <div id="main-steps" class="step-list expandable" data-i18n-html="tutorialHtml">
+
                     <div class="step-container">
                         <div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content')">1) Use WARP to download an inventory print for each carrier.</div>
                         <div id="step1-content" class="expandable">
@@ -625,41 +718,39 @@
     <!-- v48: Dev Console Sidebar -->
     <div id="dev-sidebar">
         <div id="dev-console-container">
-            <!-- Log Filters -->
             <div id="console-filters">
-                <label><input type="checkbox" id="cb-log-pdf" checked> Show PDF Inputs</label>
-                <label><input type="checkbox" id="cb-log-edlp" checked> Show EDLP Fetches</label>
+                <label><input type="checkbox" id="cb-log-pdf" checked> <span data-i18n="showPdfInputs">Show PDF Inputs</span></label>
+                <label><input type="checkbox" id="cb-log-edlp" checked> <span data-i18n="showEdlpFetches">Show EDLP Fetches</span></label>
             </div>
             
             <pre id="dev-console-output"></pre>
-            <button id="copy-log-btn">Copy Log</button>
-            <button id="btn-force-fetch">Force Refetch Data</button>
-            <button id="btn-reset-settings">Clear Optimizer Cache</button>
+            <button id="copy-log-btn" data-i18n="copyLog">Copy Log</button>
+            <button id="btn-force-fetch" data-i18n="forceRefetch">Force Refetch Data</button>
+            <button id="btn-reset-settings" data-i18n="clearCache">Clear Optimizer Cache</button>
         </div>
     </div>
 
-    </div> <!-- End main-wrapper -->
-
-    <footer id="app-footer">
+    </div> <footer id="app-footer">
         <div class="footer-link-container">
-            <div class="footer-link" data-target="popover-about">About</div>
-            <div class="footer-popover" id="popover-about">
+            <div class="footer-link" data-target="popover-about" data-i18n="aboutBtn">About</div>
+            <div class="footer-popover" id="popover-about" data-i18n-html="popoverAbout">
                 Optimizer is a secure application that streamlines Walmart Wireless inventory reports. OSLRS workers can reach out to Optimizer's development team by private messaging @Abraham Gable on Microsoft teams or by emailing AbrahamJohnGable@gmail.com.
             </div>
         </div>
         <div class="footer-link-container">
-            <div class="footer-link" data-target="popover-terms">Terms of Use</div>
-            <div class="footer-popover" id="popover-terms">
+            <div class="footer-link" data-target="popover-terms" data-i18n="termsBtn">Terms of Use</div>
+            <div class="footer-popover" id="popover-terms" data-i18n-html="popoverTerms">
                 Optimizer is provided on an "as-is" basis and is not affiliated with, endorsed by, or representative of Walmart or OSL Retail Services. Users assume all risk and liability for any operational errors or resulting consequences arising from the use of this application.
             </div>
         </div>
         <div class="footer-link-container">
-            <div class="footer-link" data-target="popover-privacy">Privacy Policy</div>
-            <div class="footer-popover" id="popover-privacy">
+            <div class="footer-link" data-target="popover-privacy" data-i18n="privacyBtn">Privacy Policy</div>
+            <div class="footer-popover" id="popover-privacy" data-i18n-html="popoverPrivacy">
                 This application utilizes local browser storage solely for persistent user preferences; this information remains strictly client-side and is never transmitted to external servers. Optimizer does not collect, share, or track any data, as all PDF optimization functions are performed exclusively on the local device.
             </div>
         </div>
     </footer>
+
 
     <!-- Modals are empty here, populated by script -->
     <div id="emphasis-modal" class="modal-container"></div>
@@ -668,57 +759,120 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v110';
+        const APP_VERSION = 'v111';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
-        // --- DARK MODE INIT ---
-        const themeToggle = document.getElementById('theme-toggle');
-        const applyTheme = (isDark) => {
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                themeToggle.textContent = '🔆';
-            } else {
-                document.body.classList.remove('dark-mode');
-                themeToggle.textContent = '🌙';
+        // --- TRANSLATION DICTIONARY ---
+        let currentLang = 'en';
+        const TRANSLATIONS = {
+            en: { ui: {}, pdf: {} },
+            es: {
+                ui: { uploadFiles: "Haz clic aquí para subir archivos", processing: "Procesando...", outdated: "Alguno(s) archivo(s) podría(n) estar desactualizado(s).", customizeBtn: "Personalizar Entradas", printBtn: "⠀⠀⠀Imprimir⠀⠀⠀", moreSettings: "Mostrar más ajustes ▼", lessSettings: "Mostrar menos ajustes ▲", isolateApple: "Aislar dispositivos Apple", showEdlps: "Mostrar posibles EDLPs", addComments: "Añadir comentarios a la impresión", showWearables: "Mostrar wearables", showWearablesNA: "Mostrar wearables (no aplicable)", commentsPlaceholder: "Añade tus comentarios de impresión aquí.", showDevOptions: "Mostrar opciones de desarrollador", howToUse: "Cómo usar / FAQ", highlightTitle: "Resaltar Inventario", highlightSub: "(Resaltar parcial/completo)", doneBtn: "Hecho", devModeTitle: "Modo de Desarrollador", devModeP1: "<strong>modo de desarrollador activado jajaja</strong>", devModeP2: "(esto no hace nada)", aboutBtn: "Acerca de", termsBtn: "Términos de Uso", privacyBtn: "Política de Privacidad", showPdfInputs: "Mostrar entradas PDF", showEdlpFetches: "Mostrar cargas EDLP", copyLog: "Copiar registro", forceRefetch: "Forzar recarga de datos", clearCache: "Limpiar caché de Optimizer",
+                    popoverAbout: "Optimizer es una aplicación segura que agiliza los informes de inventario de Walmart Wireless. Los trabajadores pueden contactar al desarrollador enviando un mensaje privado a @Abraham Gable en Microsoft Teams o por correo a AbrahamJohnGable@gmail.com.",
+                    popoverTerms: "Optimizer se proporciona 'tal cual' y no está afiliado ni respaldado por Walmart u OSL Retail Services. Los usuarios asumen todo riesgo y responsabilidad.",
+                    popoverPrivacy: "Esta aplicación utiliza almacenamiento local del navegador únicamente para las preferencias persistentes del usuario; nunca se transmite a servidores externos. Todo ocurre localmente.",
+                    tutorialHtml: `<div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content')">1) Usa WARP para descargar un reporte de inventario para cada operadora.</div><div id="step1-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1a-content')">Cómo encontrar la pantalla de impresión en WARP</div><div id="step1a-content" class="expandable"><ul><li>Inicia sesión en WARP (usa el botón de nueva pestaña en Chrome)</li><li>Ve a Gestión de Inventario > Ver Inventario Disponible.</li><li>Selecciona una operadora pospago (AT&T, Verizon o T-Mobile).</li><li>Asegúrate de marcar la casilla “En Stock”, haz clic en Más Opciones (<svg class="inline-svg" viewBox="0 0 24 24" fill="#606770"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>) y elige Imprimir.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1b-content')">Cómo guardar como PDF</div><div id="step1b-content" class="expandable"><ul><li>Cambia la impresora de destino a “Guardar como PDF”, luego guarda.</li><li>Nombra el archivo según su operadora (ej. ATT.pdf, VZW.pdf o TMO.pdf).</li></ul></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step2-content')">2) En Optimizer, haz clic en "subir archivos", selecciona los tres PDFs y haz clic en imprimir.</div><div id="step2-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a-content')">No encuentro mis archivos.</div><div id="step2a-content" class="expandable"><div style="margin-top: 5px;">Arrastra y suelta cada archivo desde la ventana de guardado de WARP directamente hacia Optimizer.</div></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step3-content')">3) Opcional: personaliza la lista marcando dispositivos o añadiendo comentarios.</div><div id="step3-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a-content')">Ocultar o resaltar dispositivos</div><div id="step3a-content" class="expandable"><ul><li>Haz clic en "Personalizar Entradas" para ocultar teléfonos o resaltar ofertas especiales.</li></ul></div></div></div></div>` },
+                pdf: { inventoryReport: "Reporte de Inventario", madeWith: " - Creado con Optimizer.", sources: "Fuentes: ", na: "N/A", edlpsVerifiedOn: "EDLPs verificados el: ", appleDevices: "Dispositivos Apple", likelyEdlps: "Posibles EDLPs", likely: "Posibles", item: "ARTÍCULO", qty: "CANT.", attVzwTmo: "ATT, VZW, TMO (pi + /mes)", edlpsDpMo: "EDLPs (pi + /mes)", edlps: "EDLPs", noInventory: "No se encontró inventario.", unlockedPhones: "Teléfonos desbloqueados: ", manualHidden: "Dispositivos ocultos: ", noneHidden: "No se ocultó ningún teléfono en este reporte.", and: " y ", commaAnd: ", y " }
+            },
+            fr: {
+                ui: { uploadFiles: "Cliquez ici pour télécharger des fichiers", processing: "Traitement en cours...", outdated: "Certains fichiers pourraient être obsolètes.", customizeBtn: "Personnaliser les Entrées", printBtn: "⠀⠀⠀Imprimer⠀⠀⠀", moreSettings: "Afficher plus de paramètres ▼", lessSettings: "Afficher moins de paramètres ▲", isolateApple: "Isoler les appareils Apple", showEdlps: "Afficher les EDLPs probables", addComments: "Ajouter des commentaires à l'impression", showWearables: "Afficher les wearables", showWearablesNA: "Afficher les wearables (non applicable)", commentsPlaceholder: "Ajoutez vos commentaires d'impression ici.", showDevOptions: "Afficher les options développeur", howToUse: "Comment utiliser / FAQ", highlightTitle: "Mettre en Évidence l'Inventaire", highlightSub: "(Mise en évidence partielle/totale)", doneBtn: "Terminé", devModeTitle: "Mode Développeur", devModeP1: "<strong>mode développeur activé mdr</strong>", devModeP2: "(ça ne fait rien)", aboutBtn: "À propos", termsBtn: "Conditions", privacyBtn: "Confidentialité", showPdfInputs: "Afficher les entrées PDF", showEdlpFetches: "Afficher les récupérations EDLP", copyLog: "Copier le journal", forceRefetch: "Forcer le rechargement", clearCache: "Vider le cache d'Optimizer",
+                    popoverAbout: "Optimizer est une application sécurisée qui rationalise les rapports d'inventaire Walmart Wireless. Les employés peuvent contacter le développeur en envoyant un message privé à @Abraham Gable sur Microsoft Teams ou par e-mail à AbrahamJohnGable@gmail.com.",
+                    popoverTerms: "Optimizer est fourni 'tel quel' et n'est ni affilié ni approuvé par Walmart ou OSL Retail Services. Les utilisateurs assument tous les risques et responsabilités.",
+                    popoverPrivacy: "Cette application utilise le stockage local du navigateur uniquement pour les préférences persistantes de l'utilisateur; jamais transmis à des serveurs externes. Tout se passe localement.",
+                    tutorialHtml: `<div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content')">1) Utilisez WARP pour télécharger un rapport d'inventaire pour chaque opérateur.</div><div id="step1-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1a-content')">Comment trouver l'écran d'impression dans WARP</div><div id="step1a-content" class="expandable"><ul><li>Connectez-vous à WARP (utilisez le bouton nouvel onglet de Chrome)</li><li>Allez dans Gestion des Stocks > Voir les Stocks Disponibles.</li><li>Sélectionnez un opérateur (AT&T, Verizon ou T-Mobile).</li><li>Assurez-vous que la case “En Stock” est cochée, cliquez sur Plus d'Options (<svg class="inline-svg" viewBox="0 0 24 24" fill="#606770"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>) et choisissez Imprimer.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1b-content')">Comment enregistrer en PDF</div><div id="step1b-content" class="expandable"><ul><li>Changez l'imprimante de destination en “Enregistrer au format PDF”, puis enregistrez.</li><li>Nommez le fichier selon son opérateur (ex. ATT.pdf, VZW.pdf ou TMO.pdf).</li></ul></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step2-content')">2) Dans Optimizer, cliquez sur "télécharger des fichiers", sélectionnez les trois PDF et cliquez sur imprimer.</div><div id="step2-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a-content')">Je ne trouve pas mes fichiers.</div><div id="step2a-content" class="expandable"><div style="margin-top: 5px;">Glissez et déposez chaque fichier depuis la fenêtre de sauvegarde de WARP directement dans Optimizer.</div></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step3-content')">3) Facultatif : personnalisez la liste en marquant des appareils ou en ajoutant des commentaires.</div><div id="step3-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a-content')">Masquer ou mettre en évidence des appareils</div><div id="step3a-content" class="expandable"><ul><li>Cliquez sur "Personnaliser les Entrées" pour masquer des téléphones ou mettre en évidence des offres spéciales.</li></ul></div></div></div></div>` },
+                pdf: { inventoryReport: "Rapport d'Inventaire", madeWith: " - Créé avec Optimizer.", sources: "Sources : ", na: "N/A", edlpsVerifiedOn: "EDLPs vérifiés le : ", appleDevices: "Appareils Apple", likelyEdlps: "EDLPs Probables", likely: "Probables", item: "ARTICLE", qty: "QTÉ", attVzwTmo: "ATT, VZW, TMO (acpt + /mois)", edlpsDpMo: "EDLPs (acpt + /mois)", edlps: "EDLPs", noInventory: "Aucun inventaire trouvé.", unlockedPhones: "Téléphones débloqués : ", manualHidden: "Appareils masqués : ", noneHidden: "Aucun téléphone n'a été masqué pour ce rapport.", and: " et ", commaAnd: ", et " }
             }
         };
-        const savedTheme = localStorage.getItem('optimizerTheme');
-        let isDarkMode = savedTheme === 'dark';
 
-        if (isDarkMode) {
-            applyTheme(false); // Force light mode visually to start
-            
-            setTimeout(() => {
-                if (document.startViewTransition) {
-                    const rect = themeToggle.getBoundingClientRect();
-                    document.documentElement.style.setProperty('--x', (rect.left + rect.width / 2) + 'px');
-                    document.documentElement.style.setProperty('--y', (rect.top + rect.height / 2) + 'px');
-                    document.startViewTransition(() => applyTheme(true));
-                } else {
-                    applyTheme(true);
-                }
-            }, 600); // 600ms delay so they catch the hint
-        } else {
-            applyTheme(false);
-        }
-
-        themeToggle.addEventListener('click', (e) => {
-            isDarkMode = !isDarkMode;
-            localStorage.setItem('optimizerTheme', isDarkMode ? 'dark' : 'light');
-
-            if (!document.startViewTransition) {
-                applyTheme(isDarkMode);
-                return;
-            }
-
-            document.documentElement.style.setProperty('--x', e.clientX + 'px');
-            document.documentElement.style.setProperty('--y', e.clientY + 'px');
-
-            document.startViewTransition(() => {
-                applyTheme(isDarkMode);
+        const updateLanguage = (lang) => {
+            currentLang = lang;
+            const dict = TRANSLATIONS[lang].ui;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.textContent = dict[key];
             });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                const key = el.getAttribute('data-i18n-html');
+                if (dict[key]) el.innerHTML = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+            
+            const moreBtn = document.getElementById('more-settings-btn');
+            const advWrap = document.getElementById('advanced-settings-wrapper');
+            if (moreBtn && advWrap && advWrap.style.display === 'block') {
+                moreBtn.textContent = dict.lessSettings;
+            }
+            const wearablesLabel = document.getElementById('wearables-label');
+            const wearablesToggle = document.getElementById('show-wearables-toggle');
+            if (wearablesLabel && wearablesToggle) {
+                wearablesLabel.textContent = wearablesToggle.disabled ? dict.showWearablesNA : dict.showWearables;
+            }
+        };
+
+
+        // --- TOP SETTINGS INIT ---
+        let isDarkMode = false;
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const themeText = document.getElementById('theme-text');
+        const iconMoon = document.getElementById('theme-icon-moon');
+        const iconSun = document.getElementById('theme-icon-sun');
+
+        themeToggleBtn.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                themeText.textContent = 'Light mode';
+                iconMoon.style.display = 'none';
+                iconSun.style.display = 'block';
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeText.textContent = 'Dark mode';
+                iconMoon.style.display = 'block';
+                iconSun.style.display = 'none';
+            }
+        });
+
+        const langToggleBtn = document.getElementById('lang-toggle-btn');
+        const langDropdown = document.getElementById('lang-dropdown');
+        const langText = document.getElementById('lang-text');
+
+        langToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.style.display = langDropdown.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Populate English Defaults Before Any Swap
+        TRANSLATIONS.en.ui = {
+            uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "⠀⠀⠀Print⠀⠀⠀", moreSettings: "Show more settings ▼", lessSettings: "Show less settings ▲", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", addComments: "Add comments to printout", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", commentsPlaceholder: "Add your print out comments here.", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", aboutBtn: "About", termsBtn: "Terms of Use", privacyBtn: "Privacy Policy", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache",
+            popoverAbout: document.getElementById('popover-about').innerHTML,
+            popoverTerms: document.getElementById('popover-terms').innerHTML,
+            popoverPrivacy: document.getElementById('popover-privacy').innerHTML,
+            tutorialHtml: document.getElementById('main-steps').innerHTML
+        };
+        TRANSLATIONS.en.pdf = { inventoryReport: "Inventory Report", madeWith: " - Made with Optimizer.", sources: "Sources: ", na: "N/A", edlpsVerifiedOn: "EDLPs ver'd on: ", appleDevices: "Apple Devices", likelyEdlps: "Likely EDLPs", likely: "Likely", item: "ITEM", qty: "QTY", attVzwTmo: "ATT, VZW, TMO (dp + /mo)", edlpsDpMo: "EDLPs (dp + /mo)", edlps: "EDLPs", noInventory: "No inventory found.", unlockedPhones: "Unlocked phones: ", manualHidden: "Manually hidden devices: ", noneHidden: "No phones were hidden for this report.", and: " and ", commaAnd: ", and " };
+
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const text = e.target.textContent;
+                langText.textContent = text;
+                langDropdown.style.display = 'none';
+                
+                let code = 'en';
+                if (text === 'Español') code = 'es';
+                if (text === 'Français') code = 'fr';
+                updateLanguage(code);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!langDropdown.contains(e.target) && e.target !== langToggleBtn) {
+                langDropdown.style.display = 'none';
+            }
         });
         // Standard SVG
         const HIDE_ICON_SVG = `<svg class="hide-icon inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg>`;
@@ -1189,8 +1343,8 @@
         const copyLogBtn = document.getElementById('copy-log-btn');
 
         // --- DYNAMIC HTML INJECTION ---
-        document.getElementById('emphasis-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 id="emphasis-modal-title">Highlight Inventory</h2><span class="close-btn" id="emphasis-close-btn">&times;</span></div><div class="modal-body"><div class="emphasis-header"><div class="emphasis-header-unhide" id="unhide-all-btn" title="Unhide All">${SHOW_ICON_SVG}</div><div class="emphasis-header-hide"></div><div class="emphasis-header-partial"><input type="checkbox" id="master-partial-checkbox" title="Select/Deselect All Partial"></div><div class="emphasis-header-full"><input type="checkbox" id="master-full-checkbox" title="Select/Deselect All Full"></div><div class="emphasis-header-text">(Highlight partial/full)</div></div><div id="emphasis-list-container"></div></div><div class="modal-footer"><button id="emphasis-done-btn">Done</button></div></div>`;
-        document.getElementById('dev-mode-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2>Dev Mode</h2><span class="close-btn" id="dev-mode-close-btn">&times;</span></div><div class="modal-body"><div id="dev-mode-text"><p><strong>developer mode activated lol</strong></p><p>(this doesn't do anything)</p></div></div></div>`;
+        document.getElementById('emphasis-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 id="emphasis-modal-title" data-i18n="highlightTitle">Highlight Inventory</h2><span class="close-btn" id="emphasis-close-btn">&times;</span></div><div class="modal-body"><div class="emphasis-header"><div class="emphasis-header-unhide" id="unhide-all-btn" title="Unhide All">${SHOW_ICON_SVG}</div><div class="emphasis-header-hide"></div><div class="emphasis-header-partial"><input type="checkbox" id="master-partial-checkbox" title="Select/Deselect All Partial"></div><div class="emphasis-header-full"><input type="checkbox" id="master-full-checkbox" title="Select/Deselect All Full"></div><div class="emphasis-header-text" data-i18n="highlightSub">(Highlight partial/full)</div></div><div id="emphasis-list-container"></div></div><div class="modal-footer"><button id="emphasis-done-btn" data-i18n="doneBtn">Done</button></div></div>`;
+        document.getElementById('dev-mode-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 data-i18n="devModeTitle">Dev Mode</h2><span class="close-btn" id="dev-mode-close-btn">&times;</span></div><div class="modal-body"><div id="dev-mode-text"><p data-i18n-html="devModeP1"><strong>developer mode activated lol</strong></p><p data-i18n="devModeP2">(this doesn't do anything)</p></div></div></div>`;
         
         // --- DYNAMIC UI ELEMENT SELECTORS ---
         const emphasisModal = document.getElementById('emphasis-modal');
@@ -1549,8 +1703,8 @@
             const storeString = Array.from(storeSet).join(' '); 
 
             // Line 1
-            const headerText1 = `${dateStr} ${timeStr} ${storeString} Inventory Report`;
-            const headerText2 = ` - Made with Optimizer.`;
+            const headerText1 = `${dateStr} ${timeStr} ${storeString} ${TRANSLATIONS[currentLang].pdf.inventoryReport}`;
+            const headerText2 = TRANSLATIONS[currentLang].pdf.madeWith;
             
             doc.setFontSize(8); 
             doc.setFont("helvetica", "bold");
@@ -1643,12 +1797,12 @@
                 if (dayIndex < dayKeys.length - 1) sourcesContent += ", ";
             });
             
-            if (sourcesContent === "") sourcesContent = "N/A";
+            if (sourcesContent === "") sourcesContent = TRANSLATIONS[currentLang].pdf.na;
 
             let line2X = sideMargin;
             doc.setFont("helvetica", "bold");
-            doc.text("Sources: ", line2X, yPosition);
-            line2X += doc.getTextWidth("Sources: ");
+            doc.text(TRANSLATIONS[currentLang].pdf.sources, line2X, yPosition);
+            line2X += doc.getTextWidth(TRANSLATIONS[currentLang].pdf.sources);
             
             doc.setFont("helvetica", "normal");
             doc.text(sourcesContent, line2X, yPosition);
@@ -1659,8 +1813,8 @@
 
             if (showEdlps && citationMap.size > 0) {
                 doc.setFont("helvetica", "bold");
-                doc.text("EDLPs ver'd on: ", line2X, yPosition);
-                line2X += doc.getTextWidth("EDLPs ver'd on: ");
+                doc.text(TRANSLATIONS[currentLang].pdf.edlpsVerifiedOn, line2X, yPosition);
+                line2X += doc.getTextWidth(TRANSLATIONS[currentLang].pdf.edlpsVerifiedOn);
                 
                 doc.setFont("helvetica", "normal");
                 const sortedCitations = Array.from(citationMap.entries()).sort((a, b) => a[1] - b[1]);
@@ -1675,7 +1829,7 @@
                     if (i === sortedCitations.length - 1) {
                         sep = ".";
                     } else if (i === sortedCitations.length - 2) {
-                        sep = (sortedCitations.length === 2) ? " and " : ", and ";
+                        sep = (sortedCitations.length === 2) ? TRANSLATIONS[currentLang].pdf.and : TRANSLATIONS[currentLang].pdf.commaAnd;
                     } else {
                         sep = ", ";
                     }
@@ -1721,7 +1875,7 @@
 
                 // Header
                 doc.setFont("helvetica", "bold").setFontSize(10);
-                const headerText = (carrier === 'apple') ? 'Apple Devices' : carrier.toUpperCase();
+                const headerText = (carrier === 'apple') ? TRANSLATIONS[currentLang].pdf.appleDevices : carrier.toUpperCase();
                 const headerWidth = doc.getTextWidth(headerText);
                 doc.text(headerText, xPos, cursorY);
                 doc.setLineWidth(0.2).line(xPos, cursorY + 0.5, xPos + headerWidth, cursorY + 0.5);
@@ -1733,35 +1887,35 @@
                         if (carrier === 'apple') {
                             const curEdlpX = xPos + 30;
                             const curDetailsX = xPos + 85;
-                            doc.text("Likely EDLPs", curEdlpX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.likelyEdlps, curEdlpX, cursorY);
                             cursorY += lineHeight;
-                            doc.text("ITEM", xPos, cursorY);
-                            doc.text("ATT, VZW, TMO (dp + /mo)", curEdlpX, cursorY);
-                            doc.text("QTY", curDetailsX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.item, xPos, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.attVzwTmo, curEdlpX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.qty, curDetailsX, cursorY);
                             cursorY += lineHeight;
                         } else if (carrier === 'tmo') {
                             const curEdlpX = xPos + 30; 
                             const curDetailsX = xPos + (isolateIphonesCheckbox.checked ? 85 : 65);
-                            doc.text("Likely", curEdlpX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.likely, curEdlpX, cursorY);
                             cursorY += lineHeight;
-                            doc.text("ITEM", xPos, cursorY);
-                            doc.text("EDLPs (dp + /mo)", curEdlpX, cursorY);
-                            doc.text("QTY", curDetailsX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.item, xPos, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.edlpsDpMo, curEdlpX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.qty, curDetailsX, cursorY);
                             cursorY += lineHeight;
                         } else {
                             const curEdlpX = xPos + 28;
                             const curDetailsX = xPos + 38; 
-                            doc.text("Likely", curEdlpX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.likely, curEdlpX, cursorY);
                             cursorY += lineHeight;
-                            doc.text("ITEM", xPos, cursorY);
-                            doc.text("EDLPs", curEdlpX, cursorY);
-                            doc.text("QTY", curDetailsX, cursorY); 
+                            doc.text(TRANSLATIONS[currentLang].pdf.item, xPos, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.edlps, curEdlpX, cursorY);
+                            doc.text(TRANSLATIONS[currentLang].pdf.qty, curDetailsX, cursorY); 
                             cursorY += lineHeight;
                         }
                     } else {
                     doc.setFontSize(6).setFont("helvetica", "bold");
-                    doc.text("ITEM", xPos, cursorY);
-                    doc.text("QTY", xPos + 50, cursorY); 
+                    doc.text(TRANSLATIONS[currentLang].pdf.item, xPos, cursorY);
+                    doc.text(TRANSLATIONS[currentLang].pdf.qty, xPos + 50, cursorY); 
                     cursorY += lineHeight;
                 }
 
@@ -1961,7 +2115,7 @@
                 if (result.page > maxPage) maxPage = result.page;
             });
 
-            if (processQueue.length === 0) { doc.setFont("helvetica", "normal").setFontSize(12).text("No inventory found.", sideMargin, contentStartY); } 
+            if (processQueue.length === 0) { doc.setFont("helvetica", "normal").setFontSize(12).text(TRANSLATIONS[currentLang].pdf.noInventory, sideMargin, contentStartY); } 
             
             // --- FOOTER (Hidden Items v57 Dynamic Position) ---
             doc.setPage(maxPage);
@@ -2039,7 +2193,7 @@
             
             if (unlockedList.length > 0) {
                 const formattedUnlocked = unlockedList.map(i => `${i.count}x ${i.name}`);
-                addSegment("Unlocked phones: ", formattedUnlocked.join(", "));
+                addSegment(TRANSLATIONS[currentLang].pdf.unlockedPhones, formattedUnlocked.join(", "));
             }
 
             // 4. Format Manual (Smart Grouping)
@@ -2054,11 +2208,11 @@
             });
 
             if (manualStrings.length > 0) {
-                addSegment("Manually hidden devices: ", manualStrings.join(", "));
+                addSegment(TRANSLATIONS[currentLang].pdf.manualHidden, manualStrings.join(", "));
             }
 
             if (richSegments.length === 0) {
-                richSegments.push({ text: "No phones were hidden for this report.", bold: true });
+                richSegments.push({ text: TRANSLATIONS[currentLang].pdf.noneHidden, bold: true });
             }
 
             drawRichText(doc, sideMargin, footerY, richSegments, 190, 3.5);
@@ -2137,7 +2291,7 @@
             if (hasWatches) {
                 // If watches exist, unlock the toggle
                 wearablesToggle.disabled = false;
-                wearablesLabel.textContent = "Show wearables";
+                wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearables;
                 wearablesToggle.parentElement.classList.remove('disabled');
                 
                 // Restore user preference if it exists, otherwise default to true
@@ -2147,7 +2301,7 @@
                 // If no watches, lock it to "Checked" (Standard behavior) but Disabled
                 wearablesToggle.checked = true;
                 wearablesToggle.disabled = true;
-                wearablesLabel.textContent = "Show wearables (not applicable)";
+                wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearablesNA;
                 wearablesToggle.parentElement.classList.add('disabled');
             }
 
@@ -2172,7 +2326,7 @@
             const warningEl = document.getElementById('global-outdated-warning');
             if (warningEl) warningEl.style.display = hasOutdatedFile ? 'flex' : 'none';
 
-            uploadArea.querySelector('p').textContent = 'upload files'; 
+            uploadArea.querySelector('p').textContent = TRANSLATIONS[currentLang].ui.uploadFiles; 
             
             // v106: Clear input value so re-uploading the same filename triggers the change event
             document.getElementById('upload-input').value = '';
@@ -2338,10 +2492,10 @@
             moreSettingsBtn.addEventListener('click', () => {
                 if (advancedSettingsWrapper.style.display === 'none') {
                     advancedSettingsWrapper.style.display = 'block';
-                    moreSettingsBtn.textContent = 'Show less settings ▲';
+                    moreSettingsBtn.textContent = TRANSLATIONS[currentLang].ui.lessSettings;
                 } else {
                     advancedSettingsWrapper.style.display = 'none';
-                    moreSettingsBtn.textContent = 'Show more settings ▼';
+                    moreSettingsBtn.textContent = TRANSLATIONS[currentLang].ui.moreSettings;
                 }
             });
         }
