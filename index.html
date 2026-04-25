@@ -125,6 +125,30 @@
         .status-text { font-weight: 600; }
         .status-filename { font-weight: normal; font-style: italic; color: #606770; margin-left: 8px; }
         
+        /* --- ANIMATIONS & SKELETONS --- */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: 200px 0; } }
+        
+        .spinner-svg {
+            display: none;
+            width: 18px; height: 18px; margin-right: 10px;
+            animation: spin 1s linear infinite;
+            vertical-align: middle; fill: #1877f2;
+        }
+        
+        .skeleton-box {
+            padding: 10px; border: 1px solid #dddfe2; border-radius: 6px;
+            margin-bottom: 10px; text-align: left; display: flex; align-items: center;
+        }
+        .skeleton-bar {
+            height: 16px; width: 60%; border-radius: 4px;
+            background: #f6f7f8;
+            background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-repeat: no-repeat;
+            background-size: 400px 100%;
+            animation: shimmer 1.5s infinite linear forwards;
+        }
+
         .toggles-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -355,7 +379,8 @@
         
         body.dark-mode { background-color: #18191a; color: #e4e6eb; }
         body.dark-mode h1, body.dark-mode .step-title, body.dark-mode .status-text, body.dark-mode .footer-link { color: #e4e6eb; }
-        body.dark-mode #app-container, body.dark-mode #dev-sidebar, body.dark-mode .modal-content, body.dark-mode .status-section, body.dark-mode #comments, body.dark-mode #how-to-use-container h4 { background-color: #242526; border-color: #3e4042; color: #e4e6eb; }
+        body.dark-mode #app-container, body.dark-mode #dev-sidebar, body.dark-mode .modal-content, body.dark-mode .status-section, body.dark-mode .skeleton-box, body.dark-mode #comments, body.dark-mode #how-to-use-container h4 { background-color: #242526; border-color: #3e4042; color: #e4e6eb; }
+        body.dark-mode .skeleton-bar { background: #3a3b3c; background-image: linear-gradient(to right, #3a3b3c 0%, #4e4f50 20%, #3a3b3c 40%, #3a3b3c 100%); }
         body.dark-mode #upload-area { border-color: #3e4042; }
         body.dark-mode #upload-area.dragover { background-color: #3a3b3c; border-color: #2d88ff; }
         body.dark-mode .emphasis-header, body.dark-mode .emphasis-item { border-color: #3e4042; background-color: #242526; }
@@ -455,7 +480,10 @@
             
             <div id="upload-area">
                 <input type="file" id="upload-input" multiple accept=".pdf">
-                <p data-i18n="uploadFiles">Click here to upload files</p>
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <svg class="spinner-svg" id="upload-spinner" viewBox="0 0 50 50"><path d="M25 5 A20 20 0 1 0 45 25" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path></svg>
+                    <p data-i18n="uploadFiles">Click here to upload files</p>
+                </div>
             </div>
 
             <div id="global-outdated-warning" style="display: none; color: #d93025; font-weight: 600; font-size: 0.9em; margin-bottom: 15px; align-items: center; justify-content: center; gap: 8px;">
@@ -698,7 +726,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v113';
+        const APP_VERSION = 'v114';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -2173,7 +2201,31 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         // --- EVENT HANDLER FUNCTIONS ---
         const handleFileUploads = async (files) => { 
             if (!files || files.length === 0) return; 
-            uploadArea.querySelector('p').textContent = 'Processing...'; 
+            
+            // UI Feedback: Show Spinner & Translated Processing Text
+            const uploadText = uploadArea.querySelector('p');
+            const spinner = document.getElementById('upload-spinner');
+            uploadText.textContent = TRANSLATIONS[currentLang].ui.processing || 'Processing...'; 
+            if (spinner) spinner.style.display = 'block';
+
+            // Safe Skeleton Injection
+            try {
+                const statusContainer = document.getElementById('status-container');
+                // Hide existing status sections temporarily
+                statusContainer.querySelectorAll('.status-section').forEach(el => el.style.display = 'none');
+                // Inject skeleton boxes based on file count
+                for (let i = 0; i < files.length; i++) {
+                    const skel = document.createElement('div');
+                    skel.className = 'skeleton-box';
+                    skel.innerHTML = '<div class="skeleton-bar"></div>';
+                    statusContainer.appendChild(skel);
+                }
+            } catch (e) {
+                console.warn('Skeleton injection skipped:', e);
+            }
+
+            // Forced Paint Yield (Allows WMPC to draw skeletons before locking main thread)
+            await new Promise(resolve => setTimeout(resolve, 50));
             
             for (const file of files) { 
                 try { 
@@ -2215,6 +2267,13 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                     statusSection.querySelector('.status-filename').textContent = file.name; 
                     statusSection.style.display = 'block'; 
                     
+                    // Safe Skeleton Removal
+                    try {
+                        const statusContainer = document.getElementById('status-container');
+                        const firstSkel = statusContainer.querySelector('.skeleton-box');
+                        if (firstSkel) firstSkel.remove();
+                    } catch (e) {}
+
                     // v47: Check for watches
                     const fileHasWatches = postFilterList.some(item => 
                         item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch')
@@ -2271,7 +2330,13 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             const warningEl = document.getElementById('global-outdated-warning');
             if (warningEl) warningEl.style.display = hasOutdatedFile ? 'flex' : 'none';
 
+            // Safe Cleanup of any remaining skeletons (in case of unsupported files)
+            try {
+                document.querySelectorAll('.skeleton-box').forEach(el => el.remove());
+            } catch(e) {}
+
             uploadArea.querySelector('p').textContent = TRANSLATIONS[currentLang].ui.uploadFiles; 
+            if (spinner) spinner.style.display = 'none';
             
             // v106: Clear input value so re-uploading the same filename triggers the change event
             document.getElementById('upload-input').value = '';
