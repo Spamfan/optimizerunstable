@@ -27,23 +27,14 @@
             min-height: 100vh;
         }
 
-        /* v50: Split Layout Wrapper (Hard Left Desktop) */
+        /* v1.1.22: Centered Layout Wrapper */
         #main-wrapper {
             display: flex;
-            flex-direction: row;
-            justify-content: center; /* Mobile: Centered */
-            align-items: flex-start;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             gap: 20px;
-            flex-wrap: wrap;
             width: 100%;
-        }
-
-        /* Desktop: Float STRICTLY LEFT */
-        @media (min-width: 900px) {
-            #main-wrapper {
-                justify-content: flex-start;
-                padding-left: 0; /* Hug the left edge */
-            }
         }
 
         #version-wrapper {
@@ -76,18 +67,6 @@
             position: relative;
         }
 
-        /* v48: Sidebar for Dev Tools */
-        #dev-sidebar {
-            flex: 1;
-            min-width: 300px;
-            max-width: 500px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            display: none; /* Hidden by default */
-            text-align: left;
-        }
 
         h1 {
             color: #1c1e21;
@@ -241,22 +220,42 @@
         #how-to-use-container ul { margin-top: 5px; }
         .inline-svg { width: 1em; height: 1em; vertical-align: middle; margin: 0 2px; }
 
-        /* v48: Dev Options Toggle Area */
+        /* v1.1.22: Dev Options Toggle Area */
         #dev-options-wrapper {
             margin-bottom: 15px;
             text-align: left;
         }
 
         #dev-console-container {
-            /* Now inside sidebar */
+            display: none;
+            margin-top: 15px;
+            border: 2px solid #ff3b30;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: left;
         }
+
+        .dev-box-header {
+            background-color: #ff3b30;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 10px 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .dev-box-content {
+            padding: 15px;
+        }
+
         #dev-console-output {
             background-color: #f5f5f5;
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 10px;
-            max-height: 400px; /* Taller for sidebar */
+            max-height: 250px; /* Adjusted for inline */
             overflow-y: auto;
             white-space: pre-wrap;
             word-break: break-all;
@@ -409,7 +408,8 @@
         
         body.dark-mode { background-color: #18191a; color: #e4e6eb; }
         body.dark-mode h1, body.dark-mode .step-title, body.dark-mode .status-text, body.dark-mode .footer-link { color: #e4e6eb; }
-        body.dark-mode #app-container, body.dark-mode #dev-sidebar, body.dark-mode .modal-content, body.dark-mode .status-section, body.dark-mode .skeleton-box, body.dark-mode #comments, body.dark-mode #how-to-use-container h4 { background-color: #242526; border-color: #3e4042; color: #e4e6eb; }
+        body.dark-mode #app-container, body.dark-mode .modal-content, body.dark-mode .status-section, body.dark-mode .skeleton-box, body.dark-mode #comments, body.dark-mode #how-to-use-container h4 { background-color: #242526; border-color: #3e4042; color: #e4e6eb; }
+        body.dark-mode #dev-console-container { background-color: #242526; border-color: #ff3b30; color: #e4e6eb; }
         body.dark-mode .skeleton-bar { background: #3a3b3c; background-image: linear-gradient(to right, #3a3b3c 0%, #4e4f50 20%, #3a3b3c 40%, #3a3b3c 100%); }
         body.dark-mode #upload-area { border-color: #3e4042; }
         body.dark-mode #upload-area.dragover { background-color: #3a3b3c; border-color: #2d88ff; }
@@ -439,7 +439,7 @@
         body.dark-mode #process-btn { background-color: #2d88ff; }
 
         /* --- SETTINGS STACK & TRANSITIONS --- */
-        body, #app-container, .modal-content, #dev-sidebar { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        body, #app-container, .modal-content, #dev-console-container { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
         #top-settings-stack {
             position: absolute; top: 15px; right: 15px;
@@ -581,6 +581,21 @@
                     <div class="toggle-option">
                         <input type="checkbox" id="dev-console-toggle">
                         <label for="dev-console-toggle" data-i18n="showDevOptions">Show developer options</label>
+                    </div>
+                    
+                    <div id="dev-console-container">
+                        <div class="dev-box-header" data-i18n="devBoxHeader">Developer options</div>
+                        <div class="dev-box-content">
+                            <div id="console-filters">
+                                <label><input type="checkbox" id="cb-log-pdf" checked> <span data-i18n="showPdfInputs">Show PDF Inputs</span></label>
+                                <label><input type="checkbox" id="cb-log-edlp" checked> <span data-i18n="showEdlpFetches">Show EDLP Fetches</span></label>
+                            </div>
+                            
+                            <pre id="dev-console-output"></pre>
+                            <button id="copy-log-btn" data-i18n="copyLog">Copy Log</button>
+                            <button id="btn-force-fetch" data-i18n="forceRefetch">Force Refetch Data</button>
+                            <button id="btn-reset-settings" data-i18n="clearCache">Clear Optimizer Cache</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -774,20 +789,6 @@
 
     </div>
 
-    <!-- v48: Dev Console Sidebar -->
-    <div id="dev-sidebar">
-        <div id="dev-console-container">
-            <div id="console-filters">
-                <label><input type="checkbox" id="cb-log-pdf" checked> <span data-i18n="showPdfInputs">Show PDF Inputs</span></label>
-                <label><input type="checkbox" id="cb-log-edlp" checked> <span data-i18n="showEdlpFetches">Show EDLP Fetches</span></label>
-            </div>
-            
-            <pre id="dev-console-output"></pre>
-            <button id="copy-log-btn" data-i18n="copyLog">Copy Log</button>
-            <button id="btn-force-fetch" data-i18n="forceRefetch">Force Refetch Data</button>
-            <button id="btn-reset-settings" data-i18n="clearCache">Clear Optimizer Cache</button>
-        </div>
-    </div>
 
     </div> <footer id="app-footer">
         <div class="footer-link-container">
@@ -818,7 +819,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.1.21';
+        const APP_VERSION = 'v1.1.22';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -828,7 +829,7 @@
 const TRANSLATIONS = {
             en: { ui: {}, pdf: {} },
             es: {
-                ui: { loginWarningTitle: "CONTENIDO PROPIETARIO", loginWarningBody: "El acceso y/o intercambio no autorizado está prohibido. Para obtener acceso, acepte estos términos ingresando el código de acceso o pin que le proporcionó el administrador del dispositivo.", enterPinPlaceholder: "Ingresar PIN", enterBtn: "Entrar", incorrectPin: "PIN Incorrecto", themeDark: "Modo oscuro", themeLight: "Modo claro", uploadFiles: "Haz clic aquí para subir archivos", processing: "Procesando...", outdated: "Alguno(s) archivo(s) podría(n) estar desactualizado(s).", customizeBtn: "Personalizar Entradas", printBtn: "⠀⠀⠀Imprimir⠀⠀⠀", moreSettings: "Mostrar más ajustes ▼", lessSettings: "Mostrar menos ajustes ▲", isolateApple: "Aislar dispositivos Apple", showEdlps: "Mostrar posibles EDLPs", addComments: "Añadir comentarios a la impresión", showWearables: "Mostrar wearables", showWearablesNA: "Mostrar wearables (no aplicable)", commentsPlaceholder: "Añade tus comentarios de impresión aquí.", showDevOptions: "Mostrar opciones de desarrollador", howToUse: "Cómo usar / FAQ", highlightTitle: "Resaltar Inventario", highlightSub: "(Resaltar parcial/completo)", doneBtn: "Hecho", devModeTitle: "Modo de Desarrollador", devModeP1: "<strong>modo de desarrollador activado jajaja</strong>", devModeP2: "(esto no hace nada)", aboutBtn: "Acerca de", termsBtn: "Términos de Uso", privacyBtn: "Política de Privacidad", showPdfInputs: "Mostrar entradas PDF", showEdlpFetches: "Mostrar cargas EDLP", copyLog: "Copiar registro", forceRefetch: "Forzar recarga de datos", clearCache: "Limpiar caché de Optimizer",
+                ui: { loginWarningTitle: "CONTENIDO PROPIETARIO", loginWarningBody: "El acceso y/o intercambio no autorizado está prohibido. Para obtener acceso, acepte estos términos ingresando el código de acceso o pin que le proporcionó el administrador del dispositivo.", enterPinPlaceholder: "Ingresar PIN", enterBtn: "Entrar", incorrectPin: "PIN Incorrecto", devBoxHeader: "Opciones de desarrollador", themeDark: "Modo oscuro", themeLight: "Modo claro", uploadFiles: "Haz clic aquí para subir archivos", processing: "Procesando...", outdated: "Alguno(s) archivo(s) podría(n) estar desactualizado(s).", customizeBtn: "Personalizar Entradas", printBtn: "⠀⠀⠀Imprimir⠀⠀⠀", moreSettings: "Mostrar más ajustes ▼", lessSettings: "Mostrar menos ajustes ▲", isolateApple: "Aislar dispositivos Apple", showEdlps: "Mostrar posibles EDLPs", addComments: "Añadir comentarios a la impresión", showWearables: "Mostrar wearables", showWearablesNA: "Mostrar wearables (no aplicable)", commentsPlaceholder: "Añade tus comentarios de impresión aquí.", showDevOptions: "Mostrar opciones de desarrollador", howToUse: "Cómo usar / FAQ", highlightTitle: "Resaltar Inventario", highlightSub: "(Resaltar parcial/completo)", doneBtn: "Hecho", devModeTitle: "Modo de Desarrollador", devModeP1: "<strong>modo de desarrollador activado jajaja</strong>", devModeP2: "(esto no hace nada)", aboutBtn: "Acerca de", termsBtn: "Términos de Uso", privacyBtn: "Política de Privacidad", showPdfInputs: "Mostrar entradas PDF", showEdlpFetches: "Mostrar cargas EDLP", copyLog: "Copiar registro", forceRefetch: "Forzar recarga de datos", clearCache: "Limpiar caché de Optimizer",
                     popoverAbout: "Optimizer es una aplicación segura que agiliza los informes de inventario de Walmart Wireless. Los trabajadores pueden contactar al desarrollador enviando un mensaje privado a @Abraham Gable en Microsoft Teams o por correo a AbrahamJohnGable@gmail.com.",
                     popoverTerms: "Optimizer se proporciona 'tal cual' y no está afiliado, respaldado ni es representativo de Walmart u OSL Retail Services. Los usuarios asumen todo riesgo y responsabilidad por cualquier error operativo o las consecuencias resultantes del uso de esta aplicación.",
                     popoverPrivacy: "Esta aplicación utiliza almacenamiento local del navegador únicamente para las preferencias persistentes del usuario; esta información permanece estrictamente en el lado del cliente y nunca se transmite a servidores externos. Optimizer no recopila, comparte ni rastrea ningún dato, ya que todas las funciones de optimización de PDF se realizan exclusivamente en el dispositivo local.",
@@ -837,7 +838,7 @@ const TRANSLATIONS = {
                 pdf: { inventoryReport: "Reporte de Inventario", madeWith: " - Creado con Optimizer.", sources: "Fuentes: ", na: "N/A", edlpsVerifiedOn: "EDLPs verificados el: ", appleDevices: "Dispositivos Apple", likelyEdlps: "Posibles EDLPs", likely: "Posibles", item: "ARTÍCULO", qty: "CANT.", attVzwTmo: "ATT, VZW, TMO (pi + /mes)", edlpsDpMo: "EDLPs (pi + /mes)", edlps: "EDLPs", noInventory: "No se encontró inventario.", unlockedPhones: "Teléfonos desbloqueados: ", manualHidden: "Dispositivos ocultos: ", noneHidden: "No se ocultó ningún teléfono en este reporte.", and: " y ", commaAnd: ", y " }
             },
             fr: {
-                ui: { loginWarningTitle: "CONTENU EXCLUSIF", loginWarningBody: "L'accès et/ou le partage non autorisés sont interdits. Pour y accéder, acceptez ces conditions en saisissant le code ou le code PIN fourni par l'administrateur de l'appareil.", enterPinPlaceholder: "Entrer le PIN", enterBtn: "Entrer", incorrectPin: "PIN Incorrect", themeDark: "Mode sombre", themeLight: "Mode clair", uploadFiles: "Cliquez ici pour télécharger des fichiers", processing: "Traitement en cours...", outdated: "Certains fichiers pourraient être obsolètes.", customizeBtn: "Personnaliser les Entrées", printBtn: "⠀⠀⠀Imprimer⠀⠀⠀", moreSettings: "Afficher plus de paramètres ▼", lessSettings: "Afficher moins de paramètres ▲", isolateApple: "Isoler les appareils Apple", showEdlps: "Afficher les EDLPs probables", addComments: "Ajouter des commentaires à l'impression", showWearables: "Afficher les wearables", showWearablesNA: "Afficher les wearables (non applicable)", commentsPlaceholder: "Ajoutez vos commentaires d'impression ici.", showDevOptions: "Afficher les options développeur", howToUse: "Comment utiliser / FAQ", troubleshooting: "Dépannage / aide", highlightTitle: "Mettre en Évidence l'Inventaire", highlightSub: "(Mise en évidence partielle/totale)", doneBtn: "Terminé", devModeTitle: "Mode Développeur", devModeP1: "<strong>mode développeur activé mdr</strong>", devModeP2: "(ça ne fait rien)", aboutBtn: "À propos", termsBtn: "Conditions", privacyBtn: "Confidentialité", showPdfInputs: "Afficher les entrées PDF", showEdlpFetches: "Afficher les récupérations EDLP", copyLog: "Copier le journal", forceRefetch: "Forcer le rechargement", clearCache: "Vider le cache d'Optimizer",
+                ui: { loginWarningTitle: "CONTENU EXCLUSIF", loginWarningBody: "L'accès et/ou le partage non autorisés sont interdits. Pour y accéder, acceptez ces conditions en saisissant le code ou le code PIN fourni par l'administrateur de l'appareil.", enterPinPlaceholder: "Entrer le PIN", enterBtn: "Entrer", incorrectPin: "PIN Incorrect", devBoxHeader: "Options développeur", themeDark: "Mode sombre", themeLight: "Mode clair", uploadFiles: "Cliquez ici pour télécharger des fichiers", processing: "Traitement en cours...", outdated: "Certains fichiers pourraient être obsolètes.", customizeBtn: "Personnaliser les Entrées", printBtn: "⠀⠀⠀Imprimer⠀⠀⠀", moreSettings: "Afficher plus de paramètres ▼", lessSettings: "Afficher moins de paramètres ▲", isolateApple: "Isoler les appareils Apple", showEdlps: "Afficher les EDLPs probables", addComments: "Ajouter des commentaires à l'impression", showWearables: "Afficher les wearables", showWearablesNA: "Afficher les wearables (non applicable)", commentsPlaceholder: "Ajoutez vos commentaires d'impression ici.", showDevOptions: "Afficher les options développeur", howToUse: "Comment utiliser / FAQ", troubleshooting: "Dépannage / aide", highlightTitle: "Mettre en Évidence l'Inventaire", highlightSub: "(Mise en évidence partielle/totale)", doneBtn: "Terminé", devModeTitle: "Mode Développeur", devModeP1: "<strong>mode développeur activé mdr</strong>", devModeP2: "(ça ne fait rien)", aboutBtn: "À propos", termsBtn: "Conditions", privacyBtn: "Confidentialité", showPdfInputs: "Afficher les entrées PDF", showEdlpFetches: "Afficher les récupérations EDLP", copyLog: "Copier le journal", forceRefetch: "Forcer le rechargement", clearCache: "Vider le cache d'Optimizer",
                     popoverAbout: "Optimizer est une application sécurisée qui rationalise les rapports d'inventaire Walmart Wireless. Les employés peuvent contacter le développeur en envoyant un message privé à @Abraham Gable sur Microsoft Teams ou par e-mail à AbrahamJohnGable@gmail.com.",
                     popoverTerms: "Optimizer est fourni « tel quel » et n'est ni affilié, ni approuvé par, ni représentatif de Walmart ou OSL Retail Services. Les utilisateurs assument tous les risques et responsabilités pour toute erreur opérationnelle ou conséquence résultant de l'utilisation de cette application.",
                     popoverPrivacy: "Cette application utilise le stockage local du navigateur uniquement pour les préférences persistantes de l'utilisateur ; ces informations restent strictement côté client et ne sont jamais transmises à des serveurs externes. Optimizer ne collecte, ne partage et ne suit aucune donnée, car toutes les fonctions d'optimisation PDF sont effectuées exclusivement sur l'appareil local.",
@@ -916,6 +917,7 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         // Populate English Defaults Before Any Swap
         TRANSLATIONS.en.ui = {
             loginWarningTitle: "PROPRIETARY CONTENT", loginWarningBody: "Unauthorized access and/or sharing is forbidden. To gain access, agree to these terms by inputting the passcode or pin given to you by the device administrator.", enterPinPlaceholder: "Enter PIN", enterBtn: "Enter", incorrectPin: "Incorrect PIN",
+            devBoxHeader: "Developer options",
             themeDark: "Dark mode", themeLight: "Light mode",
             uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "⠀⠀⠀Print⠀⠀⠀", moreSettings: "Show more settings ▼", lessSettings: "Show less settings ▲", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", addComments: "Add comments to printout", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", commentsPlaceholder: "Add your print out comments here.", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", troubleshooting: "Troubleshooting / help", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", aboutBtn: "About", termsBtn: "Terms of Use", privacyBtn: "Privacy Policy", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache",
             popoverAbout: document.getElementById('popover-about').innerHTML,
@@ -1315,12 +1317,12 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             });
         });
 
-        // v48: Dev Console Toggle Logic (Sidebar)
+        // v1.1.22: Dev Console Toggle Logic (Inline Box)
         const devConsoleToggle = document.getElementById('dev-console-toggle');
-        const devSidebar = document.getElementById('dev-sidebar');
+        const devConsoleContainer = document.getElementById('dev-console-container');
         devConsoleToggle.addEventListener('change', () => { 
             const isChecked = devConsoleToggle.checked;
-            devSidebar.style.display = isChecked ? 'block' : 'none';
+            devConsoleContainer.style.display = isChecked ? 'block' : 'none';
         });
 
         // --- LOCALSTORAGE FUNCTIONS ---
