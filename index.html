@@ -27,14 +27,23 @@
             min-height: 100vh;
         }
 
-        /* v1.1.22: Centered Layout Wrapper */
+        /* v50: Split Layout Wrapper (Hard Left Desktop) */
         #main-wrapper {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex-direction: row;
+            justify-content: center; /* Mobile: Centered */
+            align-items: flex-start;
             gap: 20px;
+            flex-wrap: wrap;
             width: 100%;
+        }
+
+        /* Desktop: Float STRICTLY LEFT */
+        @media (min-width: 900px) {
+            #main-wrapper {
+                justify-content: flex-start;
+                padding-left: 0; /* Hug the left edge */
+            }
         }
 
         #version-wrapper {
@@ -67,6 +76,48 @@
             position: relative;
         }
 
+        #cloud-sidebar {
+            flex: 0 0 220px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+            text-align: center;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .cloud-store-btn {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        .cloud-store-btn:hover { background-color: #166fe5; }
+        .cloud-store-btn svg { fill: white; width: 18px; height: 18px; }
+
+        /* v48: Sidebar for Dev Tools */
+        #dev-sidebar {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none; /* Hidden by default */
+            text-align: left;
+        }
 
         h1 {
             color: #1c1e21;
@@ -220,42 +271,22 @@
         #how-to-use-container ul { margin-top: 5px; }
         .inline-svg { width: 1em; height: 1em; vertical-align: middle; margin: 0 2px; }
 
-        /* v1.1.22: Dev Options Toggle Area */
+        /* v48: Dev Options Toggle Area */
         #dev-options-wrapper {
             margin-bottom: 15px;
             text-align: left;
         }
 
         #dev-console-container {
-            display: none;
-            margin-top: 15px;
-            border: 2px solid #ff3b30;
-            border-radius: 12px;
-            overflow: hidden;
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            /* Now inside sidebar */
             text-align: left;
         }
-
-        .dev-box-header {
-            background-color: #ff3b30;
-            color: #ffffff;
-            font-weight: bold;
-            padding: 10px 15px;
-            text-align: center;
-            font-size: 1.1em;
-        }
-
-        .dev-box-content {
-            padding: 15px;
-        }
-
         #dev-console-output {
             background-color: #f5f5f5;
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 10px;
-            max-height: 250px; /* Adjusted for inline */
+            max-height: 400px; /* Taller for sidebar */
             overflow-y: auto;
             white-space: pre-wrap;
             word-break: break-all;
@@ -408,8 +439,10 @@
         
         body.dark-mode { background-color: #18191a; color: #e4e6eb; }
         body.dark-mode h1, body.dark-mode .step-title, body.dark-mode .status-text, body.dark-mode .footer-link { color: #e4e6eb; }
-        body.dark-mode #app-container, body.dark-mode .modal-content, body.dark-mode .status-section, body.dark-mode .skeleton-box, body.dark-mode #comments, body.dark-mode #how-to-use-container h4 { background-color: #242526; border-color: #3e4042; color: #e4e6eb; }
-        body.dark-mode #dev-console-container { background-color: #242526; border-color: #ff3b30; color: #e4e6eb; }
+        body.dark-mode #app-container, body.dark-mode #dev-sidebar, body.dark-mode #cloud-sidebar, body.dark-mode .modal-content, body.dark-mode .status-section, body.dark-mode .skeleton-box, body.dark-mode #comments, body.dark-mode #how-to-use-container h4 { background-color: #242526; border-color: #3e4042; color: #e4e6eb; }
+        body.dark-mode #cloud-sidebar h2 { color: #e4e6eb; border-bottom-color: #3e4042 !important; }
+        body.dark-mode .cloud-store-btn { background-color: #2d88ff; }
+        body.dark-mode .cloud-store-btn:hover { background-color: #4aa1ff; }
         body.dark-mode .skeleton-bar { background: #3a3b3c; background-image: linear-gradient(to right, #3a3b3c 0%, #4e4f50 20%, #3a3b3c 40%, #3a3b3c 100%); }
         body.dark-mode #upload-area { border-color: #3e4042; }
         body.dark-mode #upload-area.dragover { background-color: #3a3b3c; border-color: #2d88ff; }
@@ -439,7 +472,7 @@
         body.dark-mode #process-btn { background-color: #2d88ff; }
 
         /* --- SETTINGS STACK & TRANSITIONS --- */
-        body, #app-container, .modal-content, #dev-console-container { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        body, #app-container, .modal-content, #dev-sidebar { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
         #top-settings-stack {
             position: absolute; top: 15px; right: 15px;
@@ -510,6 +543,11 @@
         </div>
 
         <div id="login-view">
+            <div style="color: #d93025; font-weight: bold; border: 2px dashed #d93025; padding: 10px; margin-bottom: 20px; font-size: 0.85em; text-align: center; background-color: #fff; line-height: 1.4;">
+                ⚠️⚒️ WEBSITE CURRENTLY UNDER CONSTRUCTION, SOME FEATURES MAY NOT WORK PROPERLY.<br><br>
+                ⚠️⚒️ SITE WEB ACTUELLEMENT EN CONSTRUCTION ; certaines fonctionnalités pourraient ne pas fonctionner correctement.<br><br>
+                ⚠️⚒️ EL SITIO WEB SE ENCUENTRA ACTUALMENTE EN CONSTRUCCIÓN; ES POSIBLE QUE ALGUNAS FUNCIONES NO FUNCIONEN CORRECTAMENTE.
+            </div>
             <p class="login-warning">
                 <strong style="font-size: 1.2em;" data-i18n="loginWarningTitle">PROPRIETARY CONTENT</strong><br><br>
                 <span data-i18n="loginWarningBody">Unauthorized access and/or sharing is forbidden. To gain access, agree to these terms by inputting the passcode or pin given to you by the device administrator.</span>
@@ -581,21 +619,6 @@
                     <div class="toggle-option">
                         <input type="checkbox" id="dev-console-toggle">
                         <label for="dev-console-toggle" data-i18n="showDevOptions">Show developer options</label>
-                    </div>
-                    
-                    <div id="dev-console-container">
-                        <div class="dev-box-header" data-i18n="devBoxHeader">Developer options</div>
-                        <div class="dev-box-content">
-                            <div id="console-filters">
-                                <label><input type="checkbox" id="cb-log-pdf" checked> <span data-i18n="showPdfInputs">Show PDF Inputs</span></label>
-                                <label><input type="checkbox" id="cb-log-edlp" checked> <span data-i18n="showEdlpFetches">Show EDLP Fetches</span></label>
-                            </div>
-                            
-                            <pre id="dev-console-output"></pre>
-                            <button id="copy-log-btn" data-i18n="copyLog">Copy Log</button>
-                            <button id="btn-force-fetch" data-i18n="forceRefetch">Force Refetch Data</button>
-                            <button id="btn-reset-settings" data-i18n="clearCache">Clear Optimizer Cache</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -789,6 +812,28 @@
 
     </div>
 
+    <!-- Cloud Sidebar -->
+    <div id="cloud-sidebar" style="display: none;">
+        <h2 data-i18n="cloudFiles" style="margin-top: 0; font-size: 1.4em; color: #1c1e21; border-bottom: 2px solid #dddfe2; padding-bottom: 10px; margin-bottom: 15px;">Cloud files</h2>
+        <div id="cloud-list">
+            <!-- Buttons injected here -->
+        </div>
+    </div>
+
+    <!-- v48: Dev Console Sidebar -->
+    <div id="dev-sidebar">
+        <div id="dev-console-container">
+            <div id="console-filters">
+                <label><input type="checkbox" id="cb-log-pdf" checked> <span data-i18n="showPdfInputs">Show PDF Inputs</span></label>
+                <label><input type="checkbox" id="cb-log-edlp" checked> <span data-i18n="showEdlpFetches">Show EDLP Fetches</span></label>
+            </div>
+            
+            <pre id="dev-console-output"></pre>
+            <button id="copy-log-btn" data-i18n="copyLog">Copy Log</button>
+            <button id="btn-force-fetch" data-i18n="forceRefetch">Force Refetch Data</button>
+            <button id="btn-reset-settings" data-i18n="clearCache">Clear Optimizer Cache</button>
+        </div>
+    </div>
 
     </div> <footer id="app-footer">
         <div class="footer-link-container">
@@ -800,13 +845,13 @@
         <div class="footer-link-container">
             <div class="footer-link" data-target="popover-terms" data-i18n="termsBtn">Terms of Use</div>
             <div class="footer-popover" id="popover-terms" data-i18n-html="popoverTerms">
-                Optimizer is provided on an "as-is" basis and is not affiliated with, endorsed by, or representative of Walmart or OSL Retail Services. Users assume all risk and liability for any operational errors or resulting consequences arising from the use of this application.
+                Optimizer is currently being reconstructed to work with newer inventory systems and does not have a privacy policy yet.
             </div>
         </div>
         <div class="footer-link-container">
             <div class="footer-link" data-target="popover-privacy" data-i18n="privacyBtn">Privacy Policy</div>
             <div class="footer-popover" id="popover-privacy" data-i18n-html="popoverPrivacy">
-                This application utilizes local browser storage solely for persistent user preferences; this information remains strictly client-side and is never transmitted to external servers. Optimizer does not collect, share, or track any data, as all PDF optimization functions are performed exclusively on the local device.
+                Optimizer is currently being reconstructed to work with newer inventory systems and does not have a privacy policy yet.
             </div>
         </div>
     </footer>
@@ -819,7 +864,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.1.22';
+        const APP_VERSION = 'v1.2.0';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -829,19 +874,21 @@
 const TRANSLATIONS = {
             en: { ui: {}, pdf: {} },
             es: {
-                ui: { loginWarningTitle: "CONTENIDO PROPIETARIO", loginWarningBody: "El acceso y/o intercambio no autorizado está prohibido. Para obtener acceso, acepte estos términos ingresando el código de acceso o pin que le proporcionó el administrador del dispositivo.", enterPinPlaceholder: "Ingresar PIN", enterBtn: "Entrar", incorrectPin: "PIN Incorrecto", devBoxHeader: "Opciones de desarrollador", themeDark: "Modo oscuro", themeLight: "Modo claro", uploadFiles: "Haz clic aquí para subir archivos", processing: "Procesando...", outdated: "Alguno(s) archivo(s) podría(n) estar desactualizado(s).", customizeBtn: "Personalizar Entradas", printBtn: "⠀⠀⠀Imprimir⠀⠀⠀", moreSettings: "Mostrar más ajustes ▼", lessSettings: "Mostrar menos ajustes ▲", isolateApple: "Aislar dispositivos Apple", showEdlps: "Mostrar posibles EDLPs", addComments: "Añadir comentarios a la impresión", showWearables: "Mostrar wearables", showWearablesNA: "Mostrar wearables (no aplicable)", commentsPlaceholder: "Añade tus comentarios de impresión aquí.", showDevOptions: "Mostrar opciones de desarrollador", howToUse: "Cómo usar / FAQ", highlightTitle: "Resaltar Inventario", highlightSub: "(Resaltar parcial/completo)", doneBtn: "Hecho", devModeTitle: "Modo de Desarrollador", devModeP1: "<strong>modo de desarrollador activado jajaja</strong>", devModeP2: "(esto no hace nada)", aboutBtn: "Acerca de", termsBtn: "Términos de Uso", privacyBtn: "Política de Privacidad", showPdfInputs: "Mostrar entradas PDF", showEdlpFetches: "Mostrar cargas EDLP", copyLog: "Copiar registro", forceRefetch: "Forzar recarga de datos", clearCache: "Limpiar caché de Optimizer",
+                ui: { loginWarningTitle: "CONTENIDO PROPIETARIO", loginWarningBody: "El acceso y/o intercambio no autorizado está prohibido. Para obtener acceso, acepte estos términos ingresando el código de acceso o pin que le proporcionó el administrador del dispositivo.", enterPinPlaceholder: "Ingresar PIN", enterBtn: "Entrar", incorrectPin: "PIN Incorrecto", themeDark: "Modo oscuro", themeLight: "Modo claro", uploadFiles: "Haz clic aquí para subir archivos", processing: "Procesando...", outdated: "Alguno(s) archivo(s) podría(n) estar desactualizado(s).", customizeBtn: "Personalizar Entradas", printBtn: "⠀⠀⠀Imprimir⠀⠀⠀", moreSettings: "Mostrar más ajustes ▼", lessSettings: "Mostrar menos ajustes ▲", isolateApple: "Aislar dispositivos Apple", showEdlps: "Mostrar posibles EDLPs", addComments: "Añadir comentarios a la impresión", showWearables: "Mostrar wearables", showWearablesNA: "Mostrar wearables (no aplicable)", commentsPlaceholder: "Añade tus comentarios de impresión aquí.", showDevOptions: "Mostrar opciones de desarrollador", howToUse: "Cómo usar / FAQ", highlightTitle: "Resaltar Inventario", highlightSub: "(Resaltar parcial/completo)", doneBtn: "Hecho", devModeTitle: "Modo de Desarrollador", devModeP1: "<strong>modo de desarrollador activado jajaja</strong>", devModeP2: "(esto no hace nada)", aboutBtn: "Acerca de", termsBtn: "Términos de Uso", privacyBtn: "Política de Privacidad", showPdfInputs: "Mostrar entradas PDF", showEdlpFetches: "Mostrar cargas EDLP", copyLog: "Copiar registro", forceRefetch: "Forzar recarga de datos", clearCache: "Limpiar caché de Optimizer",
                     popoverAbout: "Optimizer es una aplicación segura que agiliza los informes de inventario de Walmart Wireless. Los trabajadores pueden contactar al desarrollador enviando un mensaje privado a @Abraham Gable en Microsoft Teams o por correo a AbrahamJohnGable@gmail.com.",
-                    popoverTerms: "Optimizer se proporciona 'tal cual' y no está afiliado, respaldado ni es representativo de Walmart u OSL Retail Services. Los usuarios asumen todo riesgo y responsabilidad por cualquier error operativo o las consecuencias resultantes del uso de esta aplicación.",
-                    popoverPrivacy: "Esta aplicación utiliza almacenamiento local del navegador únicamente para las preferencias persistentes del usuario; esta información permanece estrictamente en el lado del cliente y nunca se transmite a servidores externos. Optimizer no recopila, comparte ni rastrea ningún dato, ya que todas las funciones de optimización de PDF se realizan exclusivamente en el dispositivo local.",
+                    cloudFiles: "Archivos en la nube",
+                    popoverTerms: "Optimizer se está reconstruyendo actualmente para funcionar con sistemas de inventario más recientes y aún no cuenta con una política de privacidad.",
+                    popoverPrivacy: "Optimizer se está reconstruyendo actualmente para funcionar con sistemas de inventario más recientes y aún no cuenta con una política de privacidad.",
                     tutorialHtml: `<div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content', this)">1) Usa WARP para descargar un reporte de inventario para cada operadora.<span class="arrow">▼</span></div><div id="step1-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1a-content', this)">Cómo encontrar la pantalla de impresión en WARP<span class="arrow">▼</span></div><div id="step1a-content" class="expandable"><ul><li>Inicia sesión en WARP (usa el botón de nueva pestaña en Chrome)</li><li>Ve a Gestión de Inventario > Ver Inventario Disponible.</li><li>Selecciona una operadora pospago (AT&T, Verizon o T-Mobile). Es posible que necesites usar las flechas superiores &lt; &gt; para encontrarla primero.</li><li>Asegúrate de marcar la casilla “En Stock”, haz clic en Más Opciones (<svg class="inline-svg" viewBox="0 0 24 24" fill="#606770"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>) y elige Imprimir.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1b-content', this)">Cómo guardar un reporte de inventario como PDF<span class="arrow">▼</span></div><div id="step1b-content" class="expandable"><ul><li>Cambia la impresora de destino haciendo clic en la impresora de tu tienda (ej. “CKPR1”) y cambiándola a “Guardar como PDF”, luego haz clic en guardar.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;Si modificaste los ajustes de la impresora como la escala y los márgenes, restablece estos ajustes a sus valores predeterminados antes de guardar.</span></li><li>Nombra el archivo según su operadora (ej. ATT.pdf, VZW.pdf o TMO.pdf). Si has hecho esto en el pasado, asegúrate de sobrescribir tus guardados anteriores.</li><li>Los pasos anteriores deben hacerse para cada operadora siempre que quieras imprimir el inventario.</li></ul></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step2-content', this)">2) En Optimizer, haz clic en "subir archivos", selecciona los tres PDFs que creaste y haz clic en imprimir.<span class="arrow">▼</span></div><div id="step2-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a-content', this)">No encuentro los archivos de inventario que intento subir.<span class="arrow">▼</span></div><div id="step2a-content" class="expandable"><div style="margin-top: 5px;">Esto sucede cuando los archivos de WARP se guardan en un directorio mientras Optimizer intenta encontrarlos en otro lugar.</div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a1-content', this)">La solución recomendada y más rápida: arrastra y suelta cada archivo desde la ventana de guardado de WARP a Optimizer.<span class="arrow">▼</span></div><div id="step2a1-content" class="expandable"><ul><li>Mantén WARP abierto en una ventana separada. Si es útil, reorganiza las ventanas para que puedas ver ambas a la vez.</li><li>En la ventana de WARP, después de guardar todas las operadoras necesarias, comienza a guardar cualquiera de ellas por segunda vez para que todos los PDFs estén visibles en el diálogo de guardado.</li><li>Con el diálogo de guardado abierto desde WARP, haz clic y arrastra cada archivo desde ahí hacia la caja de subir archivos en Optimizer.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a2-content', this)">Solución a largo plazo: dile a Optimizer y WARP que guarden los PDFs en la misma ubicación (experimental)<span class="arrow">▼</span></div><div id="step2a2-content" class="expandable"><div style="margin-top: 5px;">Nota: estas instrucciones están en progreso y pueden no funcionar en todas las computadoras de Walmart. Para reasignar el directorio de diálogo abierto de Optimizer:</div><ul><li>Haz clic en subir archivos</li><li>Escribe Desktop\\testABC.pdf en el campo de nombre de archivo y haz clic en abrir.</li><li>Si se te indica “este archivo no existe” y / o “tu administrador ha bloqueado esta acción,” presiona aceptar.</li><li>Si el diálogo de apertura no se cierra por sí solo, ciérralo manualmente haciendo clic en su x.</li><li>Haz clic en subir archivos nuevamente, Optimizer ahora debería abrirse en la ruta de archivo correcta siempre.</li></ul></div></div></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2b-content', this)">Cómo subir múltiples PDFs a la vez<span class="arrow">▼</span></div><div id="step2b-content" class="expandable"><ul><li>Si los archivos de las operadoras están visibles en el diálogo de apertura de Optimizer, puedes subirlos todos simultáneamente usando Ctrl + clic izquierdo en cada archivo y luego haciendo clic en abrir, o arrastrando el clic izquierdo sobre los tres y luego haciendo clic en abrir.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2c-content', this)">¿Por qué mi documento de salida solo dice guardar y no imprimir?<span class="arrow">▼</span></div><div id="step2c-content" class="expandable"><ul><li>Esto sucede si el usuario olvida cambiar la impresora de destino de “Guardar como PDF” a la impresora de su tienda. Simplemente vuelve a seleccionar la impresora de tu tienda desde ese menú desplegable y luego haz clic en imprimir.</li></ul></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step3-content', this)">3) Opcional: personaliza la lista marcando dispositivos como no disponibles, añadiendo comentarios y más.<span class="arrow">▼</span></div><div id="step3-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a-content', this)">Oculta o resalta dispositivos con el botón de personalizar entradas.<span class="arrow">▼</span></div><div id="step3a-content" class="expandable"><div style="margin-top: 5px;">Haz clic en el botón “Personalizar Entradas” para ver todos los dispositivos detectados.</div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a1-content', this)">Puedes resaltar teléfonos levemente o parcialmente para enfatizar ofertas que creas que son mejores ese día.<span class="arrow">▼</span></div><div id="step3a1-content" class="expandable"><ul><li>Resaltado Parcial (casilla izquierda): Resalta solo el nombre del teléfono. (Recomendado para buenas ofertas).</li><li>Resaltado Completo (casilla derecha): Resalta toda la fila para ese dispositivo. (Recomendado para ofertas extra buenas).</li><li>Casillas Maestras: Usa las casillas principales en la parte superior de la lista para alternar resaltados parciales o completos para todo el inventario a la vez.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a2-content', this)">Los dispositivos invendibles se pueden ocultar de la lista de salida usando los botones de ocultar. Los dispositivos ocultos se resumen brevemente en el documento de salida en caso de que se hayan ocultado por accidente.<span class="arrow">▼</span></div><div id="step3a2-content" class="expandable"><ul><li><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#606770" stroke-width="2"/></svg><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> Ocultar (alternar): Usa este botón para ocultar/mostrar listados individuales</li><li><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> Usa el botón de mostrar todo en la parte superior para mostrar todos los teléfonos que fueron ocultados manualmente.</li></ul></div></div><div style="margin-top: 5px;">Haz clic en Hecho para guardar tus personalizaciones. La computadora de Walmart recuerda las preferencias de ocultar y resaltar hasta que se cambien nuevamente. Puedes cambiar los ajustes regresando a esta pantalla.</div></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3b-content', this)">Cambia opciones de formato como mostrar EDLPs probables o aislar dispositivos Apple.<span class="arrow">▼</span></div><div id="step3b-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3b1-content', this)">Alternar EDLPs probables<span class="arrow">▼</span></div><div id="step3b1-content" class="expandable"><ul><li>Los EDLPs probables se pueden ocultar del documento de salida para ver nombres de dispositivos más completos.</li><li>Los datos de EDLP esperan a que un humano note un cambio y lo publique manualmente, por lo que a veces pueden ser inexactos. ☁️✅ significa que la base de datos está funcionando y mostrando los últimos precios reportados, mientras que ☁️❌ significa que Optimizer no puede ver la base de datos, y está usando una copia de seguridad de precios estática, generalmente de hace un mes.</li><li>Los “EDLPs probables” suelen ser precisos pero no están garantizados, comprueba siempre el precio a plazos en ESP antes de realizar una venta.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3b2-content', this)">Aislar dispositivos Apple<span class="arrow">▼</span></div><div id="step3b2-content" class="expandable"><ul><li>Cuando aislar dispositivos Apple está activado, los dispositivos Apple solo aparecerán una vez en su propia categoría en el reporte de inventario, en lugar de repetirse para cada operadora.</li></ul></div></div></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3c-content', this)">Añade comentarios a tu impresión.<span class="arrow">▼</span></div><div id="step3c-content" class="expandable"><ul><li>Los comentarios son visibles cerca de la parte superior del PDF de salida. Esto se puede usar para algo divertido o útil que quieras que otros sepan ese día, como "¡Tenemos a este equipo!" o "el lápiz táctil es gratis en T-Mobile ahora mismo", etc.</li></ul></div></div></div></div>`,
                     troubleHtml: `<div><strong>¿Experimentas problemas? Prueba independientemente las soluciones a continuación de arriba a abajo.</strong> También puedes contactar al desarrollador directamente desde la sección "Acerca de" a continuación.</div><div class="step-list"><div class="step-container"><div class="step-title">1) Lee el tutorial anterior para asegurarte de que el paso con el que tienes problemas se esté realizando correctamente.</div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('trouble2-content-es', this)">2) Asegúrate de que la computadora de Walmart se reinicie correctamente al comienzo de cada turno<span class="arrow">▼</span></div><div id="trouble2-content-es" class="expandable"><ul><li>Para reiniciar la computadora de Walmart, cierra todas las ventanas, haz clic izquierdo en el fondo de pantalla, luego presiona Alt + F4. Elige "reiniciar" en el menú desplegable y presiona "Aceptar".</li><li>Ten en cuenta que los dispositivos mal mantenidos podrían tardar más en reiniciarse; realizar este paso con frecuencia ayudará a prevenir esto.</li></ul></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('trouble3-content-es', this)">3) Asegúrate de que los archivos se guarden correctamente<span class="arrow">▼</span></div><div id="trouble3-content-es" class="expandable"><ul><li>Evita usar puntos en los nombres de los archivos. Intenta etiquetar cada archivo según su operadora, como ATT.pdf, VZW.pdf y TMO.pdf. (O att, VZW y TMO). Una etiqueta como 7.1.26att.pdf podría confundir a la computadora ya que tiene demasiados puntos.</li><li>¡Solo debería haber 3 archivos de WARP guardados en un momento dado! Las computadoras de Walmart no están diseñadas para almacenar archivos de inventario. Por favor, ayuda a mantener la computadora etiquetando cada operadora de manera idéntica al día anterior. Esto sobrescribirá la información de guardado antigua para que la computadora no se sature.</li></ul></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('trouble4-content-es', this)">4) Si los problemas aún persisten, restablece la caché de optimizer.<span class="arrow">▼</span></div><div id="trouble4-content-es" class="expandable"><ul><li>Toca "mostrar más ajustes" y activa "mostrar opciones de desarrollador".</li><li>En el cuadro de desarrollador que aparece a la derecha, haz clic en "Limpiar caché de Optimizer".</li><li><strong>ATENCIÓN, hacer esto eliminará tus ajustes guardados de optimizer: los dispositivos ocultados manualmente y las preferencias de resaltado se restablecerán.</strong></li><li>Para terminar de limpiar la caché, actualiza la página de tu navegador. (Ctrl + r)</li></ul></div></div></div>` },
                 pdf: { inventoryReport: "Reporte de Inventario", madeWith: " - Creado con Optimizer.", sources: "Fuentes: ", na: "N/A", edlpsVerifiedOn: "EDLPs verificados el: ", appleDevices: "Dispositivos Apple", likelyEdlps: "Posibles EDLPs", likely: "Posibles", item: "ARTÍCULO", qty: "CANT.", attVzwTmo: "ATT, VZW, TMO (pi + /mes)", edlpsDpMo: "EDLPs (pi + /mes)", edlps: "EDLPs", noInventory: "No se encontró inventario.", unlockedPhones: "Teléfonos desbloqueados: ", manualHidden: "Dispositivos ocultos: ", noneHidden: "No se ocultó ningún teléfono en este reporte.", and: " y ", commaAnd: ", y " }
             },
             fr: {
-                ui: { loginWarningTitle: "CONTENU EXCLUSIF", loginWarningBody: "L'accès et/ou le partage non autorisés sont interdits. Pour y accéder, acceptez ces conditions en saisissant le code ou le code PIN fourni par l'administrateur de l'appareil.", enterPinPlaceholder: "Entrer le PIN", enterBtn: "Entrer", incorrectPin: "PIN Incorrect", devBoxHeader: "Options développeur", themeDark: "Mode sombre", themeLight: "Mode clair", uploadFiles: "Cliquez ici pour télécharger des fichiers", processing: "Traitement en cours...", outdated: "Certains fichiers pourraient être obsolètes.", customizeBtn: "Personnaliser les Entrées", printBtn: "⠀⠀⠀Imprimer⠀⠀⠀", moreSettings: "Afficher plus de paramètres ▼", lessSettings: "Afficher moins de paramètres ▲", isolateApple: "Isoler les appareils Apple", showEdlps: "Afficher les EDLPs probables", addComments: "Ajouter des commentaires à l'impression", showWearables: "Afficher les wearables", showWearablesNA: "Afficher les wearables (non applicable)", commentsPlaceholder: "Ajoutez vos commentaires d'impression ici.", showDevOptions: "Afficher les options développeur", howToUse: "Comment utiliser / FAQ", troubleshooting: "Dépannage / aide", highlightTitle: "Mettre en Évidence l'Inventaire", highlightSub: "(Mise en évidence partielle/totale)", doneBtn: "Terminé", devModeTitle: "Mode Développeur", devModeP1: "<strong>mode développeur activé mdr</strong>", devModeP2: "(ça ne fait rien)", aboutBtn: "À propos", termsBtn: "Conditions", privacyBtn: "Confidentialité", showPdfInputs: "Afficher les entrées PDF", showEdlpFetches: "Afficher les récupérations EDLP", copyLog: "Copier le journal", forceRefetch: "Forcer le rechargement", clearCache: "Vider le cache d'Optimizer",
+                ui: { loginWarningTitle: "CONTENU EXCLUSIF", loginWarningBody: "L'accès et/ou le partage non autorisés sont interdits. Pour y accéder, acceptez ces conditions en saisissant le code ou le code PIN fourni par l'administrateur de l'appareil.", enterPinPlaceholder: "Entrer le PIN", enterBtn: "Entrer", incorrectPin: "PIN Incorrect", themeDark: "Mode sombre", themeLight: "Mode clair", uploadFiles: "Cliquez ici pour télécharger des fichiers", processing: "Traitement en cours...", outdated: "Certains fichiers pourraient être obsolètes.", customizeBtn: "Personnaliser les Entrées", printBtn: "⠀⠀⠀Imprimer⠀⠀⠀", moreSettings: "Afficher plus de paramètres ▼", lessSettings: "Afficher moins de paramètres ▲", isolateApple: "Isoler les appareils Apple", showEdlps: "Afficher les EDLPs probables", addComments: "Ajouter des commentaires à l'impression", showWearables: "Afficher les wearables", showWearablesNA: "Afficher les wearables (non applicable)", commentsPlaceholder: "Ajoutez vos commentaires d'impression ici.", showDevOptions: "Afficher les options développeur", howToUse: "Comment utiliser / FAQ", troubleshooting: "Dépannage / aide", highlightTitle: "Mettre en Évidence l'Inventaire", highlightSub: "(Mise en évidence partielle/totale)", doneBtn: "Terminé", devModeTitle: "Mode Développeur", devModeP1: "<strong>mode développeur activé mdr</strong>", devModeP2: "(ça ne fait rien)", aboutBtn: "À propos", termsBtn: "Conditions", privacyBtn: "Confidentialité", showPdfInputs: "Afficher les entrées PDF", showEdlpFetches: "Afficher les récupérations EDLP", copyLog: "Copier le journal", forceRefetch: "Forcer le rechargement", clearCache: "Vider le cache d'Optimizer",
                     popoverAbout: "Optimizer est une application sécurisée qui rationalise les rapports d'inventaire Walmart Wireless. Les employés peuvent contacter le développeur en envoyant un message privé à @Abraham Gable sur Microsoft Teams ou par e-mail à AbrahamJohnGable@gmail.com.",
-                    popoverTerms: "Optimizer est fourni « tel quel » et n'est ni affilié, ni approuvé par, ni représentatif de Walmart ou OSL Retail Services. Les utilisateurs assument tous les risques et responsabilités pour toute erreur opérationnelle ou conséquence résultant de l'utilisation de cette application.",
-                    popoverPrivacy: "Cette application utilise le stockage local du navigateur uniquement pour les préférences persistantes de l'utilisateur ; ces informations restent strictement côté client et ne sont jamais transmises à des serveurs externes. Optimizer ne collecte, ne partage et ne suit aucune donnée, car toutes les fonctions d'optimisation PDF sont effectuées exclusivement sur l'appareil local.",
+                    cloudFiles: "Fichiers cloud",
+                    popoverTerms: "Optimizer est actuellement en cours de refonte afin d'être compatible avec les systèmes d'inventaire plus récents et ne dispose pas encore de politique de confidentialité.",
+                    popoverPrivacy: "Optimizer est actuellement en cours de refonte afin d'être compatible avec les systèmes d'inventaire plus récents et ne dispose pas encore de politique de confidentialité.",
                     tutorialHtml: `<div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step1-content', this)">1) Utilisez WARP pour télécharger un rapport d'inventaire pour chaque opérateur.<span class="arrow">▼</span></div><div id="step1-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1a-content', this)">Comment trouver l'écran d'impression dans WARP<span class="arrow">▼</span></div><div id="step1a-content" class="expandable"><ul><li>Connectez-vous à WARP (utilisez le bouton nouvel onglet de Chrome)</li><li>Allez dans Gestion des Stocks > Voir les Stocks Disponibles.</li><li>Sélectionnez un opérateur (AT&T, Verizon ou T-Mobile). Vous devrez peut-être utiliser les flèches supérieures &lt; &gt; pour le trouver d'abord.</li><li>Assurez-vous que la case “En Stock” est cochée, cliquez sur Plus d'Options (<svg class="inline-svg" viewBox="0 0 24 24" fill="#606770"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>) et choisissez Imprimer.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step1b-content', this)">Comment enregistrer en PDF<span class="arrow">▼</span></div><div id="step1b-content" class="expandable"><ul><li>Changez l'imprimante de destination en cliquant sur l'imprimante de votre magasin (ex. “CKPR1”) et en la changeant en “Enregistrer au format PDF”, puis enregistrez.<br><span style="color: #555;">&nbsp;&nbsp;&nbsp;&nbsp;Si vous avez modifié les paramètres de l'imprimante comme l'échelle ou les marges, réinitialisez-les avant d'enregistrer.</span></li><li>Nommez le fichier selon son opérateur (ex. ATT.pdf, VZW.pdf ou TMO.pdf). Assurez-vous d'écraser vos sauvegardes précédentes.</li><li>Les étapes ci-dessus doivent être effectuées pour chaque opérateur à chaque fois.</li></ul></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step2-content', this)">2) Dans Optimizer, cliquez sur "télécharger des fichiers", sélectionnez les trois PDF et cliquez sur imprimer.<span class="arrow">▼</span></div><div id="step2-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a-content', this)">Je ne trouve pas mes fichiers.<span class="arrow">▼</span></div><div id="step2a-content" class="expandable"><div style="margin-top: 5px;">Cela se produit lorsque les fichiers WARP sont enregistrés dans un répertoire alors qu'Optimizer essaie de les trouver ailleurs.</div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a1-content', this)">La solution recommandée et la plus rapide : glissez et déposez chaque fichier depuis la fenêtre de sauvegarde de WARP directement dans Optimizer.<span class="arrow">▼</span></div><div id="step2a1-content" class="expandable"><ul><li>Gardez WARP ouvert dans une fenêtre séparée. Si nécessaire, réorganisez les fenêtres pour voir les deux en même temps.</li><li>Dans la fenêtre WARP, après avoir enregistré tous les opérateurs nécessaires, commencez à en enregistrer un pour la deuxième fois afin que tous les PDF soient visibles.</li><li>Avec la boîte de dialogue de sauvegarde ouverte, cliquez et faites glisser chaque fichier dans la zone de téléchargement d'Optimizer.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2a2-content', this)">Solution à long terme : indiquez à Optimizer et WARP d'enregistrer au même endroit (expérimental)<span class="arrow">▼</span></div><div id="step2a2-content" class="expandable"><div style="margin-top: 5px;">Remarque : ces instructions peuvent ne pas fonctionner sur tous les ordinateurs Walmart. Pour réassigner le répertoire d'Optimizer :</div><ul><li>Cliquez sur télécharger des fichiers</li><li>Tapez Desktop\\testABC.pdf dans le champ nom de fichier et cliquez sur ouvrir.</li><li>Si on vous indique "ce fichier n'existe pas", appuyez sur OK.</li><li>Si la boîte de dialogue ne se ferme pas, fermez-la manuellement avec le x.</li><li>Cliquez à nouveau sur télécharger, Optimizer devrait maintenant s'ouvrir dans le bon chemin.</li></ul></div></div></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2b-content', this)">Comment télécharger plusieurs PDF en même temps<span class="arrow">▼</span></div><div id="step2b-content" class="expandable"><ul><li>Vous pouvez tous les télécharger simultanément en utilisant Ctrl + clic gauche sur chaque fichier puis en cliquant sur ouvrir.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step2c-content', this)">Pourquoi mon document de sortie indique-t-il seulement enregistrer et non imprimer ?<span class="arrow">▼</span></div><div id="step2c-content" class="expandable"><ul><li>Cela arrive si l'utilisateur oublie de changer l'imprimante de destination de "Enregistrer au format PDF" à l'imprimante du magasin. Resélectionnez simplement votre imprimante.</li></ul></div></div></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('step3-content', this)">3) Facultatif : personnalisez la liste en marquant des appareils, en ajoutant des commentaires, etc.<span class="arrow">▼</span></div><div id="step3-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a-content', this)">Masquez ou mettez en évidence des appareils avec le bouton personnaliser.<span class="arrow">▼</span></div><div id="step3a-content" class="expandable"><div style="margin-top: 5px;">Cliquez sur le bouton “Personnaliser les Entrées” pour voir tous les appareils détectés.</div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a1-content', this)">Vous pouvez mettre en évidence les téléphones légèrement ou partiellement pour souligner les offres que vous trouvez meilleures ce jour-là.<span class="arrow">▼</span></div><div id="step3a1-content" class="expandable"><ul><li>Mise en évidence partielle (case de gauche) : Met en évidence uniquement le nom du téléphone. (Recommandé pour les bonnes affaires).</li><li>Mise en évidence totale (case de droite) : Met en évidence toute la ligne. (Recommandé pour les très bonnes affaires).</li><li>Cases Principales : Utilisez les cases principales en haut de la liste pour basculer les mises en évidence partielles ou totales pour tout l'inventaire à la fois.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3a2-content', this)">Les appareils invendables peuvent être masqués de la liste de sortie en utilisant les boutons masquer. Les appareils masqués sont brièvement résumés sur le document de sortie au cas où ils auraient été masqués par accident.<span class="arrow">▼</span></div><div id="step3a2-content" class="expandable"><ul><li><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> Masquer : Utilisez ce bouton pour masquer/afficher individuellement.</li><li><svg class="inline-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> Utilisez le bouton afficher tout en haut pour restaurer.</li></ul></div></div><div style="margin-top: 5px;">Cliquez sur Terminé pour enregistrer. L'ordinateur mémorise les préférences jusqu'à ce qu'elles soient modifiées. Vous pouvez toujours modifier les paramètres en retournant sur cet écran.</div></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3b-content', this)">Modifiez les options de formatage comme l'affichage des EDLPs probables ou l'isolement des appareils Apple.<span class="arrow">▼</span></div><div id="step3b-content" class="expandable"><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3b1-content', this)">Basculer les EDLPs probables<span class="arrow">▼</span></div><div id="step3b1-content" class="expandable"><ul><li>Les EDLPs probables peuvent être masqués du document de sortie.</li><li>Les données EDLP attendent qu'un humain remarque un changement et le publie manuellement, elles peuvent donc parfois être inexactes. ☁️✅ signifie que la base de données fonctionne et affiche les derniers prix signalés, tandis que ☁️❌ signifie qu'Optimizer ne peut pas voir la base de données et utilise une sauvegarde de prix statique, datant généralement d'un mois environ.</li><li>Les « EDLPs probables » sont généralement précis mais ne sont pas garantis, vérifiez toujours le prix sur ESP avant de réaliser une vente.</li></ul></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3b2-content', this)">Isoler les appareils Apple<span class="arrow">▼</span></div><div id="step3b2-content" class="expandable"><ul><li>Lorsque cette option est activée, les appareils Apple n'apparaîtront qu'une seule fois dans leur propre catégorie.</li></ul></div></div></div></div><div class="deep-nest-container"><div class="trigger-link" onclick="window.toggleAccordion('step3c-content', this)">Ajoutez des commentaires à votre impression.<span class="arrow">▼</span></div><div id="step3c-content" class="expandable"><ul><li>Les commentaires sont visibles près du haut du PDF de sortie. Cela peut être utilisé pour quelque chose d'amusant ou d'utile que vous voulez que les autres sachent ce jour-là, comme « On a cette équipe ! » ou « le stylet est gratuit chez T-Mobile en ce moment », etc.</li></ul></div></div></div></div>`,
                     troubleHtml: `<div><strong>Vous rencontrez des problèmes ? Essayez indépendamment les solutions ci-dessous, de haut en bas.</strong> Vous pouvez également contacter le développeur directement depuis la section « À propos » ci-dessous.</div><div class="step-list"><div class="step-container"><div class="step-title">1) Lisez le tutoriel ci-dessus pour vous assurer que l'étape qui vous pose problème est effectuée correctement.</div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('trouble2-content-fr', this)">2) Assurez-vous que l'ordinateur Walmart est correctement redémarré au début de chaque quart de travail<span class="arrow">▼</span></div><div id="trouble2-content-fr" class="expandable"><ul><li>Pour redémarrer l'ordinateur Walmart, fermez toutes les fenêtres, faites un clic gauche sur le fond d'écran, puis appuyez sur Alt + F4. Choisissez « redémarrer » dans le menu déroulant et appuyez sur « OK ».</li><li>Soyez conscient que les appareils mal entretenus pourraient prendre plus de temps à redémarrer ; effectuer cette étape souvent aidera à prévenir cela.</li></ul></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('trouble3-content-fr', this)">3) Assurez-vous que les fichiers sont enregistrés correctement<span class="arrow">▼</span></div><div id="trouble3-content-fr" class="expandable"><ul><li>Évitez d'utiliser des points dans les noms de fichiers. Essayez d'étiqueter chaque fichier selon son opérateur, comme ATT.pdf, VZW.pdf et TMO.pdf. (Ou att, VZW et TMO). Une étiquette comme 7.1.26att.pdf pourrait troubler l'ordinateur car elle contient trop de points.</li><li>Il ne devrait y avoir que 3 fichiers WARP enregistrés à tout moment ! Les ordinateurs Walmart ne sont pas conçus pour stocker des fichiers d'inventaire. Veuillez aider à entretenir l'ordinateur en étiquetant chaque opérateur de manière identique à la veille. Cela écrasera les anciennes informations de sauvegarde afin que l'ordinateur ne soit pas surchargé.</li></ul></div></div><div class="step-container"><div class="step-title trigger-link" onclick="window.toggleAccordion('trouble4-content-fr', this)">4) Si les problèmes persistent, réinitialisez le cache d'optimizer.<span class="arrow">▼</span></div><div id="trouble4-content-fr" class="expandable"><ul><li>Appuyez sur « Afficher plus de paramètres » et activez « Afficher les options développeur ».</li><li>Dans la boîte du développeur apparaissant à droite, cliquez sur « Vider le cache d'Optimizer ».</li><li><strong>ATTENTION, faire cela supprimera vos paramètres optimizer enregistrés : les appareils masqués manuellement et les préférences de mise en évidence seront tous réinitialisés.</strong></li><li>Pour terminer de vider le cache, rafraîchissez la page de votre navigateur. (Ctrl + r)</li></ul></div></div></div>` },
                 pdf: { inventoryReport: "Rapport d'Inventaire", madeWith: " - Créé avec Optimizer.", sources: "Sources : ", na: "N/A", edlpsVerifiedOn: "EDLPs vérifiés le : ", appleDevices: "Appareils Apple", likelyEdlps: "EDLPs Probables", likely: "Probables", item: "ARTICLE", qty: "QTÉ", attVzwTmo: "ATT, VZW, TMO (acpt + /mois)", edlpsDpMo: "EDLPs (acpt + /mois)", edlps: "EDLPs", noInventory: "Aucun inventaire trouvé.", unlockedPhones: "Téléphones débloqués : ", manualHidden: "Appareils masqués : ", noneHidden: "Aucun téléphone n'a été masqué pour ce rapport.", and: " et ", commaAnd: ", et " }
@@ -917,9 +964,8 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         // Populate English Defaults Before Any Swap
         TRANSLATIONS.en.ui = {
             loginWarningTitle: "PROPRIETARY CONTENT", loginWarningBody: "Unauthorized access and/or sharing is forbidden. To gain access, agree to these terms by inputting the passcode or pin given to you by the device administrator.", enterPinPlaceholder: "Enter PIN", enterBtn: "Enter", incorrectPin: "Incorrect PIN",
-            devBoxHeader: "Developer options",
             themeDark: "Dark mode", themeLight: "Light mode",
-            uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "⠀⠀⠀Print⠀⠀⠀", moreSettings: "Show more settings ▼", lessSettings: "Show less settings ▲", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", addComments: "Add comments to printout", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", commentsPlaceholder: "Add your print out comments here.", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", troubleshooting: "Troubleshooting / help", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", aboutBtn: "About", termsBtn: "Terms of Use", privacyBtn: "Privacy Policy", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache",
+            uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "⠀⠀⠀Print⠀⠀⠀", moreSettings: "Show more settings ▼", lessSettings: "Show less settings ▲", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", addComments: "Add comments to printout", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", commentsPlaceholder: "Add your print out comments here.", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", troubleshooting: "Troubleshooting / help", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", aboutBtn: "About", termsBtn: "Terms of Use", privacyBtn: "Privacy Policy", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache", cloudFiles: "Cloud files",
             popoverAbout: document.getElementById('popover-about').innerHTML,
             popoverTerms: document.getElementById('popover-terms').innerHTML,
             popoverPrivacy: document.getElementById('popover-privacy').innerHTML,
@@ -1317,12 +1363,12 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             });
         });
 
-        // v1.1.22: Dev Console Toggle Logic (Inline Box)
+        // v48: Dev Console Toggle Logic (Sidebar)
         const devConsoleToggle = document.getElementById('dev-console-toggle');
-        const devConsoleContainer = document.getElementById('dev-console-container');
+        const devSidebar = document.getElementById('dev-sidebar');
         devConsoleToggle.addEventListener('change', () => { 
             const isChecked = devConsoleToggle.checked;
-            devConsoleContainer.style.display = isChecked ? 'block' : 'none';
+            devSidebar.style.display = isChecked ? 'block' : 'none';
         });
 
         // --- LOCALSTORAGE FUNCTIONS ---
@@ -2664,6 +2710,137 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         loadSettings();
         fetchLivePricing(); // v33: Fetch from Stable Repo
 
+        // --- CLOUD INVENTORY FETCHER & INJECTOR ---
+        window.fetchCloudInventory = async () => {
+            try {
+                const url = `https://cdn.jsdelivr.net/gh/spamfan/optimizer@main/inventory_data.json?t=${Date.now()}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Fetch failed");
+                const data = await res.json();
+                if (data && data.inventory) {
+                    window.cloudInventoryData = data.inventory;
+                    const listEl = document.getElementById('cloud-list');
+                    listEl.innerHTML = '';
+                    
+                    Object.keys(data.inventory).forEach(storeNum => {
+                        const btn = document.createElement('button');
+                        btn.className = 'cloud-store-btn';
+                        btn.innerHTML = `<span>${storeNum}</span> <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>`;
+                        btn.onclick = () => loadCloudStore(storeNum);
+                        listEl.appendChild(btn);
+                    });
+                }
+            } catch (err) {
+                console.warn("Cloud Inventory fetch failed:", err);
+            }
+        };
+
+        const loadCloudStore = async (storeNum) => {
+            const storeData = window.cloudInventoryData[storeNum];
+            if (!storeData) return;
+
+            const uploadText = uploadArea.querySelector('p');
+            const spinner = document.getElementById('upload-spinner');
+            uploadText.textContent = TRANSLATIONS[currentLang].ui.processing || 'Processing...'; 
+            if (spinner) spinner.style.display = 'block';
+
+            try {
+                const statusContainer = document.getElementById('status-container');
+                statusContainer.querySelectorAll('.status-section').forEach(el => el.style.display = 'none');
+                
+                let fileCount = 0;
+                ['ATT', 'VZW', 'TMO'].forEach(c => { if(storeData[c] && storeData[c].text) fileCount++; });
+                
+                for (let i = 0; i < fileCount; i++) {
+                    const skel = document.createElement('div');
+                    skel.className = 'skeleton-box';
+                    skel.innerHTML = '<div class="skeleton-bar"></div>';
+                    statusContainer.appendChild(skel);
+                }
+            } catch (e) {}
+
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            hasWatches = false;
+
+            for (const c of ['ATT', 'VZW', 'TMO']) {
+                if (storeData[c] && storeData[c].text) {
+                    try {
+                        const text = storeData[c].text;
+                        const carrier = categorizePdf(text);
+                        if (carrier === 'unknown') continue;
+
+                        appState[carrier].fileDate = '';
+                        appState[carrier].storeNumber = '';
+                        appState[carrier].consolidatedList = [];
+                        appState[carrier].autoHidden = [];
+
+                        const dateMatch = text.match(/Date:\s*(.*?)(?=\s+Store)/);
+                        if (dateMatch && dateMatch[1]) appState[carrier].fileDate = dateMatch[1].trim();
+                        
+                        const storeMatch = text.match(/Store:\s*(\d+)/);
+                        if (storeMatch && storeMatch[1]) appState[carrier].storeNumber = storeMatch[1].trim();
+
+                        const { preFilterList, postFilterList, autoHidden } = parseInventoryText(text);
+                        appState[carrier].consolidatedList = consolidateInventory(postFilterList);
+                        appState[carrier].autoHidden = autoHidden;
+
+                        const statusSection = document.getElementById(`${carrier}-status`);
+                        statusSection.querySelector('.status-filename').textContent = `Cloud File - ${c}`;
+                        statusSection.style.display = 'block';
+
+                        try {
+                            const statusContainer = document.getElementById('status-container');
+                            const firstSkel = statusContainer.querySelector('.skeleton-box');
+                            if (firstSkel) firstSkel.remove();
+                        } catch (e) {}
+
+                        const fileHasWatches = postFilterList.some(item => item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch'));
+                        if (fileHasWatches) hasWatches = true;
+
+                    } catch (err) {
+                        debugLog(`❌ Cloud Parse CRASH: ${err.message}`, 'sys');
+                    }
+                }
+            }
+
+            const wearablesToggle = document.getElementById('show-wearables-toggle');
+            const wearablesLabel = document.getElementById('wearables-label');
+            if (hasWatches) {
+                wearablesToggle.disabled = false;
+                wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearables || 'Show wearables';
+                wearablesToggle.parentElement.classList.remove('disabled');
+                const savedSettings = JSON.parse(localStorage.getItem('betterInvSettings') || '{}');
+                wearablesToggle.checked = (savedSettings.showWearables !== undefined) ? savedSettings.showWearables : true;
+            } else {
+                wearablesToggle.checked = true;
+                wearablesToggle.disabled = true;
+                wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearablesNA || 'Show wearables (not applicable)';
+                wearablesToggle.parentElement.classList.add('disabled');
+            }
+
+            let hasOutdatedFile = false;
+            ['att', 'vzw', 'tmo'].forEach(c => {
+                if (appState[c].consolidatedList.length > 0 && appState[c].fileDate) {
+                    try {
+                        const datePart = appState[c].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}:\d{2}(:\d{2})?\s+[AP]M)/i);
+                        if (datePart) {
+                            const fileTime = new Date(datePart[0]).getTime();
+                            const hoursOld = (Date.now() - fileTime) / (1000 * 60 * 60);
+                            if (Math.abs(hoursOld) >= 4) hasOutdatedFile = true;
+                        }
+                    } catch(e) {}
+                }
+            });
+            const warningEl = document.getElementById('global-outdated-warning');
+            if (warningEl) warningEl.style.display = hasOutdatedFile ? 'flex' : 'none';
+
+            try { document.querySelectorAll('.skeleton-box').forEach(el => el.remove()); } catch(e) {}
+
+            uploadArea.querySelector('p').textContent = TRANSLATIONS[currentLang].ui.uploadFiles || 'Click here to upload files';
+            if (spinner) spinner.style.display = 'none';
+        };
+
         // --- GATEKEEPER (SHA-256 CRYPTO HASH LOGIC) ---
         const TARGET_HASH = "a76b7f25b6ba5ec51bd9fa42f4143b63c2495996e783baa4d9f8459d314f6ad2";
         const pinInput = document.getElementById('pin-input');
@@ -2686,7 +2863,9 @@ document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             if (hashedPin === TARGET_HASH) {
                 loginView.style.display = 'none';
                 appContainer.style.display = 'block';
+                document.getElementById('cloud-sidebar').style.display = 'block';
                 pinError.style.display = 'none';
+                if (window.fetchCloudInventory) window.fetchCloudInventory();
             } else {
                 pinError.style.display = 'block';
                 pinInput.value = '';
