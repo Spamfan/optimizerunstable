@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Optimizer</title>
     
     <!-- Favicons -->
@@ -16,6 +16,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
 
     <style>
+        /* --- RICH TEXT & MOBILE FIXES --- */
+        .rt-toolbar {
+            position: absolute; top: 0; left: 0; right: 0; background: #f0f2f5; border-bottom: 1px solid #dddfe2;
+            border-radius: 6px 6px 0 0; padding: 5px 10px; display: flex; gap: 8px; opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease-in-out; align-items: center; z-index: 10;
+        }
+        .rt-toolbar.visible { opacity: 1; pointer-events: auto; }
+        .rt-btn { background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 1.1em; color: #1c1e21; font-family: serif; }
+        .rt-btn:hover { background: #e4e6eb; }
+        .rt-chevron { margin-left: auto; font-family: sans-serif; font-size: 0.9em; transition: transform 0.2s; color: #606770; }
+        #comments[contenteditable=true] {
+            width: 100%; padding: 35px 10px 10px 10px; border: 1px solid #dddfe2; border-radius: 6px; box-sizing: border-box;
+            min-height: 80px; text-align: left; font-family: inherit; font-size: 14px; outline: none; position: relative;
+            background: #ffffff; white-space: pre-wrap; overflow-wrap: break-word; line-height: 1.4;
+        }
+        #comments[contenteditable=true]:focus { border-color: #1877f2; }
+        #comments[contenteditable=true]:empty:before { content: attr(data-placeholder); color: #8d949e; pointer-events: none; display: block; }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f0f2f5;
@@ -314,9 +332,9 @@
 
         /* --- LOGIN VIEW STYLES (GATEKEEPER) --- */
         #login-view {
-            width: 100%; max-width: 400px; margin: 10vh auto; background: #ffffff; padding: 40px 30px;
+            width: 90%; max-width: 400px; margin: 10vh auto; background: #ffffff; padding: 40px 30px;
             border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center;
-            border: 1px solid #dddfe2; flex: 0 0 auto;
+            border: 1px solid #dddfe2; flex: 0 0 auto; box-sizing: border-box;
         }
         .login-warning { font-size: 15px; line-height: 1.5; color: #1c1e21; margin-bottom: 25px; }
 
@@ -348,7 +366,7 @@
             line-height: 1.4;
         }
         #store-input, #pin-input {
-            width: 100%; padding: 12px; font-size: 18px; text-align: center;
+            width: 100%; padding: 12px; font-size: 16px; text-align: center;
             border: 2px solid #dddfe2; border-radius: 6px; margin-bottom: 15px;
             box-sizing: border-box; background: #ffffff; color: #1c1e21;
         }
@@ -426,8 +444,8 @@
         }
         @media (max-width: 900px) {
             #top-settings-stack {
-                position: static; flex-direction: row; justify-content: flex-end; 
-                width: 100%; margin-bottom: 15px;
+                position: absolute; top: 15px; right: 15px; flex-direction: row; justify-content: flex-end; 
+                width: auto; margin-bottom: 0;
             }
         }
         .top-btn {
@@ -438,6 +456,26 @@
         }
         .top-btn:hover { background: #d8dadf; }
         
+        /* --- V1.3.3 SCANNER POPOVER --- */
+        .scanner-wrapper { position: relative; display: inline-block; }
+        .scanner-link { color: #1877f2; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .scanner-link:hover { text-decoration: underline; }
+        .scanner-popover {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            margin-top: 12px; background: #ffffff; border: 1px solid #dddfe2; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 15px; width: 220px;
+            text-align: center; z-index: 1000; cursor: default;
+        }
+        .scanner-popover.show { display: block; }
+        /* Caret/Arrow */
+        .scanner-popover::before, .scanner-popover::after {
+            content: ''; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            border: solid transparent; height: 0; width: 0; pointer-events: none;
+        }
+        .scanner-popover::before { border-bottom-color: #dddfe2; border-width: 9px; margin-left: -9px; }
+        .scanner-popover::after { border-bottom-color: #ffffff; border-width: 8px; margin-left: -8px; }
+        .scanner-popover img { width: 100%; height: auto; border-radius: 4px; display: block; margin-bottom: 10px; }
+        .scanner-popover p { margin: 0; font-size: 0.9em; color: #1c1e21; line-height: 1.4; font-weight: normal; }
     </style>
 </head>
 <body>
@@ -503,6 +541,17 @@
             </div>
 
             <div id="status-container">
+                <div id="empty-cloud-message" style="display: none; color: #606770; font-size: 0.9em; font-style: italic; margin-bottom: 10px;">
+                    Upload your store's inventory with 
+                    <div class="scanner-wrapper">
+                        <a id="scanner-btn" class="scanner-link">Scanner</a>
+                        <div id="scanner-popover" class="scanner-popover">
+                            <img src="https://i.imgur.com/7OyGqTbl.png" alt="Scanner QR Code" loading="lazy">
+                            <p>On your mobile device, scan this QR code or go to spamfan.github.io/scanner</p>
+                        </div>
+                    </div>
+                    and it'll appear here.
+                </div>
                 <div class="status-section" id="att-status"><div><span class="status-text">AT&T:</span><span class="status-filename"></span></div></div>
                 <div class="status-section" id="vzw-status"><div><span class="status-text">Verizon:</span><span class="status-filename"></span></div></div>
                 <div class="status-section" id="tmo-status"><div><span class="status-text">T-Mobile:</span><span class="status-filename"></span></div></div>
@@ -513,9 +562,20 @@
                 <button id="process-btn" data-i18n="printBtn">⠀⠀⠀Print⠀⠀⠀</button>
             </div>
             
-            <div id="more-settings-btn">
+            <div class="control-section" id="comments-section" style="display: block; position: relative; margin-bottom: 20px;">
+                <div id="rt-toolbar" class="rt-toolbar">
+                    <button class="rt-btn" data-command="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                    <button class="rt-btn" data-command="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                    <button class="rt-btn" data-command="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+                    <button class="rt-btn rt-chevron" id="rt-collapse-btn" title="Hide Formatting">❮</button>
+                </div>
+                <div id="comments" contenteditable="true" data-placeholder="You can leave comments on today's printout by typing them here."></div>
+                <p id="konami-message">Also try Tank Tycoon!</p>
+            </div>
+
+            <div id="more-settings-btn" tabindex="0">
                 <svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                <span id="more-settings-text" data-i18n="moreSettings">Show more settings ▼</span>
+                <span id="more-settings-text" data-i18n="printoutSettings">Printout settings ▼</span>
             </div>
 
             <div id="advanced-settings-wrapper" style="display: none;">
@@ -528,53 +588,21 @@
                         <input type="checkbox" id="show-edlps-toggle" checked>
                         <label for="show-edlps-toggle" data-i18n="showEdlps">Show likely EDLPs</label>
                     </div>
-                    <div class="toggle-option">
-                        <input type="checkbox" id="show-comments-toggle">
-                        <label for="show-comments-toggle" data-i18n="addComments">Add comments to printout</label>
-                    </div>
                     <div class="toggle-option" id="wearables-wrapper">
-                    <input type="checkbox" id="show-wearables-toggle" checked disabled>
-                    <label for="show-wearables-toggle" id="wearables-label" data-i18n="showWearablesNA">Show wearables (not applicable)</label>
-                </div>
-                
-                <div class="toggle-option" style="align-items: flex-start;">
-                    <div class="segmented-control" id="mode-segmented-control">
-                        <button class="segmented-btn" id="btn-mode-index">Pricing index</button>
-                        <button class="segmented-btn active" id="btn-mode-instore">In-store only</button>
+                        <input type="checkbox" id="show-wearables-toggle" checked disabled>
+                        <label for="show-wearables-toggle" id="wearables-label" data-i18n="showWearablesNA">Show wearables (not applicable)</label>
                     </div>
-                </div>
-                <div class="toggle-option">
-                    <input type="checkbox" id="dev-console-toggle">
-                    <label for="dev-console-toggle" data-i18n="showDevOptions">Show developer options</label>
-                </div>
-            </div>
-            
-            <div class="control-section" id="comments-section">
-                <textarea id="comments" data-i18n-placeholder="commentsPlaceholder" placeholder="Add your print out comments here."></textarea>
-                <p id="konami-message">Also try Tank Tycoon!</p>
-            </div>
-
-            <div id="dev-options-wrapper">
-                    
-                    <div id="dev-console-container">
-                        <div class="dev-box-header" data-i18n="devBoxHeader">Developer options</div>
-                        <div class="dev-box-content">
-                            <div id="console-filters">
-                                <label><input type="checkbox" id="cb-log-pdf" checked> <span data-i18n="showPdfInputs">Show PDF Inputs</span></label>
-                                <label><input type="checkbox" id="cb-log-edlp" checked> <span data-i18n="showEdlpFetches">Show EDLP Fetches</span></label>
-                            </div>
-                            
-                            <pre id="dev-console-output"></pre>
-                            <button id="copy-log-btn" data-i18n="copyLog">Copy Log</button>
-                            <button id="btn-force-fetch" data-i18n="forceRefetch">Force Refetch Data</button>
-                            <button id="btn-reset-settings" data-i18n="clearCache">Clear Optimizer Cache</button>
+                    <div class="toggle-option" style="align-items: flex-start;">
+                        <div class="segmented-control" id="mode-segmented-control">
+                            <button class="segmented-btn" id="btn-mode-index" tabindex="0">Pricing index</button>
+                            <button class="segmented-btn active" id="btn-mode-instore" tabindex="0">In-store only</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="tutorial-container">
-                <div class="main-header" onclick="window.toggleAccordion('main-steps', this)">
+                <div class="main-header" onclick="window.toggleAccordion('main-steps', this)" tabindex="0">
                     <svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     <span data-i18n="howToUse">How To Use / FAQ</span><span class="arrow">▼</span>
                 </div>
@@ -642,11 +670,30 @@
             </div>
 
             <div class="tutorial-container">
-                <div class="main-header" onclick="window.toggleAccordion('trouble-steps', this)">
+                <div class="main-header" onclick="window.toggleAccordion('trouble-steps', this)" tabindex="0">
                     <svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
                     <span data-i18n="troubleshooting">Troubleshooting / help</span><span class="arrow">▼</span>
                 </div>
                 <div id="trouble-steps" class="step-list expandable" data-i18n-html="troubleHtml">
+                    <div class="toggle-option" style="margin-bottom: 15px;">
+                        <input type="checkbox" id="dev-console-toggle">
+                        <label for="dev-console-toggle" data-i18n="showDevOptions" style="font-weight: 600; color: #1c1e21;">Show developer options</label>
+                    </div>
+                    <div id="dev-options-wrapper">
+                        <div id="dev-console-container" style="margin-top: 0; margin-bottom: 15px;">
+                            <div class="dev-box-header" data-i18n="devBoxHeader">Developer options</div>
+                            <div class="dev-box-content">
+                                <div id="console-filters">
+                                    <label><input type="checkbox" id="cb-log-pdf" checked> <span data-i18n="showPdfInputs">Show PDF Inputs</span></label>
+                                    <label><input type="checkbox" id="cb-log-edlp" checked> <span data-i18n="showEdlpFetches">Show EDLP Fetches</span></label>
+                                </div>
+                                <pre id="dev-console-output"></pre>
+                                <button id="copy-log-btn" data-i18n="copyLog">Copy Log</button>
+                                <button id="btn-force-fetch" data-i18n="forceRefetch">Force Refetch Data</button>
+                                <button id="btn-reset-settings" data-i18n="clearCache">Clear Optimizer Cache</button>
+                            </div>
+                        </div>
+                    </div>
                     <div><strong>Experiencing issues? Independently try the solutions below from top to bottom.</strong> You can also reach out to the developer directly from the "About" section below.</div>
                     <div class="step-list">
                         <div class="step-container">
@@ -704,9 +751,37 @@
         }
 
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.3';
+        const APP_VERSION = 'v1.3.3';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
+
+        // --- SCANNER POPOVER LOGIC ---
+        const scannerBtn = document.getElementById('scanner-btn');
+        const scannerPopover = document.getElementById('scanner-popover');
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (scannerBtn) {
+            if (isMobileDevice) {
+                scannerBtn.href = 'https://spamfan.github.io/iris';
+                scannerBtn.target = '_blank';
+            } else {
+                scannerBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scannerPopover.classList.toggle('show');
+                });
+                
+                // Prevent clicks inside popover from bubbling up to the document listener
+                scannerPopover.addEventListener('click', (e) => e.stopPropagation());
+                
+                // Close when clicking anywhere outside
+                document.addEventListener('click', () => {
+                    if (scannerPopover.classList.contains('show')) {
+                        scannerPopover.classList.remove('show');
+                    }
+                });
+            }
+        }
 
         // --- GLOBAL STATE ---
         let appState = { 
@@ -726,7 +801,7 @@
         TRANSLATIONS.en.ui = {
             loginWarningTitle: "PROPRIETARY CONTENT", loginWarningBody: "Unauthorized access and/or sharing is forbidden. To gain access, agree to these terms by inputting the passcode or pin given to you by the device administrator.", enterPinPlaceholder: "Enter PIN", enterBtn: "Enter", incorrectPin: "Incorrect PIN",
             devBoxHeader: "Developer options",
-            uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "⠀⠀⠀Print⠀⠀⠀", moreSettings: "Show more settings ▼", lessSettings: "Show less settings ▲", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", addComments: "Add comments to printout", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", commentsPlaceholder: "Add your print out comments here.", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", troubleshooting: "Troubleshooting / help", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache", cloudFiles: "Cloud files", edlpIndexBtn: "EDLPs Index",
+            uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "⠀⠀⠀Print⠀⠀⠀", printoutSettings: "Printout settings ▼", printoutSettingsUp: "Printout settings ▲", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", troubleshooting: "Troubleshooting / help", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache", cloudFiles: "Cloud files", edlpIndexBtn: "EDLPs Index",
             tutorialHtml: document.getElementById('main-steps').innerHTML,
             troubleHtml: document.getElementById('trouble-steps') ? document.getElementById('trouble-steps').innerHTML : ''
         };
@@ -798,6 +873,12 @@
             'Apple Watch Ultra 2': 'AW ULT2',
             'Apple Watch Ultra': 'AW ULT',
             'Galaxy S23 128GB': 'S23',
+            'Galaxy S23 Ultra 5G': 'S23U',
+            'Galaxy S23': 'S23',
+            'Moto G Power 2026': 'PWR26',
+            'Moto G Stylus 2026': 'STYL26',
+            'Moto G Play 2026': 'PLAY26',
+            'Moto G 2026': 'MG26',
             // v57 Generic Additions
             'Galaxy A54': 'A54', 'Galaxy A35': 'A35', 'Galaxy A14': 'A14', 'Galaxy A13': 'A13', 'Galaxy A12': 'A12', 'Galaxy A11': 'A11', 'Galaxy A71': 'A71', 'Galaxy Note9': 'Note9', 'Galaxy A42 5G': 'A42 5G',
             'Moto G Stylus': 'STYL', 'Moto G Power': 'PWR', 'Moto G': 'MG', 'Moto E6': 'E6', 'Revvl': 'REVVL'
@@ -805,7 +886,7 @@
 
         const COLOR_ABBREVIATIONS = {
             'Beige': 'BGE', 'Black': 'BLK', 'Black Titanium': 'BLK', 'Blue': 'BLU', 'Cosmic Orange': 'ORNG', 'Deep Blue': 'BLU', 'Desert Titanium': 'DSRT', 'Graphite': 'BLK', 'Gray': 'GRY', 'Green': 'GRN', 'Mist Blue': 'BLU', 'Natural Titanium': 'NTRL', 'Navy': 'BLU', 'Sky Blue': 'BLU', 'Space Black': 'BLK', 'Titanium Black': 'BLK', 'Ultramarine': 'BLU', 'White': 'WHTE',
-            'Onyx Black': 'BLK', 'Onyx BLK': 'BLK',
+            'Onyx Black': 'BLK', 'Onyx BLK': 'BLK', 'Slipstream': 'GRY', 'Coal Smoke': 'BLK', 'Tapestry': 'BLU',
             'Midnight': 'NAVY', 'Caramel Latte': 'BEIGE', 'Olive': 'GRN',
             'Silver': 'SLVR', 'Soft Pink': 'PNK'
         };
@@ -1098,6 +1179,9 @@
                     if (fileHasWatches) hasWatches = true;
                 });
 
+                const emptyCloudMsg = document.getElementById('empty-cloud-message');
+                if (emptyCloudMsg) emptyCloudMsg.style.display = 'none';
+
                 const wearablesToggle = document.getElementById('show-wearables-toggle');
                 const wearablesLabel = document.getElementById('wearables-label');
                 if (hasWatches) {
@@ -1155,14 +1239,12 @@
         // v47: Toggle Listeners
         const isolateIphonesCheckbox = document.getElementById('isolate-iphones');
         const showEdlpsToggle = document.getElementById('show-edlps-toggle');
-        const showCommentsToggle = document.getElementById('show-comments-toggle');
         const showWearablesToggle = document.getElementById('show-wearables-toggle');
         const commentsSection = document.getElementById('comments-section');
 
-        [isolateIphonesCheckbox, showEdlpsToggle, showCommentsToggle, showWearablesToggle].forEach(el => {
+        [isolateIphonesCheckbox, showEdlpsToggle, showWearablesToggle].forEach(el => {
             el.addEventListener('change', () => {
                 saveSettings();
-                if (el === showCommentsToggle) commentsSection.style.display = el.checked ? 'block' : 'none';
             });
         });
 
@@ -1193,7 +1275,6 @@
                 const settings = {
                     isolate: isolateIphonesCheckbox.checked,
                     showEdlps: showEdlpsToggle.checked, // v35 Sticky Toggle
-                    showComments: showCommentsToggle.checked, // v47
                     // v48: Save wearables preference even if disabled (unless locked by logic, but we trust user pref here)
                     showWearables: showWearablesToggle.disabled ? (localStorage.getItem('betterInvSettings') ? JSON.parse(localStorage.getItem('betterInvSettings')).showWearables : true) : showWearablesToggle.checked,
                     emphasis: {
@@ -1243,11 +1324,6 @@
                         showEdlpsToggle.checked = true;
                     }
 
-                    // v47 Sticky Toggles
-                    if (settings.showComments !== undefined) {
-                        showCommentsToggle.checked = settings.showComments;
-                        commentsSection.style.display = settings.showComments ? 'block' : 'none';
-                    }
                     // v48: Wearables state is loaded but UI is locked until file drop
                     // We store the preference in a temp variable if needed, or just let the toggle sit.
                     // The toggle is forced disabled/checked on load by HTML default.
@@ -1806,6 +1882,7 @@
             }
             
             // --- INJECT DYNAMIC WARNING BANNER ---
+            yPosition += lineHeight;
             doc.setFontSize(8);
             doc.setFont("helvetica", "bold");
             if (isEdlpIndexMode) {
@@ -1815,7 +1892,77 @@
             }
             yPosition += lineHeight;
             
-            if (comments) { const splitComments = doc.splitTextToSize(comments, 190); doc.setFont("helvetica", "italic").text(splitComments, sideMargin, yPosition); yPosition += (splitComments.length * (lineHeight - 1)); }
+            if (comments) { 
+                yPosition += lineHeight; 
+                
+                const parseRichTextNode = (node) => {
+                    let segments = [];
+                    if (node.nodeType === 3) {
+                        if (node.textContent.trim() || node.textContent.includes('\u00A0')) {
+                            segments.push({ text: node.textContent, bold: false, italic: false, underline: false });
+                        }
+                    } else if (node.nodeType === 1) {
+                        if (node.tagName === 'DIV' || node.tagName === 'P' || node.tagName === 'BR') {
+                            segments.push({ text: '\n', bold: false, italic: false, underline: false });
+                        }
+                        const isBold = node.tagName === 'B' || node.tagName === 'STRONG';
+                        const isItalic = node.tagName === 'I' || node.tagName === 'EM';
+                        const isUnderline = node.tagName === 'U';
+                        
+                        node.childNodes.forEach(child => {
+                            const childSegments = parseRichTextNode(child);
+                            childSegments.forEach(seg => {
+                                if (seg.text !== '\n') {
+                                    if (isBold) seg.bold = true;
+                                    if (isItalic) seg.italic = true;
+                                    if (isUnderline) seg.underline = true;
+                                }
+                                segments.push(seg);
+                            });
+                        });
+                    }
+                    return segments;
+                };
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = comments;
+                const rtSegments = parseRichTextNode(tempDiv);
+                
+                let cursorX = sideMargin;
+                let maxLineWidth = 190;
+                
+                rtSegments.forEach(seg => {
+                    if (seg.text === '\n') {
+                        cursorX = sideMargin;
+                        yPosition += lineHeight;
+                        return;
+                    }
+                    
+                    let fontStyle = "normal";
+                    if (seg.bold && seg.italic) fontStyle = "bolditalic";
+                    else if (seg.bold) fontStyle = "bold";
+                    else if (seg.italic) fontStyle = "italic";
+                    
+                    doc.setFont("helvetica", fontStyle);
+                    
+                    const words = seg.text.split(/(\s+)/);
+                    words.forEach(word => {
+                        if (!word) return;
+                        const w = doc.getTextWidth(word);
+                        if (cursorX + w > sideMargin + maxLineWidth && word.trim() !== '') {
+                            cursorX = sideMargin;
+                            yPosition += lineHeight;
+                        }
+                        doc.text(word, cursorX, yPosition);
+                        if (seg.underline && word.trim() !== '') {
+                            doc.setLineWidth(0.1);
+                            doc.line(cursorX, yPosition + 0.5, cursorX + w, yPosition + 0.5);
+                        }
+                        cursorX += w;
+                    });
+                });
+                yPosition += lineHeight;
+            }
             yPosition += sectionSpacing;
             const contentStartY = yPosition;
 
@@ -2232,7 +2379,7 @@
         processBtn.addEventListener('click', () => { 
             try {
                 const processedData = prepareDataForDisplay(); 
-                const comments = commentsInput.value; 
+                const comments = commentsInput.innerHTML; 
                 const pdfOutput = generateFinalPdf(processedData, comments); 
                 const blobUri = pdfOutput.blobUri;
                 
@@ -2297,7 +2444,59 @@
         
         let clickCount = 0, lastClick = 0;
         versionText.addEventListener('click', () => { const now = Date.now(); if (now - lastClick > 500) { clickCount = 0; } lastClick = now; clickCount++; if (clickCount === 7) { devModalCloseable.button = false; devModalCloseable.backdrop = false; devModeModal.style.display = 'flex'; setTimeout(() => { devModalCloseable.button = true; }, 500); setTimeout(() => { devModalCloseable.backdrop = true; }, 1000); clickCount = 0; } });
-        commentsInput.addEventListener('input', (e) => { const konami = "upupdowndownleftrightleftrightba"; const input = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ''); konamiMessage.style.display = input.includes(konami) ? 'block' : 'none'; });
+        commentsInput.addEventListener('input', (e) => { const konami = "upupdowndownleftrightleftrightba"; const input = e.target.textContent.toLowerCase().replace(/[^a-z0-9]/g, ''); konamiMessage.style.display = input.includes(konami) ? 'block' : 'none'; });
+
+        // --- RICH TEXT TOOLBAR & ACCESSIBILITY LOGIC ---
+        const rtToolbar = document.getElementById('rt-toolbar');
+        const rtCollapseBtn = document.getElementById('rt-collapse-btn');
+        let isToolbarCollapsed = false;
+
+        commentsInput.addEventListener('focus', () => {
+            if (!isToolbarCollapsed) rtToolbar.classList.add('visible');
+        });
+        commentsInput.addEventListener('blur', (e) => {
+            setTimeout(() => { if (!commentsInput.contains(document.activeElement) && !rtToolbar.contains(document.activeElement)) rtToolbar.classList.remove('visible'); }, 100);
+        });
+        
+        rtCollapseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            isToolbarCollapsed = !isToolbarCollapsed;
+            rtCollapseBtn.style.transform = isToolbarCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+            if (isToolbarCollapsed) {
+                rtToolbar.classList.remove('visible');
+            } else {
+                rtToolbar.classList.add('visible');
+                commentsInput.focus();
+            }
+        });
+
+        document.querySelectorAll('.rt-btn:not(.rt-chevron)').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.execCommand(btn.dataset.command, false, null);
+                commentsInput.focus();
+            });
+        });
+
+        commentsInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+            }
+            if (e.ctrlKey) {
+                if (e.key === 'b') { e.preventDefault(); document.execCommand('bold', false, null); }
+                if (e.key === 'i') { e.preventDefault(); document.execCommand('italic', false, null); }
+                if (e.key === 'u') { e.preventDefault(); document.execCommand('underline', false, null); }
+            }
+        });
+
+        // Global Keyboard Accessibility for TabIndex elements
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.getAttribute('tabindex') === '0') {
+                e.preventDefault();
+                document.activeElement.click();
+            }
+        });
 
         // --- INTERACTIVE TUTORIAL LOGIC ---
         window.setHeight = function(element, height) { element.style.maxHeight = height + 'px'; };
@@ -2348,10 +2547,10 @@
                 const textSpan = document.getElementById('more-settings-text');
                 if (advancedSettingsWrapper.style.display === 'none') {
                     advancedSettingsWrapper.style.display = 'block';
-                    if (textSpan) textSpan.textContent = TRANSLATIONS[currentLang].ui.lessSettings;
+                    if (textSpan) textSpan.textContent = TRANSLATIONS[currentLang].ui.printoutSettingsUp || "Printout settings ▲";
                 } else {
                     advancedSettingsWrapper.style.display = 'none';
-                    if (textSpan) textSpan.textContent = TRANSLATIONS[currentLang].ui.moreSettings;
+                    if (textSpan) textSpan.textContent = TRANSLATIONS[currentLang].ui.printoutSettings || "Printout settings ▼";
                 }
             });
         }
@@ -2408,11 +2607,19 @@
         const loadCloudStore = async (storeNum) => {
             isEdlpIndexMode = false;
             const storeData = window.cloudInventoryData[storeNum];
-            if (!storeData) return;
+            const emptyCloudMsg = document.getElementById('empty-cloud-message');
+            
+            if (!storeData) {
+                const statusContainer = document.getElementById('status-container');
+                statusContainer.querySelectorAll('.status-section').forEach(el => el.style.display = 'none');
+                if (emptyCloudMsg) emptyCloudMsg.style.display = 'block';
+                return;
+            }
 
             try {
                 const statusContainer = document.getElementById('status-container');
                 statusContainer.querySelectorAll('.status-section').forEach(el => el.style.display = 'none');
+                if (emptyCloudMsg) emptyCloudMsg.style.display = 'none';
                 
                 let fileCount = 0;
                 ['ATT', 'VZW', 'TMO'].forEach(c => { if(storeData[c] && storeData[c].text) fileCount++; });
@@ -2428,6 +2635,7 @@
             await new Promise(resolve => setTimeout(resolve, 50));
 
             hasWatches = false;
+            let validFilesCount = 0;
 
             for (const c of ['ATT', 'VZW', 'TMO']) {
                 if (storeData[c] && storeData[c].text) {
@@ -2466,8 +2674,7 @@
                             // File is expired, ignore the data
                             appState[carrier].consolidatedList = [];
                             appState[carrier].autoHidden = [];
-                            statusSection.querySelector('.status-filename').textContent = `Cloud File - ${c} (Expired)`;
-                            statusSection.querySelector('.status-filename').style.color = "#d93025";
+                            statusSection.style.display = 'none';
                         } else {
                             // File is fresh, parse normally
                             const { preFilterList, postFilterList, autoHidden } = parseInventoryText(text);
@@ -2475,9 +2682,9 @@
                             appState[carrier].autoHidden = autoHidden;
                             statusSection.querySelector('.status-filename').textContent = `Cloud File - ${c}`;
                             statusSection.querySelector('.status-filename').style.color = ""; // Reset color
+                            statusSection.style.display = 'block';
+                            validFilesCount++;
                         }
-
-                        statusSection.style.display = 'block';
 
                         try {
                             const statusContainer = document.getElementById('status-container');
@@ -2492,6 +2699,12 @@
                         debugLog(`❌ Cloud Parse CRASH: ${err.message}`, 'sys');
                     }
                 }
+            }
+
+            if (validFilesCount === 0 && emptyCloudMsg) {
+                emptyCloudMsg.style.display = 'block';
+            } else if (emptyCloudMsg) {
+                emptyCloudMsg.style.display = 'none';
             }
 
             const wearablesToggle = document.getElementById('show-wearables-toggle');
