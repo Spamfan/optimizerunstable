@@ -16,20 +16,40 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* --- RICH TEXT & MOBILE FIXES --- */
-        .rt-toolbar {
-            position: absolute; top: 0; left: 0; right: 0; background: #f0f2f5; border-bottom: 1px solid #dddfe2;
-            border-radius: 6px 6px 0 0; padding: 5px 10px; display: flex; gap: 8px; opacity: 0; pointer-events: none;
-            transition: opacity 0.2s ease-in-out; align-items: center; z-index: 10;
+        /* --- RICH TEXT V2 --- */
+        .rt-bubble {
+            position: fixed; background: #1c1e21; border-radius: 8px; padding: 4px; display: flex; gap: 2px;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease, top 0.1s ease, left 0.1s ease;
+            z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: translateX(-50%);
         }
-        .rt-toolbar.visible { opacity: 1; pointer-events: auto; }
-        .rt-btn { background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 1.1em; color: #1c1e21; font-family: serif; }
-        .rt-btn:hover { background: #e4e6eb; }
-        .rt-chevron { margin-left: auto; font-family: sans-serif; font-size: 0.9em; transition: transform 0.2s; color: #606770; }
+        .rt-bubble.visible { opacity: 1; pointer-events: auto; }
+        .rt-bubble::after {
+            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border-width: 6px; border-style: solid; border-color: #1c1e21 transparent transparent transparent;
+        }
+        .rt-btn {
+            background: none; border: none; cursor: pointer; padding: 6px 10px; border-radius: 4px;
+            font-size: 1.1em; color: #ffffff; font-family: serif; font-weight: normal;
+        }
+        .rt-btn:hover { background: #3a3b3c; }
+        .rt-btn.active { background: #1877f2; color: #ffffff; }
+        
+        /* Sticky Mobile Toolbar */
+        .rt-sticky {
+            position: fixed; left: 0; right: 0; background: #f0f2f5; border-top: 1px solid #dddfe2;
+            padding: 6px 10px; display: flex; gap: 8px; justify-content: center; z-index: 10000;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .rt-sticky.visible { opacity: 1; pointer-events: auto; }
+        .rt-sticky .rt-btn { color: #1c1e21; }
+        .rt-sticky .rt-btn:hover { background: #e4e6eb; }
+        .rt-sticky .rt-btn.active { background: #1877f2; color: #ffffff; }
+
         #comments[contenteditable=true] {
-            width: 100%; padding: 35px 10px 10px 10px; border: 1px solid #dddfe2; border-radius: 6px; box-sizing: border-box;
+            width: 100%; padding: 12px; border: 1px solid #dddfe2; border-radius: 6px; box-sizing: border-box;
             min-height: 80px; text-align: left; font-family: inherit; font-size: 14px; outline: none; position: relative;
             background: #ffffff; white-space: pre-wrap; overflow-wrap: break-word; line-height: 1.4;
+            transition: min-height 0.2s ease;
         }
         #comments[contenteditable=true]:focus { border-color: #1877f2; }
         #comments[contenteditable=true]:empty:before { content: attr(data-placeholder); color: #8d949e; pointer-events: none; display: block; }
@@ -68,6 +88,7 @@
             align-items: center;
             gap: 20px;
             width: 100%;
+            margin-top: 40px;
         }
 
         #version-wrapper {
@@ -332,7 +353,7 @@
 
         /* --- LOGIN VIEW STYLES (GATEKEEPER) --- */
         #login-view {
-            width: 90%; max-width: 400px; margin: 10vh auto; background: #ffffff; padding: 40px 30px;
+            width: 100%; max-width: 500px; margin: 10vh auto; background: #ffffff; padding: 40px 30px;
             border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center;
             border: 1px solid #dddfe2; flex: 0 0 auto; box-sizing: border-box;
         }
@@ -563,22 +584,28 @@
             </div>
             
             <div class="control-section" id="comments-section" style="display: block; position: relative; margin-bottom: 20px;">
-                <div id="rt-toolbar" class="rt-toolbar">
-                    <button class="rt-btn" data-command="bold" title="Bold (Ctrl+B)"><b>B</b></button>
-                    <button class="rt-btn" data-command="italic" title="Italic (Ctrl+I)"><i>I</i></button>
-                    <button class="rt-btn" data-command="underline" title="Underline (Ctrl+U)"><u>U</u></button>
-                    <button class="rt-btn rt-chevron" id="rt-collapse-btn" title="Hide Formatting">❮</button>
-                </div>
                 <div id="comments" contenteditable="true" data-placeholder="You can leave comments on today's printout by typing them here."></div>
                 <p id="konami-message">Also try Tank Tycoon!</p>
             </div>
-
-            <div id="more-settings-btn" tabindex="0">
-                <svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                <span id="more-settings-text" data-i18n="printoutSettings">Printout settings ▼</span>
+            
+            <!-- Rich Text Menus -->
+            <div id="rt-bubble" class="rt-bubble">
+                <button class="rt-btn" data-command="bold"><b>B</b></button>
+                <button class="rt-btn" data-command="italic"><i>I</i></button>
+                <button class="rt-btn" data-command="underline"><u>U</u></button>
+            </div>
+            <div id="rt-sticky" class="rt-sticky">
+                <button class="rt-btn" data-command="bold"><b>B</b></button>
+                <button class="rt-btn" data-command="italic"><i>I</i></button>
+                <button class="rt-btn" data-command="underline"><u>U</u></button>
             </div>
 
-            <div id="advanced-settings-wrapper" style="display: none;">
+            <div class="tutorial-container" style="margin-bottom: 0;">
+                <div class="main-header" onclick="window.toggleAccordion('advanced-settings-wrapper', this)" tabindex="0" style="margin-bottom: 15px;">
+                    <svg class="inline-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span id="more-settings-text" data-i18n="printoutSettings">Printout settings</span><span class="arrow">▼</span>
+                </div>
+                <div id="advanced-settings-wrapper" class="step-list expandable" style="margin-top: 0;">
                 <div class="toggles-grid">
                     <div class="toggle-option">
                         <input type="checkbox" id="isolate-iphones" checked>
@@ -751,7 +778,7 @@
         }
 
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.3.3';
+        const APP_VERSION = 'v1.4.1';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
 
@@ -1216,8 +1243,18 @@
             }
         };
 
-        btnModeIndex.addEventListener('click', activateIndexMode);
-        btnModeInstore.addEventListener('click', activateInstoreMode);
+        document.getElementById('mode-segmented-control').addEventListener('click', (e) => {
+            if (isEdlpIndexMode) activateInstoreMode();
+            else activateIndexMode();
+        });
+        
+        document.getElementById('mode-segmented-control').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (isEdlpIndexMode) activateInstoreMode();
+                else activateIndexMode();
+            }
+        });
 
         // v33: Console Filters Logic (Fixed)
         const consoleOut = document.getElementById('dev-console-output');
@@ -1892,7 +1929,12 @@
             }
             yPosition += lineHeight;
             
-            if (comments) { 
+            // Check if comments are functionally empty before drawing
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = comments || "";
+            const hasRealText = tempDiv.textContent.trim().length > 0;
+            
+            if (comments && hasRealText) { 
                 yPosition += lineHeight; 
                 
                 const parseRichTextNode = (node) => {
@@ -1924,8 +1966,6 @@
                     return segments;
                 };
 
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = comments;
                 const rtSegments = parseRichTextNode(tempDiv);
                 
                 let cursorX = sideMargin;
@@ -2444,37 +2484,116 @@
         
         let clickCount = 0, lastClick = 0;
         versionText.addEventListener('click', () => { const now = Date.now(); if (now - lastClick > 500) { clickCount = 0; } lastClick = now; clickCount++; if (clickCount === 7) { devModalCloseable.button = false; devModalCloseable.backdrop = false; devModeModal.style.display = 'flex'; setTimeout(() => { devModalCloseable.button = true; }, 500); setTimeout(() => { devModalCloseable.backdrop = true; }, 1000); clickCount = 0; } });
-        commentsInput.addEventListener('input', (e) => { const konami = "upupdowndownleftrightleftrightba"; const input = e.target.textContent.toLowerCase().replace(/[^a-z0-9]/g, ''); konamiMessage.style.display = input.includes(konami) ? 'block' : 'none'; });
-
-        // --- RICH TEXT TOOLBAR & ACCESSIBILITY LOGIC ---
-        const rtToolbar = document.getElementById('rt-toolbar');
-        const rtCollapseBtn = document.getElementById('rt-collapse-btn');
-        let isToolbarCollapsed = false;
-
-        commentsInput.addEventListener('focus', () => {
-            if (!isToolbarCollapsed) rtToolbar.classList.add('visible');
-        });
-        commentsInput.addEventListener('blur', (e) => {
-            setTimeout(() => { if (!commentsInput.contains(document.activeElement) && !rtToolbar.contains(document.activeElement)) rtToolbar.classList.remove('visible'); }, 100);
-        });
         
-        rtCollapseBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            isToolbarCollapsed = !isToolbarCollapsed;
-            rtCollapseBtn.style.transform = isToolbarCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
-            if (isToolbarCollapsed) {
-                rtToolbar.classList.remove('visible');
-            } else {
-                rtToolbar.classList.add('visible');
-                commentsInput.focus();
+        commentsInput.addEventListener('input', (e) => { 
+            const konami = "upupdowndownleftrightleftrightba"; 
+            const input = e.target.textContent.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+            konamiMessage.style.display = input.includes(konami) ? 'block' : 'none'; 
+            
+            // The "Bouncer": Strip non-ASCII/emojis
+            if (/[^\x00-\x7F]/.test(commentsInput.innerText)) {
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+                const offset = range.startOffset;
+                commentsInput.innerText = commentsInput.innerText.replace(/[^\x00-\x7F]/g, '');
+                try {
+                    const newRange = document.createRange();
+                    newRange.setStart(commentsInput.firstChild || commentsInput, Math.min(offset, (commentsInput.innerText || "").length));
+                    newRange.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(newRange);
+                } catch(err){}
+            }
+            
+            // Ghost Text Fix
+            if (commentsInput.innerHTML === '<br>' || commentsInput.innerHTML.trim() === '') {
+                commentsInput.innerHTML = '';
             }
         });
 
-        document.querySelectorAll('.rt-btn:not(.rt-chevron)').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
+        commentsInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+            text = text.replace(/[^\x00-\x7F]/g, ''); // Bouncer
+            document.execCommand('insertText', false, text);
+        });
+
+        commentsInput.addEventListener('blur', () => {
+            // Ghost Text Fix on blur & Auto-Shrink
+            if (commentsInput.innerHTML === '<br>' || commentsInput.innerHTML.trim() === '') {
+                commentsInput.innerHTML = '';
+            }
+            commentsInput.style.minHeight = '80px';
+            commentsInput.scrollTop = 0;
+        });
+
+        // --- RICH TEXT V2 (BUBBLE & STICKY) ---
+        const rtBubble = document.getElementById('rt-bubble');
+        const rtSticky = document.getElementById('rt-sticky');
+        const isMobileRT = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        const updateActiveButtons = () => {
+            const commands = ['bold', 'italic', 'underline'];
+            const containers = [rtBubble, rtSticky];
+            containers.forEach(container => {
+                if (!container) return;
+                commands.forEach(cmd => {
+                    const btn = container.querySelector(`[data-command="${cmd}"]`);
+                    if (btn) {
+                        if (document.queryCommandState(cmd)) btn.classList.add('active');
+                        else btn.classList.remove('active');
+                    }
+                });
+            });
+        };
+
+        document.addEventListener('selectionchange', () => {
+            if (document.activeElement !== commentsInput) {
+                rtBubble.classList.remove('visible');
+                return;
+            }
+            updateActiveButtons();
+            if (!isMobileRT) {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+                    rtBubble.style.top = `${rect.top - 40}px`;
+                    rtBubble.style.left = `${rect.left + (rect.width / 2)}px`;
+                    rtBubble.classList.add('visible');
+                } else {
+                    rtBubble.classList.remove('visible');
+                }
+            }
+        });
+
+        if (isMobileRT && window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                if (document.activeElement === commentsInput) {
+                    const vv = window.visualViewport;
+                    rtSticky.style.top = `${vv.offsetTop + vv.height - 35}px`;
+                    rtSticky.classList.add('visible');
+                } else {
+                    rtSticky.classList.remove('visible');
+                }
+            });
+            commentsInput.addEventListener('focus', () => {
+                setTimeout(() => {
+                    const vv = window.visualViewport;
+                    rtSticky.style.top = `${vv.offsetTop + vv.height - 35}px`;
+                    rtSticky.classList.add('visible');
+                }, 300);
+            });
+            commentsInput.addEventListener('blur', () => {
+                setTimeout(() => rtSticky.classList.remove('visible'), 100);
+            });
+        }
+
+        document.querySelectorAll('.rt-btn').forEach(btn => {
+            btn.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // Prevent losing focus
                 document.execCommand(btn.dataset.command, false, null);
-                commentsInput.focus();
+                updateActiveButtons();
             });
         });
 
@@ -2539,21 +2658,7 @@
             mainSteps.style.maxHeight = mainSteps.scrollHeight + 'px';
         }
 
-        // v107: Advanced Settings Toggle
-        const moreSettingsBtn = document.getElementById('more-settings-btn');
-        const advancedSettingsWrapper = document.getElementById('advanced-settings-wrapper');
-        if (moreSettingsBtn && advancedSettingsWrapper) {
-            moreSettingsBtn.addEventListener('click', () => {
-                const textSpan = document.getElementById('more-settings-text');
-                if (advancedSettingsWrapper.style.display === 'none') {
-                    advancedSettingsWrapper.style.display = 'block';
-                    if (textSpan) textSpan.textContent = TRANSLATIONS[currentLang].ui.printoutSettingsUp || "Printout settings ▲";
-                } else {
-                    advancedSettingsWrapper.style.display = 'none';
-                    if (textSpan) textSpan.textContent = TRANSLATIONS[currentLang].ui.printoutSettings || "Printout settings ▼";
-                }
-            });
-        }
+        // (v107 Advanced Settings Toggle removed - now handled by native toggleAccordion logic)
 
         // Terms of Use Modal Logic
         const termsLink = document.getElementById('terms-link');
@@ -2778,7 +2883,12 @@
         const lastStore = localStorage.getItem('lastStore');
         if (lastStore) {
             storeInput.value = lastStore;
-            setTimeout(() => pinInput.focus(), 50);
+            // Force a slight delay to ensure DOM is ready, then forcibly focus. 
+            // Note: Mobile OS may still suppress keyboard without physical tap, but cursor will be staged.
+            setTimeout(() => {
+                pinInput.focus();
+                try { pinInput.select(); } catch(e){}
+            }, 150);
         }
 
         btnEnter.addEventListener('click', checkPin);
