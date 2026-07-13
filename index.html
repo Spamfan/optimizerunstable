@@ -37,22 +37,33 @@
         /* Sticky Mobile Toolbar */
         .rt-sticky {
             position: fixed; left: 0; right: 0; background: #f0f2f5; border-top: 1px solid #dddfe2;
-            padding: 6px 10px; display: flex; gap: 8px; justify-content: center; z-index: 10000;
+            padding: 6px 15px; display: flex; gap: 8px; justify-content: flex-start; z-index: 10000;
             opacity: 0; pointer-events: none; transition: opacity 0.2s ease; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         .rt-sticky.visible { opacity: 1; pointer-events: auto; }
         .rt-sticky .rt-btn { color: #1c1e21; }
         .rt-sticky .rt-btn:hover { background: #e4e6eb; }
         .rt-sticky .rt-btn.active { background: #1877f2; color: #ffffff; }
+        
+        @media (prefers-color-scheme: dark) {
+            .rt-sticky { background: #1c1e21; border-top: 1px solid #3a3b3c; }
+            .rt-sticky .rt-btn { color: #e4e6eb; }
+            .rt-sticky .rt-btn:hover { background: #3a3b3c; }
+            .rt-sticky .rt-btn.active { background: #1877f2; color: #ffffff; }
+        }
 
         #comments[contenteditable=true] {
             width: 100%; padding: 12px; border: 1px solid #dddfe2; border-radius: 6px; box-sizing: border-box;
-            min-height: 80px; text-align: left; font-family: inherit; font-size: 14px; outline: none; position: relative;
+            min-height: 80px; max-height: 80px; overflow-y: auto; text-align: left; font-family: inherit; font-size: 14px; outline: none; position: relative;
             background: #ffffff; white-space: pre-wrap; overflow-wrap: break-word; line-height: 1.4;
-            transition: min-height 0.2s ease;
+            transition: max-height 0.2s ease, border-color 0.2s ease;
         }
-        #comments[contenteditable=true]:focus { border-color: #1877f2; }
+        #comments[contenteditable=true]:focus { border-color: #1877f2; max-height: 250px; }
         #comments[contenteditable=true]:empty:before { content: attr(data-placeholder); color: #8d949e; pointer-events: none; display: block; }
+        
+        html, body {
+            overflow-x: hidden;
+        }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -114,11 +125,13 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
+            width: calc(100% - 20px);
+            margin: 0 auto;
             max-width: 500px;
             text-align: center;
             flex: 0 0 auto; /* Keep fixed width */
             position: relative;
+            box-sizing: border-box;
         }
 
         h1 {
@@ -778,7 +791,7 @@
         }
 
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.4.1';
+        const APP_VERSION = 'v1.4.2';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
 
@@ -1180,7 +1193,18 @@
             btnModeIndex.classList.add('active');
             btnModeInstore.classList.remove('active');
             
+            const statusContainer = document.getElementById('status-container');
+            const skel = document.createElement('div');
+            skel.className = 'skeleton-box mode-skel';
+            skel.innerHTML = '<div class="skeleton-bar"></div>';
+            statusContainer.appendChild(skel);
+            ['att', 'vzw', 'tmo'].forEach(c => {
+                const sec = document.getElementById(`${c}-status`);
+                if(sec) sec.style.display = 'none';
+            });
+            
             setTimeout(() => {
+                document.querySelectorAll('.mode-skel').forEach(el => el.remove());
                 hasWatches = false;
                 ['att', 'vzw', 'tmo'].forEach(carrier => {
                     appState[carrier].fileDate = '';
@@ -1235,12 +1259,25 @@
             btnModeInstore.classList.add('active');
             btnModeIndex.classList.remove('active');
             
-            const lastStore = localStorage.getItem('lastStore');
-            if (lastStore && window.cloudInventoryData) {
-                loadCloudStore(lastStore);
-            } else {
-                debugLog("No store or cloud data available for In-store mode.", "sys");
-            }
+            const statusContainer = document.getElementById('status-container');
+            const skel = document.createElement('div');
+            skel.className = 'skeleton-box mode-skel';
+            skel.innerHTML = '<div class="skeleton-bar"></div>';
+            statusContainer.appendChild(skel);
+            ['att', 'vzw', 'tmo'].forEach(c => {
+                const sec = document.getElementById(`${c}-status`);
+                if(sec) sec.style.display = 'none';
+            });
+            
+            setTimeout(() => {
+                document.querySelectorAll('.mode-skel').forEach(el => el.remove());
+                const lastStore = localStorage.getItem('lastStore');
+                if (lastStore && window.cloudInventoryData) {
+                    loadCloudStore(lastStore);
+                } else {
+                    debugLog("No store or cloud data available for In-store mode.", "sys");
+                }
+            }, 100);
         };
 
         document.getElementById('mode-segmented-control').addEventListener('click', (e) => {
@@ -2485,25 +2522,16 @@
         let clickCount = 0, lastClick = 0;
         versionText.addEventListener('click', () => { const now = Date.now(); if (now - lastClick > 500) { clickCount = 0; } lastClick = now; clickCount++; if (clickCount === 7) { devModalCloseable.button = false; devModalCloseable.backdrop = false; devModeModal.style.display = 'flex'; setTimeout(() => { devModalCloseable.button = true; }, 500); setTimeout(() => { devModalCloseable.backdrop = true; }, 1000); clickCount = 0; } });
         
+        commentsInput.addEventListener('beforeinput', (e) => {
+            if (e.data && /[^\x00-\x7F]/.test(e.data)) {
+                e.preventDefault();
+            }
+        });
+
         commentsInput.addEventListener('input', (e) => { 
             const konami = "upupdowndownleftrightleftrightba"; 
             const input = e.target.textContent.toLowerCase().replace(/[^a-z0-9]/g, ''); 
             konamiMessage.style.display = input.includes(konami) ? 'block' : 'none'; 
-            
-            // The "Bouncer": Strip non-ASCII/emojis
-            if (/[^\x00-\x7F]/.test(commentsInput.innerText)) {
-                const selection = window.getSelection();
-                const range = selection.getRangeAt(0);
-                const offset = range.startOffset;
-                commentsInput.innerText = commentsInput.innerText.replace(/[^\x00-\x7F]/g, '');
-                try {
-                    const newRange = document.createRange();
-                    newRange.setStart(commentsInput.firstChild || commentsInput, Math.min(offset, (commentsInput.innerText || "").length));
-                    newRange.collapse(true);
-                    selection.removeAllRanges();
-                    selection.addRange(newRange);
-                } catch(err){}
-            }
             
             // Ghost Text Fix
             if (commentsInput.innerHTML === '<br>' || commentsInput.innerHTML.trim() === '') {
@@ -2523,7 +2551,6 @@
             if (commentsInput.innerHTML === '<br>' || commentsInput.innerHTML.trim() === '') {
                 commentsInput.innerHTML = '';
             }
-            commentsInput.style.minHeight = '80px';
             commentsInput.scrollTop = 0;
         });
 
@@ -2569,8 +2596,8 @@
 
         if (isMobileRT && window.visualViewport) {
             window.visualViewport.addEventListener('resize', () => {
-                if (document.activeElement === commentsInput) {
-                    const vv = window.visualViewport;
+                const vv = window.visualViewport;
+                if (document.activeElement === commentsInput && vv.height < window.innerHeight - 100) {
                     rtSticky.style.top = `${vv.offsetTop + vv.height - 35}px`;
                     rtSticky.classList.add('visible');
                 } else {
@@ -2580,8 +2607,10 @@
             commentsInput.addEventListener('focus', () => {
                 setTimeout(() => {
                     const vv = window.visualViewport;
-                    rtSticky.style.top = `${vv.offsetTop + vv.height - 35}px`;
-                    rtSticky.classList.add('visible');
+                    if (vv.height < window.innerHeight - 100) {
+                        rtSticky.style.top = `${vv.offsetTop + vv.height - 35}px`;
+                        rtSticky.classList.add('visible');
+                    }
                 }, 300);
             });
             commentsInput.addEventListener('blur', () => {
@@ -2598,10 +2627,6 @@
         });
 
         commentsInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
-            }
             if (e.ctrlKey) {
                 if (e.key === 'b') { e.preventDefault(); document.execCommand('bold', false, null); }
                 if (e.key === 'i') { e.preventDefault(); document.execCommand('italic', false, null); }
@@ -2639,10 +2664,14 @@
             if (!targetContentElement) return;
             const isOpening = !targetContentElement.classList.contains('open');
             if (isOpening) {
-                const parentContainer = targetContentElement.closest('.tutorial-container') || document;
-                parentContainer.querySelectorAll('.expandable.open').forEach(function (openContent) {
-                    if (!openContent.contains(targetContentElement)) window.closeAccordion(openContent);
-                });
+                if (!targetContentElement.classList.contains('step-list')) {
+                    const parentContainer = targetContentElement.closest('.tutorial-container') || document;
+                    parentContainer.querySelectorAll('.expandable.open').forEach(function (openContent) {
+                        if (!openContent.contains(targetContentElement) && !openContent.classList.contains('step-list')) {
+                            window.closeAccordion(openContent);
+                        }
+                    });
+                }
                 window.openAccordion(targetContentElement);
             } else {
                 const childrenToClose =[targetContentElement, ...targetContentElement.querySelectorAll('.expandable.open')];
