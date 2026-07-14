@@ -165,7 +165,7 @@
         }
 
         .status-section {
-            display: none;
+            display: block;
             padding: 10px;
             border: 1px solid #dddfe2;
             border-radius: 6px;
@@ -424,15 +424,16 @@
         #dev-mode-text p { margin: 5px 0; }
         .emphasis-header { display: flex; align-items: center; font-weight: bold; font-size: 0.8em; color: #606770; background-color: #f0f2f5; padding: 10px 20px; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 10; }
         .emphasis-header-hide, .emphasis-header-partial, .emphasis-header-full, .emphasis-header-unhide { min-width: 40px; text-align: center; }
-        .emphasis-header-unhide { cursor: pointer; }
+        .emphasis-header-unhide { cursor: pointer; outline: none; }
+        .emphasis-header-unhide:focus { outline: 2px solid #1877f2; border-radius: 2px; }
         .emphasis-header-text { flex-grow: 1; padding-left: 5px; }
         .modal-body { flex-grow: 1; padding: 0; overflow-y: auto; }
         #emphasis-list-container { padding: 5px 20px; }
         #pdf-preview-iframe { width: 100%; height: 100%; border: none; }
         .emphasis-item { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #e9ebee; }
-        .emphasis-item-hide { min-width: 40px; text-align: center; }
+        .emphasis-item-hide { min-width: 40px; text-align: center; outline: none; }
+        .emphasis-item-hide:focus { outline: 2px solid #1877f2; border-radius: 2px; }
         .emphasis-item .hide-icon { width: 18px; height: 18px; cursor: pointer; fill: #606770; }
-        .emphasis-item.item-hidden .hide-icon { fill: #ccc; }
         .emphasis-item input[type="checkbox"] { min-width: 40px; height: 18px; margin: 0; }
         .emphasis-item-text { font-size: 0.9em; padding-left: 5px; transition: color 0.2s; }
         .emphasis-item.item-hidden .emphasis-item-text { color: #ccc; text-decoration: line-through; }
@@ -441,6 +442,18 @@
         #download-btn { display: inline-block; background-color: #e4e6eb; color: #050505; margin-right: 10px; }
         #print-btn { display: inline-block; background-color: #1877f2; color: white; }
         .modal-footer button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
+
+        /* --- BACKUP MODAL STYLES --- */
+        #edlp-backup-input {
+            width: 100%; height: 150px; padding: 10px; font-family: monospace; font-size: 0.85em;
+            border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; resize: vertical; margin-top: 10px;
+        }
+        #backup-status-msg { margin-right: 15px; font-weight: bold; font-size: 0.9em; }
+        #btn-open-backup-modal {
+            background-color: #e4e6eb; color: #1c1e21; border: none; padding: 8px 12px;
+            border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 15px; width: 100%;
+        }
+        #btn-open-backup-modal:hover { background-color: #d8dadf; }
 
         /* --- V107 SETTINGS --- */
         #more-settings-btn {
@@ -575,7 +588,7 @@
             </div>
 
             <div id="status-container">
-                <div id="empty-cloud-message" style="display: none; color: #606770; font-size: 0.9em; font-style: italic; margin-bottom: 10px;">
+                <div id="empty-cloud-message" style="visibility: hidden; color: #606770; font-size: 0.9em; font-style: italic; margin-bottom: 10px;">
                     Upload your store's inventory with 
                     <div class="scanner-wrapper">
                         <a id="scanner-btn" class="scanner-link">Scanner</a>
@@ -715,6 +728,7 @@
                     <span data-i18n="troubleshooting">Troubleshooting / help</span><span class="arrow">▼</span>
                 </div>
                 <div id="trouble-steps" class="step-list expandable" data-i18n-html="troubleHtml">
+                    <button id="btn-open-backup-modal">Manage Offline Pricing Backup</button>
                     <div class="toggle-option" style="margin-bottom: 15px;">
                         <input type="checkbox" id="dev-console-toggle">
                         <label for="dev-console-toggle" data-i18n="showDevOptions" style="font-weight: 600; color: #1c1e21;">Show developer options</label>
@@ -771,6 +785,23 @@
     <div id="emphasis-modal" class="modal-container"></div>
     <div id="dev-mode-modal" class="modal-container"></div>
     
+    <div id="backup-modal" class="modal-container">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Offline Pricing Backup</h2>
+                <span class="close-btn" id="backup-close-btn">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <p style="margin-top: 0; font-size: 0.9em; color: #606770;">If the CDN is blocked, paste a valid JSON backup here to restore prices. Get the latest backup from <a href="https://spamfan.github.io/edlp-backup" target="_blank" style="color:#1877f2; font-weight:bold;">spamfan.github.io/edlp-backup</a>.</p>
+                <textarea id="edlp-backup-input" placeholder='{"devices": { ... }}'></textarea>
+            </div>
+            <div class="modal-footer">
+                <span id="backup-status-msg"></span>
+                <button id="btn-save-backup" style="background-color: #1877f2; color: white;">Save Backup</button>
+            </div>
+        </div>
+    </div>
+
     <div id="terms-modal" class="modal-container">
         <div class="modal-content" style="max-width: 300px; padding: 25px; text-align: center;">
             <h3 style="margin-top: 0; color: #1c1e21; font-size: 1.3em;">Terms of Use</h3>
@@ -791,9 +822,13 @@
         }
 
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.4.2';
+        const APP_VERSION = 'v1.4.5';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
+        
+        // Dynamic Tabindexes for Keyboard Navigation
+        document.querySelectorAll('.trigger-link').forEach(el => el.setAttribute('tabindex', '0'));
+        document.querySelectorAll('.rt-btn').forEach(el => el.setAttribute('tabindex', '-1'));
 
         // --- SCANNER POPOVER LOGIC ---
         const scannerBtn = document.getElementById('scanner-btn');
@@ -950,170 +985,41 @@
             // v55: Removed "Unlocked" entries to allow dynamic capacity handling
         };
 
-      // Offline Backup Data (v1.1.21 Updated)
-        let EDLP_DATA = {
-            att: {
-                'Galaxy A12': { last_updated: 1777160315773, monthly: 1, total: 36 },
-                'Galaxy A13 5G': { last_updated: 1777160222709, monthly: 1, total: 36 },
-                'Classic': { last_updated: 1777921704413, monthly: 1.53, total: 55 },
-                'Flip4': { last_updated: 1774655177593, monthly: 1, total: 36 },
-                'Flip 4 5G': { last_updated: 1766772123050, monthly: 0, total: 0 },
-                'Galaxy S23 Ultra 5G': { last_updated: 1766198104640, monthly: 1, total: 36 },
-                'Galaxy A03': { last_updated: 1767653824335, monthly: 0, total: 0 },
-                'Galaxy A11': { last_updated: 1767472970733, monthly: 1, total: 36 },
-                'Galaxy A13 LTE': { last_updated: 1767472968352, monthly: 0, total: 0 },
-                'Galaxy A14': { last_updated: 1769531228286, monthly: 0, total: 0 },
-                'Galaxy A15 5G': { last_updated: 1768259990253, monthly: 1, total: 36 },
-                'Galaxy A16 5G': { last_updated: 1769181665505, monthly: 1.39, total: 50 },
-                'Galaxy A17 5G': { last_updated: 1777921708948, monthly: 3.33, total: 120 },
-                'Galaxy A35 5G': { last_updated: 1769188095938, monthly: 1, total: 36 },
-                'Galaxy S23': { last_updated: 1777160265288, monthly: 1, total: 36 },
-                'Galaxy S23 Plus': { last_updated: 1777160350174, monthly: 0, total: 0 },
-                'Galaxy S24 FE': { last_updated: 1777921722356, monthly: 11.08, total: 399 },
-                'Galaxy S24 Plus': { last_updated: 1769188038542, monthly: 1.36, total: 49 },
-                'Galaxy S25 FE': { last_updated: 1777922725250, monthly: 17, total: 612 },
-                'Galaxy S25 Plus 5G': { last_updated: 1777922733685, monthly: 13.86, total: 499 },
-                'Galaxy S25 Ultra 5G': { last_updated: 1777922748838, monthly: 24.97, total: 899 },
-                'Galaxy S26 Plus': { last_updated: 1770329521331, monthly: 0, total: 0 },
-                'Galaxy S26 Ultra': { last_updated: 1777922762992, monthly: 34.69, total: 1249 },
-                'Galaxy Z Flip 4 5G': { last_updated: 1764700989400, monthly: 0, total: 0 },
-                'Galaxy S24 Ultra 5G': { last_updated: 1769188068892, monthly: 2.75, total: 99 },
-                'iPhone 13': { last_updated: 1769187936022, monthly: 0, total: 0 },
-                'iPhone 14': { last_updated: 1771178686291, monthly: 5.53, total: 199 },
-                'iPhone 14 Plus': { last_updated: 1771178694706, monthly: 5.53, total: 199 },
-                'iPhone 15': { last_updated: 1771178696950, monthly: 8.31, total: 299 },
-                'iPhone 16': { last_updated: 1771178698902, monthly: 17.47, total: 629 },
-                'iPhone 16e': { last_updated: 1771178708172, monthly: 12.47, total: 449 },
-                'iPhone 16 Plus': { last_updated: 1771178700885, monthly: 20.25, total: 729 },
-                'iPhone 16 Pro': { last_updated: 1765144735530, monthly: 22.19, total: 799 },
-                'iPhone 16 Pro Max': { last_updated: 1771178705991, monthly: 27.75, total: 999 },
-                'iPhone 17': { last_updated: 1771178724759, monthly: 21.64, total: 779 },
-                'iPhone 17e': { last_updated: 1773179412495, monthly: 15.25, total: 549 },
-                'iPhone 17 Pro': { last_updated: 1771178714165, monthly: 29.14, total: 1049 },
-                'iPhone 17 Pro Max': { last_updated: 1771178716257, monthly: 31.92, total: 1149 },
-                'iPhone Air': { last_updated: 1771178718025, monthly: 24.97, total: 899 },
-                'iPhone SE 3rd Gen': { last_updated: 1771178719603, monthly: 1, total: 36 },
-                'Moto G 5G 2024': { last_updated: 1767641098493, monthly: 1, total: 36 },
-                'Moto G 5G 2025': { last_updated: 1764701376302, monthly: 0, total: 0 },
-                'Moto G Power 2025': { last_updated: 1764701374519, monthly: 0, total: 0 },
-                'Moto G Stylus 2025': { last_updated: 1777922783288, monthly: 5, total: 180 },
-                'Moto G Stylus 2026': { last_updated: 1776009532207, monthly: 0, total: 0 },
-                'One Ace 5G': { last_updated: 1764701048879, monthly: 0, total: 0 },
-                'Pixel 7a': { last_updated: 1769188128529, monthly: 1, total: 36 },
-                'Pixel 8a': { last_updated: 1769188115860, monthly: 1, total: 36 },
-                'REVVL 6': { last_updated: 1764701398907, monthly: 0, total: 0 },
-                'Revvl 6X 5G': { last_updated: 1769531291650, monthly: 0, total: 0 },
-                'TCL Flip 3': { last_updated: 1768261525286, monthly: 0, total: 0 }
-            },
-            vzw: {
-                'Galaxy A12': { last_updated: 1777160238563, monthly: 0, total: 0 },
-                'Galaxy A13 5G': { last_updated: 1777160221125, monthly: 0, total: 0 },
-                'Classic': { last_updated: 1764700686556, monthly: 0, total: 0 },
-                'Flip4': { last_updated: 1774655177593, monthly: 0, total: 0 },
-                'Flip 4 5G': { last_updated: 1767815328914, monthly: 0, total: 0 },
-                'Galaxy S23 Ultra 5G': { last_updated: 1768261224699, monthly: 1, total: 36 },
-                'Galaxy A03': { last_updated: 1777922833075, monthly: 1, total: 36 },
-                'Galaxy A11': { last_updated: 1768261192025, monthly: 0, total: 0 },
-                'Galaxy A13 LTE': { last_updated: 1767472968352, monthly: 0, total: 0 },
-                'Galaxy A14': { last_updated: 1769531228286, monthly: 0, total: 0 },
-                'Galaxy A15 5G': { last_updated: 1771178080048, monthly: 1, total: 36 },
-                'Galaxy A16 5G': { last_updated: 1777922845185, monthly: 1.39, total: 50 },
-                'Galaxy A17 5G': { last_updated: 1777922853964, monthly: 1.94, total: 70 },
-                'Galaxy A35 5G': { last_updated: 1769188095938, monthly: 0, total: 0 },
-                'Galaxy S23': { last_updated: 1777160363345, monthly: 0, total: 0 },
-                'Galaxy S23 Plus': { last_updated: 1777160352357, monthly: 1, total: 36 },
-                'Galaxy S24 FE': { last_updated: 1777922869053, monthly: 11.08, total: 399 },
-                'Galaxy S24 Plus': { last_updated: 1771178139468, monthly: 1.36, total: 49 },
-                'Galaxy S25 FE': { last_updated: 1777922890585, monthly: 17, total: 612 },
-                'Galaxy S25 Plus 5G': { last_updated: 1777922910572, monthly: 13.86, total: 499 },
-                'Galaxy S25 Ultra 5G': { last_updated: 1769181716629, monthly: 24.97, total: 899 },
-                'Galaxy S26 Plus': { last_updated: 1770329521331, monthly: 0, total: 0 },
-                'Galaxy S26 Ultra': { last_updated: 1777922957617, monthly: 34.69, total: 1249 },
-                'Galaxy Z Flip 4 5G': { last_updated: 1777922971208, monthly: 18.06, total: 650 },
-                'Galaxy S24 Ultra 5G': { last_updated: 1771178151069, monthly: 2.75, total: 99 },
-                'iPhone 13': { last_updated: 1769187936022, monthly: 0, total: 0 },
-                'iPhone 14': { last_updated: 1769187940346, monthly: 5.53, total: 199 },
-                'iPhone 14 Plus': { last_updated: 1769188002526, monthly: 5.53, total: 199 },
-                'iPhone 15': { last_updated: 1771178432298, monthly: 17.5, total: 630 },
-                'iPhone 16': { last_updated: 1777923091735, monthly: 20.25, total: 729 },
-                'iPhone 16e': { last_updated: 1771178479437, monthly: 12.47, total: 449 },
-                'iPhone 16 Plus': { last_updated: 1771178466129, monthly: 23.03, total: 829 },
-                'iPhone 16 Pro': { last_updated: 1771178487882, monthly: 24.97, total: 899 },
-                'iPhone 16 Pro Max': { last_updated: 1771178499578, monthly: 30.53, total: 1099 },
-                'iPhone 17': { last_updated: 1777923108504, monthly: 21.64, total: 779 },
-                'iPhone 17e': { last_updated: 1777923115574, monthly: 15.25, total: 549 },
-                'iPhone 17 Pro': { last_updated: 1771776895726, monthly: 29.14, total: 1049 },
-                'iPhone 17 Pro Max': { last_updated: 1771776894609, monthly: 31.92, total: 1149 },
-                'iPhone Air': { last_updated: 1777923127328, monthly: 24.97, total: 899 },
-                'iPhone SE 3rd Gen': { last_updated: 1769187982075, monthly: 1, total: 36 },
-                'Moto G 5G 2024': { last_updated: 1777922986961, monthly: 1, total: 36 },
-                'Moto G 5G 2025': { last_updated: 1777922997288, monthly: 2, total: 72 },
-                'Moto G Power 2025': { last_updated: 1777923023346, monthly: 2.44, total: 88 },
-                'Moto G Stylus 2025': { last_updated: 1764701373157, monthly: 0, total: 0 },
-                'Moto G Stylus 2026': { last_updated: 1776009487452, monthly: 0, total: 0 },
-                'One Ace 5G': { last_updated: 1771178346070, monthly: 1, total: 36 },
-                'Pixel 7a': { last_updated: 1769188128529, monthly: 1, total: 36 },
-                'Pixel 8a': { last_updated: 1769188115860, monthly: 1, total: 36 },
-                'REVVL 6': { last_updated: 1764701398907, monthly: 0, total: 0 },
-                'Revvl 6X 5G': { last_updated: 1769531291650, monthly: 0, total: 0 },
-                'TCL Flip 3': { last_updated: 1777923050325, monthly: 1.53, total: 55 }
-            },
-            tmo: {
-                'Galaxy A12': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1777160238563 },
-                'Galaxy A13 5G': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1777160221125 },
-                'Classic': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1771177642254 },
-                'Flip4': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1774655177593 },
-                'Flip 4 5G': { dp: 20, monthly: 1, total: 44, mo: 1, last_updated: 1772995036832 },
-                'Galaxy S23 Ultra 5G': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1766198104640 },
-                'Galaxy A03': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1769038272967 },
-                'Galaxy A11': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1767722695655 },
-                'Galaxy A13 LTE': { dp: 30, monthly: 0.79, total: 49, mo: 0.79, last_updated: 1768583483015 },
-                'Galaxy A14': { dp: 40, monthly: 0.25, total: 46, mo: 0.25, last_updated: 1769531255907 },
-                'Galaxy A15 5G': { dp: 20, monthly: 0.67, total: 36.08, mo: 0.67, last_updated: 1769531123760 },
-                'Galaxy A16 5G': { dp: 35, monthly: 0.63, total: 50.12, mo: 0.63, last_updated: 1771689553875 },
-                'Galaxy A17 5G': { dp: 45, monthly: 3, total: 117, mo: 3, last_updated: 1769531090029 },
-                'Galaxy A35 5G': { dp: 30, monthly: 0.25, total: 36, mo: 0.25, last_updated: 1769711173546 },
-                'Galaxy S23': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1777160260603 },
-                'Galaxy S23 Plus': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1777160350174 },
-                'Galaxy S24 FE': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1764700915613 },
-                'Galaxy S24 Plus': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1767657359333 },
-                'Galaxy S25 FE': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1764700930321 },
-                'Galaxy S25 Plus 5G': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1764700953069 },
-                'Galaxy S25 Ultra 5G': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1764630490975 },
-                'Galaxy S26 Plus': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1770329521331 },
-                'Galaxy S26 Ultra': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1770329475722 },
-                'Galaxy Z Flip 4 5G': { dp: 20, monthly: 1, total: 44, mo: 1, last_updated: 1764700989400 },
-                'Galaxy S24 Ultra 5G': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1767474294959 },
-                'iPhone 13': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1768937172988 },
-                'iPhone 14': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1768937166870 },
-                'iPhone 14 Plus': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1769187998117 },
-                'iPhone 15': { dp: 227, monthly: 3, total: 299, mo: 3, last_updated: 1765144676354 },
-                'iPhone 16': { dp: 473, monthly: 6.5, total: 629, mo: 6.5, last_updated: 1776321078129 },
-                'iPhone 16e': { dp: 341, monthly: 4.5, total: 449, mo: 4.5, last_updated: 1769182495858 },
-                'iPhone 16 Plus': { dp: 549, monthly: 7.5, total: 729, mo: 7.5, last_updated: 1772994837796 },
-                'iPhone 16 Pro': { dp: 601, monthly: 8.25, total: 799, mo: 8.25, last_updated: 1765144735530 },
-                'iPhone 16 Pro Max': { dp: 0, monthly: 0, total: 999, mo: 0, last_updated: 1768664920309 },
-                'iPhone 17': { dp: 587, monthly: 8, total: 779, mo: 8, last_updated: 1772994885945 },
-                'iPhone 17e': { dp: 417, monthly: 5.5, total: 549, mo: 5.5, last_updated: 1775493802852 },
-                'iPhone 17 Pro': { dp: 791, monthly: 10.75, total: 1049, mo: 10.75, last_updated: 1772994924752 },
-                'iPhone 17 Pro Max': { dp: 867, monthly: 11.75, total: 1149, mo: 11.75, last_updated: 1776278713033 },
-                'iPhone Air': { dp: 677, monthly: 9.25, total: 899, mo: 9.25, last_updated: 1772994991056 },
-                'iPhone SE 3rd Gen': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1769187971630 },
-                'Moto G 5G 2024': { dp: 12, monthly: 1, total: 36, mo: 1, last_updated: 1769531095677 },
-                'Moto G 5G 2025': { dp: 30, monthly: 1, total: 54, mo: 1, last_updated: 1769703375801 },
-                'Moto G Power 2025': { dp: 40, monthly: 2, total: 88, mo: 2, last_updated: 1768261835668 },
-                'Moto G Stylus 2025': { dp: 50, monthly: 3.46, total: 133, mo: 3.46, last_updated: 1768583494223 },
-                'Moto G Stylus 2026': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1776009487452 },
-                'One Ace 5G': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1764701048879 },
-                'Pixel 7a': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1769188125226 },
-                'Pixel 8a': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1766792893463 },
-                'REVVL 6': { dp: 30, monthly: 0.25, total: 36, mo: 0.25, last_updated: 1767654814269 },
-                'Revvl 6X 5G': { dp: 50, monthly: 2, total: 98, mo: 2, last_updated: 1769531300887 },
-                'TCL Flip 3': { dp: 0, monthly: 0, total: 0, mo: 0, last_updated: 1768261525286 }
+      // Offline Backup Data (v1.4.5 Dynamic)
+        let EDLP_DATA = { att: {}, vzw: {}, tmo: {} };
+
+        // --- LIVE FETCH LOGIC & PARSER ---
+        const processEdlpData = (data, source, log, statusIcon) => {
+            if (data && data.devices) {
+                const deviceCount = Object.keys(data.devices).length;
+                log(`📦 DATA RECEIVED (${source}): ${deviceCount} devices found.`, 'edlp');
+
+                const newEdlp = { att: {}, vzw: {}, tmo: {} };
+                Object.keys(data.devices).forEach(key => {
+                    const device = data.devices[key];
+                    const name = device.name;
+                    if (device.att) newEdlp.att[name] = device.att;
+                    if (device.vzw) newEdlp.vzw[name] = device.vzw;
+                    if (device.tmo) {
+                        newEdlp.tmo[name] = device.tmo;
+                        if (device.tmo.monthly !== undefined) {
+                            newEdlp.tmo[name].mo = device.tmo.monthly;
+                        }
+                    }
+                });
+
+                EDLP_DATA = newEdlp;
+                if (source === 'live') {
+                    statusIcon.textContent = "✅☁";
+                    statusIcon.title = "Live Data Active (Cloud)";
+                } else if (source === 'backup') {
+                    statusIcon.textContent = "⚠️💾";
+                    statusIcon.title = "Local Backup Active";
+                }
+                log(`✅ ${source.toUpperCase()} DATA APPLIED.`, 'edlp');
             }
         };
 
-        // --- LIVE FETCH LOGIC (v33: Stable Repo) ---
         const fetchLivePricing = () => {
             const statusIcon = document.getElementById('status-icon');
             const consoleOut = document.getElementById('dev-console-output');
@@ -1124,10 +1030,8 @@
                 const ts = new Date().toLocaleTimeString();
                 div.textContent = `[${ts}] ${msg}`;
                 consoleOut.appendChild(div);
-                // consoleOut.scrollTop = consoleOut.scrollHeight; // Auto-scroll
             };
 
-            // v33: STABLE REPO
             const url = 'https://cdn.jsdelivr.net/gh/spamfan/optimizer@main/edlp_data.json?t=' + Date.now();
             log(`🔄 FETCH START: ${url}`, 'edlp');
 
@@ -1138,41 +1042,25 @@
                     return res.json();
                 })
                 .then(data => {
-                    if (data && data.devices) {
-                        const deviceCount = Object.keys(data.devices).length;
-                        log(`📦 DATA RECEIVED: ${deviceCount} devices found.`, 'edlp');
-
-                        const a03 = data.devices['galaxya03'];
-                        if(a03) {
-                            log(`🐤 CANARY: Galaxy A03 (VZW) -> Total: ${a03.vzw?.total}, LastUpd: ${a03.vzw?.last_updated}`, 'edlp');
-                            log(`🐤 CANARY: Galaxy A03 (ATT) -> Total: ${a03.att?.total}, LastUpd: ${a03.att?.last_updated}`, 'edlp');
-                        }
-
-                        log(`🔄 TRANSFORMING data...`, 'edlp');
-                        const newEdlp = { att: {}, vzw: {}, tmo: {} };
-                        Object.keys(data.devices).forEach(key => {
-                            const device = data.devices[key];
-                            const name = device.name;
-                            if (device.att) newEdlp.att[name] = device.att;
-                            if (device.vzw) newEdlp.vzw[name] = device.vzw;
-                            if (device.tmo) {
-                                newEdlp.tmo[name] = device.tmo;
-                                if (device.tmo.monthly !== undefined) {
-                                    newEdlp.tmo[name].mo = device.tmo.monthly;
-                                }
-                            }
-                        });
-
-                        EDLP_DATA = newEdlp;
-                        statusIcon.textContent = "✅☁"; // v33
-                        statusIcon.title = "Live Data Active (Cloud)";
-                        log(`✅ LIVE DATA APPLIED.`, 'edlp');
-                    }
+                    processEdlpData(data, 'live', log, statusIcon);
                 })
                 .catch(err => {
                     log(`❌ ERROR: ${err.message}`, 'edlp');
-                    statusIcon.textContent = "❌☁"; // v33
-                    statusIcon.title = "Offline / Connection Failed";
+                    const localBackup = localStorage.getItem('edlpLocalBackup');
+                    if (localBackup) {
+                        try {
+                            const parsedData = JSON.parse(localBackup);
+                            log(`🔄 Attempting to load local backup...`, 'edlp');
+                            processEdlpData(parsedData, 'backup', log, statusIcon);
+                        } catch (e) {
+                            log(`❌ BACKUP ERROR: Invalid JSON in local storage.`, 'edlp');
+                            statusIcon.textContent = "❌☁";
+                            statusIcon.title = "Offline / No Data";
+                        }
+                    } else {
+                        statusIcon.textContent = "❌☁";
+                        statusIcon.title = "Offline / No Data";
+                    }
                 });
         };
 
@@ -1193,65 +1081,52 @@
             btnModeIndex.classList.add('active');
             btnModeInstore.classList.remove('active');
             
-            const statusContainer = document.getElementById('status-container');
-            const skel = document.createElement('div');
-            skel.className = 'skeleton-box mode-skel';
-            skel.innerHTML = '<div class="skeleton-bar"></div>';
-            statusContainer.appendChild(skel);
-            ['att', 'vzw', 'tmo'].forEach(c => {
-                const sec = document.getElementById(`${c}-status`);
-                if(sec) sec.style.display = 'none';
-            });
-            
-            setTimeout(() => {
-                document.querySelectorAll('.mode-skel').forEach(el => el.remove());
-                hasWatches = false;
-                ['att', 'vzw', 'tmo'].forEach(carrier => {
-                    appState[carrier].fileDate = '';
-                    appState[carrier].storeNumber = '';
-                    appState[carrier].autoHidden = [];
-                    
-                    const dummyList = [];
-                    if (EDLP_DATA[carrier]) {
-                        Object.keys(EDLP_DATA[carrier]).forEach(device => {
-                            const priceObj = EDLP_DATA[carrier][device];
-                            if ((priceObj.total && priceObj.total > 0) || (priceObj.monthly && priceObj.monthly > 0) || (priceObj.dp !== undefined && priceObj.dp > 0)) {
-                                dummyList.push([device, "", 1]);
-                            }
-                        });
-                    }
-                    appState[carrier].consolidatedList = consolidateInventory(dummyList);
-                    
-                    const statusSection = document.getElementById(`${carrier}-status`);
-                    statusSection.querySelector('.status-filename').textContent = "EDLP Index Mode Active";
-                    statusSection.style.display = 'block';
-
-                    const fileHasWatches = dummyList.some(item => item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch'));
-                    if (fileHasWatches) hasWatches = true;
-                });
-
-                const emptyCloudMsg = document.getElementById('empty-cloud-message');
-                if (emptyCloudMsg) emptyCloudMsg.style.display = 'none';
-
-                const wearablesToggle = document.getElementById('show-wearables-toggle');
-                const wearablesLabel = document.getElementById('wearables-label');
-                if (hasWatches) {
-                    wearablesToggle.disabled = false;
-                    wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearables || 'Show wearables';
-                    wearablesToggle.parentElement.classList.remove('disabled');
-                    const savedSettings = JSON.parse(localStorage.getItem('betterInvSettings') || '{}');
-                    wearablesToggle.checked = (savedSettings.showWearables !== undefined) ? savedSettings.showWearables : true;
-                } else {
-                    wearablesToggle.checked = true;
-                    wearablesToggle.disabled = true;
-                    wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearablesNA || 'Show wearables (not applicable)';
-                    wearablesToggle.parentElement.classList.add('disabled');
+            hasWatches = false;
+            ['att', 'vzw', 'tmo'].forEach(carrier => {
+                appState[carrier].fileDate = '';
+                appState[carrier].storeNumber = '';
+                appState[carrier].autoHidden = [];
+                
+                const dummyList = [];
+                if (EDLP_DATA[carrier]) {
+                    Object.keys(EDLP_DATA[carrier]).forEach(device => {
+                        const priceObj = EDLP_DATA[carrier][device];
+                        if ((priceObj.total && priceObj.total > 0) || (priceObj.monthly && priceObj.monthly > 0) || (priceObj.dp !== undefined && priceObj.dp > 0)) {
+                            dummyList.push([device, "", 1]);
+                        }
+                    });
                 }
+                appState[carrier].consolidatedList = consolidateInventory(dummyList);
+                
+                const statusSection = document.getElementById(`${carrier}-status`);
+                statusSection.querySelector('.status-filename').textContent = "EDLP Index Mode Active";
+                statusSection.querySelector('.status-filename').style.color = "";
 
-                const warningEl = document.getElementById('global-outdated-warning');
-                if (warningEl) warningEl.style.display = 'none';
-                debugLog("Activated EDLP Index Mode", "sys");
-            }, 50);
+                const fileHasWatches = dummyList.some(item => item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch'));
+                if (fileHasWatches) hasWatches = true;
+            });
+
+            const emptyCloudMsg = document.getElementById('empty-cloud-message');
+            if (emptyCloudMsg) emptyCloudMsg.style.visibility = 'hidden';
+
+            const wearablesToggle = document.getElementById('show-wearables-toggle');
+            const wearablesLabel = document.getElementById('wearables-label');
+            if (hasWatches) {
+                wearablesToggle.disabled = false;
+                wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearables || 'Show wearables';
+                wearablesToggle.parentElement.classList.remove('disabled');
+                const savedSettings = JSON.parse(localStorage.getItem('betterInvSettings') || '{}');
+                wearablesToggle.checked = (savedSettings.showWearables !== undefined) ? savedSettings.showWearables : true;
+            } else {
+                wearablesToggle.checked = true;
+                wearablesToggle.disabled = true;
+                wearablesLabel.textContent = TRANSLATIONS[currentLang].ui.showWearablesNA || 'Show wearables (not applicable)';
+                wearablesToggle.parentElement.classList.add('disabled');
+            }
+
+            const warningEl = document.getElementById('global-outdated-warning');
+            if (warningEl) warningEl.style.display = 'none';
+            debugLog("Activated EDLP Index Mode", "sys");
         };
 
         const activateInstoreMode = () => {
@@ -1259,25 +1134,12 @@
             btnModeInstore.classList.add('active');
             btnModeIndex.classList.remove('active');
             
-            const statusContainer = document.getElementById('status-container');
-            const skel = document.createElement('div');
-            skel.className = 'skeleton-box mode-skel';
-            skel.innerHTML = '<div class="skeleton-bar"></div>';
-            statusContainer.appendChild(skel);
-            ['att', 'vzw', 'tmo'].forEach(c => {
-                const sec = document.getElementById(`${c}-status`);
-                if(sec) sec.style.display = 'none';
-            });
-            
-            setTimeout(() => {
-                document.querySelectorAll('.mode-skel').forEach(el => el.remove());
-                const lastStore = localStorage.getItem('lastStore');
-                if (lastStore && window.cloudInventoryData) {
-                    loadCloudStore(lastStore);
-                } else {
-                    debugLog("No store or cloud data available for In-store mode.", "sys");
-                }
-            }, 100);
+            const lastStore = localStorage.getItem('lastStore');
+            if (lastStore && window.cloudInventoryData) {
+                loadCloudStore(lastStore);
+            } else {
+                debugLog("No store or cloud data available for In-store mode.", "sys");
+            }
         };
 
         document.getElementById('mode-segmented-control').addEventListener('click', (e) => {
@@ -1433,16 +1295,22 @@
         const copyLogBtn = document.getElementById('copy-log-btn');
 
         // --- DYNAMIC HTML INJECTION ---
-        document.getElementById('emphasis-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 id="emphasis-modal-title" data-i18n="highlightTitle">Highlight Inventory</h2><span class="close-btn" id="emphasis-close-btn">&times;</span></div><div class="modal-body"><div class="emphasis-header"><div class="emphasis-header-unhide" id="unhide-all-btn" title="Unhide All">${SHOW_ICON_SVG}</div><div class="emphasis-header-hide"></div><div class="emphasis-header-partial"><input type="checkbox" id="master-partial-checkbox" title="Select/Deselect All Partial"></div><div class="emphasis-header-full"><input type="checkbox" id="master-full-checkbox" title="Select/Deselect All Full"></div><div class="emphasis-header-text" data-i18n="highlightSub">(Highlight partial/full)</div></div><div id="emphasis-list-container"></div></div><div class="modal-footer"><button id="emphasis-done-btn" data-i18n="doneBtn">Done</button></div></div>`;
+        document.getElementById('emphasis-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 id="emphasis-modal-title" data-i18n="highlightTitle">Highlight Inventory</h2><span class="close-btn" id="emphasis-close-btn">&times;</span></div><div class="modal-body"><div class="emphasis-header"><div class="emphasis-header-unhide" id="unhide-all-btn" title="Unhide All" tabindex="0">${SHOW_ICON_SVG}</div><div class="emphasis-header-hide"></div><div class="emphasis-header-partial"><input type="checkbox" id="master-partial-checkbox" title="Select/Deselect All Partial"></div><div class="emphasis-header-full"><input type="checkbox" id="master-full-checkbox" title="Select/Deselect All Full"></div><div class="emphasis-header-text" data-i18n="highlightSub">(Highlight partial/full)</div></div><div id="emphasis-list-container"></div></div><div class="modal-footer"><button id="emphasis-done-btn" data-i18n="doneBtn">Done</button></div></div>`;
         document.getElementById('dev-mode-modal').innerHTML = `<div class="modal-content"><div class="modal-header"><h2 data-i18n="devModeTitle">Dev Mode</h2><span class="close-btn" id="dev-mode-close-btn">&times;</span></div><div class="modal-body"><div id="dev-mode-text"><p data-i18n-html="devModeP1"><strong>developer mode activated lol</strong></p><p data-i18n="devModeP2">(this doesn't do anything)</p></div></div></div>`;
         
         // --- DYNAMIC UI ELEMENT SELECTORS ---
         const emphasisModal = document.getElementById('emphasis-modal');
         const devModeModal = document.getElementById('dev-mode-modal');
+        const backupModal = document.getElementById('backup-modal');
         const emphasisCloseBtn = document.getElementById('emphasis-close-btn');
         const emphasisDoneBtn = document.getElementById('emphasis-done-btn');
         const devModeCloseBtn = document.getElementById('dev-mode-close-btn');
+        const backupCloseBtn = document.getElementById('backup-close-btn');
         const unhideAllBtn = document.getElementById('unhide-all-btn');
+        const btnOpenBackupModal = document.getElementById('btn-open-backup-modal');
+        const btnSaveBackup = document.getElementById('btn-save-backup');
+        const edlpBackupInput = document.getElementById('edlp-backup-input');
+        const backupStatusMsg = document.getElementById('backup-status-msg');
 
         // --- CORE LOGIC & HELPER FUNCTIONS ---
         const parseInventoryText = (text) => { 
@@ -1972,8 +1840,6 @@
             const hasRealText = tempDiv.textContent.trim().length > 0;
             
             if (comments && hasRealText) { 
-                yPosition += lineHeight; 
-                
                 const parseRichTextNode = (node) => {
                     let segments = [];
                     if (node.nodeType === 3) {
@@ -2040,7 +1906,6 @@
                 });
                 yPosition += lineHeight;
             }
-            yPosition += sectionSpacing;
             const contentStartY = yPosition;
 
             // --- v59: SMART FLOW ENGINE ---
@@ -2437,14 +2302,41 @@
             // v40: Ensure full fallback object includes hidden:false
             const currentEmphasis = existingState || { partial: false, full: false, hidden: false }; 
             
-            const itemDiv = document.createElement('div'); itemDiv.className = 'emphasis-item'; if (currentEmphasis.hidden) itemDiv.classList.add('item-hidden'); const hideDiv = document.createElement('div'); hideDiv.className = 'emphasis-item-hide'; hideDiv.innerHTML = HIDE_ICON_SVG; hideDiv.dataset.key = modelAndCapacity; hideDiv.dataset.carrier = sourceCarrier; const partialCheckbox = document.createElement('input'); partialCheckbox.type = 'checkbox'; partialCheckbox.checked = currentEmphasis.partial; partialCheckbox.disabled = currentEmphasis.hidden; partialCheckbox.dataset.key = modelAndCapacity; partialCheckbox.dataset.carrier = sourceCarrier; partialCheckbox.dataset.type = 'partial'; const fullCheckbox = document.createElement('input'); fullCheckbox.type = 'checkbox'; fullCheckbox.checked = currentEmphasis.full; fullCheckbox.disabled = currentEmphasis.hidden; fullCheckbox.dataset.key = modelAndCapacity; fullCheckbox.dataset.carrier = sourceCarrier; fullCheckbox.dataset.type = 'full'; const textDiv = document.createElement('div'); textDiv.className = 'emphasis-item-text'; textDiv.textContent = `${modelAndCapacity} - ${details}`; itemDiv.appendChild(hideDiv); itemDiv.appendChild(partialCheckbox); itemDiv.appendChild(fullCheckbox); itemDiv.appendChild(textDiv); listContainer.appendChild(itemDiv); }); }); emphasisModal.style.display = 'flex'; };
+            const itemDiv = document.createElement('div'); itemDiv.className = 'emphasis-item'; if (currentEmphasis.hidden) itemDiv.classList.add('item-hidden'); const hideDiv = document.createElement('div'); hideDiv.className = 'emphasis-item-hide'; hideDiv.innerHTML = currentEmphasis.hidden ? SHOW_ICON_SVG : HIDE_ICON_SVG; hideDiv.tabIndex = 0; hideDiv.dataset.key = modelAndCapacity; hideDiv.dataset.carrier = sourceCarrier; const partialCheckbox = document.createElement('input'); partialCheckbox.type = 'checkbox'; partialCheckbox.checked = currentEmphasis.partial; partialCheckbox.disabled = currentEmphasis.hidden; partialCheckbox.dataset.key = modelAndCapacity; partialCheckbox.dataset.carrier = sourceCarrier; partialCheckbox.dataset.type = 'partial'; const fullCheckbox = document.createElement('input'); fullCheckbox.type = 'checkbox'; fullCheckbox.checked = currentEmphasis.full; fullCheckbox.disabled = currentEmphasis.hidden; fullCheckbox.dataset.key = modelAndCapacity; fullCheckbox.dataset.carrier = sourceCarrier; fullCheckbox.dataset.type = 'full'; const textDiv = document.createElement('div'); textDiv.className = 'emphasis-item-text'; textDiv.textContent = `${modelAndCapacity} - ${details}`; itemDiv.appendChild(hideDiv); itemDiv.appendChild(partialCheckbox); itemDiv.appendChild(fullCheckbox); itemDiv.appendChild(textDiv); listContainer.appendChild(itemDiv); }); }); updateMasterHideIcon(); emphasisModal.style.display = 'flex'; };
+
+        const updateMasterHideIcon = () => {
+            const unhideBtn = document.getElementById('unhide-all-btn');
+            if (!unhideBtn) return;
+            let anyHidden = false;
+            ['att', 'vzw', 'tmo'].forEach(c => {
+                appState[c].consolidatedList.forEach(item => {
+                    const key = item[0];
+                    const val = appState[c].emphasis.get(key);
+                    if (val && val.hidden) anyHidden = true;
+                });
+            });
+            unhideBtn.innerHTML = anyHidden ? SHOW_ICON_SVG : HIDE_ICON_SVG;
+            unhideBtn.dataset.state = anyHidden ? 'show' : 'hide';
+        };
 
         unhideAllBtn.addEventListener('click', () => {
+            const isShow = unhideAllBtn.dataset.state === 'show';
             ['att', 'vzw', 'tmo'].forEach(c => {
-                appState[c].emphasis.forEach((val, key) => {
-                    val.hidden = false;
-                    appState[c].emphasis.set(key, val);
-                });
+                if (isShow) {
+                    appState[c].emphasis.forEach((val, key) => {
+                        if (val) {
+                            val.hidden = false;
+                            appState[c].emphasis.set(key, val);
+                        }
+                    });
+                } else {
+                    appState[c].consolidatedList.forEach(item => {
+                        const key = item[0];
+                        const val = appState[c].emphasis.get(key) || { partial: false, full: false, hidden: false };
+                        val.hidden = true;
+                        appState[c].emphasis.set(key, val);
+                    });
+                }
             });
             saveSettings();
             openEmphasisModal();
@@ -2507,7 +2399,48 @@
         emphasisCloseBtn.addEventListener('click', () => emphasisModal.style.display = 'none');
         emphasisDoneBtn.addEventListener('click', () => emphasisModal.style.display = 'none');
         devModeCloseBtn.addEventListener('click', () => { if (devModalCloseable.button) devModeModal.style.display = 'none'; });
-        window.addEventListener('click', (event) => { if (event.target == emphasisModal) emphasisModal.style.display = 'none'; if (event.target == devModeModal && devModalCloseable.backdrop) devModeModal.style.display = 'none'; });
+        
+        if (btnOpenBackupModal) btnOpenBackupModal.addEventListener('click', () => backupModal.style.display = 'flex');
+        if (backupCloseBtn) backupCloseBtn.addEventListener('click', () => backupModal.style.display = 'none');
+        
+        if (btnSaveBackup) {
+            btnSaveBackup.addEventListener('click', () => {
+                try {
+                    const rawText = edlpBackupInput.value.trim();
+                    const parsedData = JSON.parse(rawText);
+                    if (parsedData && parsedData.devices) {
+                        localStorage.setItem('edlpLocalBackup', rawText);
+                        
+                        const fakeLog = (msg, type) => {
+                            const consoleOut = document.getElementById('dev-console-output');
+                            if (!consoleOut) return;
+                            const div = document.createElement('div');
+                            div.className = `log-entry log-${type}`;
+                            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+                            consoleOut.appendChild(div);
+                        };
+                        
+                        processEdlpData(parsedData, 'backup', fakeLog, document.getElementById('status-icon'));
+                        edlpBackupInput.value = '';
+                        backupStatusMsg.style.color = '#1877f2';
+                        backupStatusMsg.textContent = '✅ Backup Saved!';
+                        setTimeout(() => backupStatusMsg.textContent = '', 3000);
+                    } else {
+                        throw new Error("Missing 'devices' property.");
+                    }
+                } catch (err) {
+                    backupStatusMsg.style.color = '#d93025';
+                    backupStatusMsg.textContent = '❌ Invalid JSON format';
+                    setTimeout(() => backupStatusMsg.textContent = '', 3000);
+                }
+            });
+        }
+
+        window.addEventListener('click', (event) => { 
+            if (event.target == emphasisModal) emphasisModal.style.display = 'none'; 
+            if (event.target == devModeModal && devModalCloseable.backdrop) devModeModal.style.display = 'none'; 
+            if (event.target == backupModal) backupModal.style.display = 'none';
+        });
 
         // v48 Persistence Debug: Added logging to the click listener
         emphasisModal.addEventListener('click', (e) => { const target = e.target.closest('.emphasis-item-hide'); if (!target) return; const { key, carrier } = target.dataset; const state = appState[carrier].emphasis.get(key) || { partial: false, full: false, hidden: false }; 
@@ -2515,7 +2448,16 @@
         // V48 Log
         debugLog(`HIDE CLICK: Key '${key}' | Pre-State: ${JSON.stringify(state)}`, "sys");
 
-        state.hidden = !state.hidden; appState[carrier].emphasis.set(key, state); const parentItem = target.closest('.emphasis-item'); parentItem.classList.toggle('item-hidden'); parentItem.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = state.hidden); saveSettings(); });
+        state.hidden = !state.hidden; appState[carrier].emphasis.set(key, state); const parentItem = target.closest('.emphasis-item'); parentItem.classList.toggle('item-hidden'); parentItem.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = state.hidden); target.innerHTML = state.hidden ? SHOW_ICON_SVG : HIDE_ICON_SVG; updateMasterHideIcon(); saveSettings(); });
+        
+        emphasisModal.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (document.activeElement && (document.activeElement.classList.contains('emphasis-item-hide') || document.activeElement.id === 'unhide-all-btn')) {
+                    e.preventDefault();
+                    document.activeElement.click();
+                }
+            }
+        });
         // v40: Updated fallback object in change listener
         emphasisModal.addEventListener('change', (e) => { const target = e.target; if (target.type !== 'checkbox') return; const isMaster = target.id.startsWith('master-'); if (isMaster) { const masterType = target.id.includes('partial') ? 'partial' : 'full'; const isChecking = target.checked; const allItems = emphasisModal.querySelectorAll('.emphasis-item:not(.item-hidden)'); allItems.forEach(item => { const partialBox = item.querySelector('[data-type="partial"]'); const fullBox = item.querySelector('[data-type="full"]'); const key = partialBox.dataset.key; const carrier = partialBox.dataset.carrier; const state = appState[carrier].emphasis.get(key) || { partial: false, full: false, hidden: false }; if (masterType === 'partial') { partialBox.checked = isChecking; state.partial = isChecking; if (!isChecking) { fullBox.checked = false; state.full = false; } } else { fullBox.checked = isChecking; state.full = isChecking; if (isChecking) { partialBox.checked = true; state.partial = true; } } appState[carrier].emphasis.set(key, state); }); const masterPartial = document.getElementById('master-partial-checkbox'); const masterFull = document.getElementById('master-full-checkbox'); if (masterType === 'full' && isChecking) masterPartial.checked = true; if (masterType === 'partial' && !isChecking) masterFull.checked = false; } else if (target.dataset.key) { const { key, carrier, type } = target.dataset; const state = appState[carrier].emphasis.get(key) || { partial: false, full: false, hidden: false }; state[type] = target.checked; const parentItem = target.closest('.emphasis-item'); if (parentItem) { const partialBox = parentItem.querySelector('[data-type="partial"]'); const fullBox = parentItem.querySelector('[data-type="full"]'); if (type === 'full' && target.checked) { state.partial = true; if (partialBox) partialBox.checked = true; } if (type === 'partial' && !target.checked) { state.full = false; if (fullBox) fullBox.checked = false; } } appState[carrier].emphasis.set(key, state); } saveSettings(); });
         
@@ -2744,26 +2686,26 @@
             const emptyCloudMsg = document.getElementById('empty-cloud-message');
             
             if (!storeData) {
-                const statusContainer = document.getElementById('status-container');
-                statusContainer.querySelectorAll('.status-section').forEach(el => el.style.display = 'none');
-                if (emptyCloudMsg) emptyCloudMsg.style.display = 'block';
+                if (emptyCloudMsg) emptyCloudMsg.style.visibility = 'visible';
+                ['att', 'vzw', 'tmo'].forEach(c => {
+                    const sec = document.getElementById(`${c}-status`);
+                    if (sec) {
+                        sec.querySelector('.status-filename').textContent = "None found";
+                        sec.querySelector('.status-filename').style.color = "#8d949e";
+                    }
+                });
                 return;
             }
 
             try {
-                const statusContainer = document.getElementById('status-container');
-                statusContainer.querySelectorAll('.status-section').forEach(el => el.style.display = 'none');
-                if (emptyCloudMsg) emptyCloudMsg.style.display = 'none';
-                
-                let fileCount = 0;
-                ['ATT', 'VZW', 'TMO'].forEach(c => { if(storeData[c] && storeData[c].text) fileCount++; });
-                
-                for (let i = 0; i < fileCount; i++) {
-                    const skel = document.createElement('div');
-                    skel.className = 'skeleton-box';
-                    skel.innerHTML = '<div class="skeleton-bar"></div>';
-                    statusContainer.appendChild(skel);
-                }
+                if (emptyCloudMsg) emptyCloudMsg.style.visibility = 'hidden';
+                ['att', 'vzw', 'tmo'].forEach(c => {
+                    const sec = document.getElementById(`${c}-status`);
+                    if (sec) {
+                        sec.querySelector('.status-filename').textContent = "Loading...";
+                        sec.querySelector('.status-filename').style.color = "#8d949e";
+                    }
+                });
             } catch (e) {}
 
             await new Promise(resolve => setTimeout(resolve, 50));
@@ -2772,27 +2714,29 @@
             let validFilesCount = 0;
 
             for (const c of ['ATT', 'VZW', 'TMO']) {
+                const carrier = c.toLowerCase();
+                const statusSection = document.getElementById(`${carrier}-status`);
                 if (storeData[c] && storeData[c].text) {
                     try {
                         const text = storeData[c].text;
-                        const carrier = categorizePdf(text);
-                        if (carrier === 'unknown') continue;
+                        const parsedCarrier = categorizePdf(text);
+                        const targetCarrier = parsedCarrier !== 'unknown' ? parsedCarrier : carrier;
+                        const targetSection = document.getElementById(`${targetCarrier}-status`);
 
-                        appState[carrier].fileDate = '';
-                        appState[carrier].storeNumber = '';
-                        appState[carrier].consolidatedList = [];
-                        appState[carrier].autoHidden = [];
+                        appState[targetCarrier].fileDate = '';
+                        appState[targetCarrier].storeNumber = '';
+                        appState[targetCarrier].consolidatedList = [];
+                        appState[targetCarrier].autoHidden = [];
 
                         const dateMatch = text.match(/Date:\s*(.*?)(?=\s+Store)/);
-                        if (dateMatch && dateMatch[1]) appState[carrier].fileDate = dateMatch[1].trim();
+                        if (dateMatch && dateMatch[1]) appState[targetCarrier].fileDate = dateMatch[1].trim();
                         
                         const storeMatch = text.match(/Store:\s*(\d+)/);
-                        if (storeMatch && storeMatch[1]) appState[carrier].storeNumber = storeMatch[1].trim();
+                        if (storeMatch && storeMatch[1]) appState[targetCarrier].storeNumber = storeMatch[1].trim();
 
-                        // Smart Reader: Check if >= 8 hours old
                         let isExpired = false;
-                        if (appState[carrier].fileDate) {
-                            const datePart = appState[carrier].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}:\d{2}(:\d{2})?\s+[AP]M)/i);
+                        if (appState[targetCarrier].fileDate) {
+                            const datePart = appState[targetCarrier].fileDate.match(/(\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}:\d{2}(:\d{2})?\s+[AP]M)/i);
                             if (datePart) {
                                 const fileTime = new Date(datePart[0]).getTime();
                                 const hoursOld = (Date.now() - fileTime) / (1000 * 60 * 60);
@@ -2802,43 +2746,38 @@
                             }
                         }
 
-                        const statusSection = document.getElementById(`${carrier}-status`);
-                        
                         if (isExpired) {
-                            // File is expired, ignore the data
-                            appState[carrier].consolidatedList = [];
-                            appState[carrier].autoHidden = [];
-                            statusSection.style.display = 'none';
+                            appState[targetCarrier].consolidatedList = [];
+                            appState[targetCarrier].autoHidden = [];
+                            targetSection.querySelector('.status-filename').textContent = "None found";
+                            targetSection.querySelector('.status-filename').style.color = "#8d949e";
                         } else {
-                            // File is fresh, parse normally
                             const { preFilterList, postFilterList, autoHidden } = parseInventoryText(text);
-                            appState[carrier].consolidatedList = consolidateInventory(postFilterList);
-                            appState[carrier].autoHidden = autoHidden;
-                            statusSection.querySelector('.status-filename').textContent = `Cloud File - ${c}`;
-                            statusSection.querySelector('.status-filename').style.color = ""; // Reset color
-                            statusSection.style.display = 'block';
+                            appState[targetCarrier].consolidatedList = consolidateInventory(postFilterList);
+                            appState[targetCarrier].autoHidden = autoHidden;
+                            targetSection.querySelector('.status-filename').textContent = `Cloud File - ${c}`;
+                            targetSection.querySelector('.status-filename').style.color = ""; 
                             validFilesCount++;
                         }
 
-                        try {
-                            const statusContainer = document.getElementById('status-container');
-                            const firstSkel = statusContainer.querySelector('.skeleton-box');
-                            if (firstSkel) firstSkel.remove();
-                        } catch (e) {}
-
-                        const fileHasWatches = postFilterList.some(item => item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch'));
+                        const fileHasWatches = postFilterList && postFilterList.some(item => item[0].startsWith('AW ') || item[0].toLowerCase().includes('apple watch'));
                         if (fileHasWatches) hasWatches = true;
 
                     } catch (err) {
                         debugLog(`❌ Cloud Parse CRASH: ${err.message}`, 'sys');
                     }
+                } else {
+                    if (statusSection) {
+                        statusSection.querySelector('.status-filename').textContent = "None found";
+                        statusSection.querySelector('.status-filename').style.color = "#8d949e";
+                    }
                 }
             }
 
             if (validFilesCount === 0 && emptyCloudMsg) {
-                emptyCloudMsg.style.display = 'block';
+                emptyCloudMsg.style.visibility = 'visible';
             } else if (emptyCloudMsg) {
-                emptyCloudMsg.style.display = 'none';
+                emptyCloudMsg.style.visibility = 'hidden';
             }
 
             const wearablesToggle = document.getElementById('show-wearables-toggle');
@@ -2919,6 +2858,12 @@
                 try { pinInput.select(); } catch(e){}
             }, 150);
         }
+
+        storeInput.addEventListener('input', (e) => {
+            if (e.target.value.trim().length === 4) {
+                pinInput.focus();
+            }
+        });
 
         btnEnter.addEventListener('click', checkPin);
         
