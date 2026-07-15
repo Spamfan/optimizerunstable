@@ -792,7 +792,7 @@
                 <span class="close-btn" id="backup-close-btn">&times;</span>
             </div>
             <div class="modal-body" style="padding: 20px;">
-                <p style="margin-top: 0; font-size: 0.9em; color: #606770;">If the CDN is blocked, paste a valid JSON backup here to restore prices. Get the latest backup from <a href="https://spamfan.github.io/edlp-backup" target="_blank" style="color:#1877f2; font-weight:bold;">spamfan.github.io/edlp-backup</a>.</p>
+                <p style="margin-top: 0; font-size: 0.9em; color: #606770;">If the CDN is blocked, paste a valid JSON backup here to restore prices. Get the latest backup from <a href="https://spamfan.github.io/edlpbackups" target="_blank" style="color:#1877f2; font-weight:bold;">spamfan.github.io/edlpbackups</a>.</p>
                 <textarea id="edlp-backup-input" placeholder='{"devices": { ... }}'></textarea>
             </div>
             <div class="modal-footer">
@@ -822,7 +822,7 @@
         }
 
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.4.5';
+        const APP_VERSION = 'v1.4.6';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         
@@ -2400,7 +2400,17 @@
         emphasisDoneBtn.addEventListener('click', () => emphasisModal.style.display = 'none');
         devModeCloseBtn.addEventListener('click', () => { if (devModalCloseable.button) devModeModal.style.display = 'none'; });
         
-        if (btnOpenBackupModal) btnOpenBackupModal.addEventListener('click', () => backupModal.style.display = 'flex');
+        if (btnOpenBackupModal) {
+            btnOpenBackupModal.addEventListener('click', () => {
+                const existingBackup = localStorage.getItem('edlpLocalBackup');
+                if (existingBackup) {
+                    edlpBackupInput.value = existingBackup;
+                } else {
+                    edlpBackupInput.value = '';
+                }
+                backupModal.style.display = 'flex';
+            });
+        }
         if (backupCloseBtn) backupCloseBtn.addEventListener('click', () => backupModal.style.display = 'none');
         
         if (btnSaveBackup) {
@@ -2411,17 +2421,9 @@
                     if (parsedData && parsedData.devices) {
                         localStorage.setItem('edlpLocalBackup', rawText);
                         
-                        const fakeLog = (msg, type) => {
-                            const consoleOut = document.getElementById('dev-console-output');
-                            if (!consoleOut) return;
-                            const div = document.createElement('div');
-                            div.className = `log-entry log-${type}`;
-                            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-                            consoleOut.appendChild(div);
-                        };
+                        // Test live CDN first; it will automatically fall back to this local backup if the CDN fails.
+                        fetchLivePricing();
                         
-                        processEdlpData(parsedData, 'backup', fakeLog, document.getElementById('status-icon'));
-                        edlpBackupInput.value = '';
                         backupStatusMsg.style.color = '#1877f2';
                         backupStatusMsg.textContent = '✅ Backup Saved!';
                         setTimeout(() => backupStatusMsg.textContent = '', 3000);
