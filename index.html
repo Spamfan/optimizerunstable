@@ -533,7 +533,7 @@
     </div>
 
     <div id="version-wrapper">
-        <span id="status-icon" title="Offline Mode">❌☁</span>
+        <span id="status-icon" title="Offline Mode">❌</span>
         <span id="version-text" style="opacity: 0.7;">Loading...</span>
     </div>
 
@@ -822,7 +822,7 @@
         }
 
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.4.6';
+        const APP_VERSION = 'v1.4.7';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         
@@ -1010,10 +1010,10 @@
 
                 EDLP_DATA = newEdlp;
                 if (source === 'live') {
-                    statusIcon.textContent = "✅☁";
+                    statusIcon.textContent = "☁️";
                     statusIcon.title = "Live Data Active (Cloud)";
                 } else if (source === 'backup') {
-                    statusIcon.textContent = "⚠️💾";
+                    statusIcon.textContent = "💾";
                     statusIcon.title = "Local Backup Active";
                 }
                 log(`✅ ${source.toUpperCase()} DATA APPLIED.`, 'edlp');
@@ -1054,11 +1054,11 @@
                             processEdlpData(parsedData, 'backup', log, statusIcon);
                         } catch (e) {
                             log(`❌ BACKUP ERROR: Invalid JSON in local storage.`, 'edlp');
-                            statusIcon.textContent = "❌☁";
+                            statusIcon.textContent = "❌";
                             statusIcon.title = "Offline / No Data";
                         }
                     } else {
-                        statusIcon.textContent = "❌☁";
+                        statusIcon.textContent = "❌";
                         statusIcon.title = "Offline / No Data";
                     }
                 });
@@ -1135,9 +1135,8 @@
             btnModeIndex.classList.remove('active');
             
             const lastStore = localStorage.getItem('lastStore');
-            if (lastStore && window.cloudInventoryData) {
-                loadCloudStore(lastStore);
-            } else {
+            loadCloudStore(lastStore);
+            if (!lastStore || !window.cloudInventoryData) {
                 debugLog("No store or cloud data available for In-store mode.", "sys");
             }
         };
@@ -2684,12 +2683,16 @@
 
         const loadCloudStore = async (storeNum) => {
             isEdlpIndexMode = false;
-            const storeData = window.cloudInventoryData[storeNum];
+            const storeData = window.cloudInventoryData ? window.cloudInventoryData[storeNum] : null;
             const emptyCloudMsg = document.getElementById('empty-cloud-message');
             
             if (!storeData) {
                 if (emptyCloudMsg) emptyCloudMsg.style.visibility = 'visible';
                 ['att', 'vzw', 'tmo'].forEach(c => {
+                    appState[c].consolidatedList = [];
+                    appState[c].autoHidden = [];
+                    appState[c].fileDate = '';
+                    appState[c].storeNumber = '';
                     const sec = document.getElementById(`${c}-status`);
                     if (sec) {
                         sec.querySelector('.status-filename').textContent = "None found";
