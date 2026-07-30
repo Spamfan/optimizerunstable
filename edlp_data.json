@@ -18,7 +18,8 @@
         "last_updated": 1777160238563,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "A12"
     },
     "a135g": {
       "att": {
@@ -38,7 +39,8 @@
         "last_updated": 1777160221125,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "A13 5G"
     },
     "classic": {
       "att": {
@@ -58,7 +60,8 @@
         "last_updated": 1764700686556,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "Classic"
     },
     "flip4": {
       "att": {
@@ -118,7 +121,8 @@
         "last_updated": 1768261224699,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "S23U"
     },
     "galaxya03": {
       "att": {
@@ -138,7 +142,8 @@
         "last_updated": 1777922833075,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "A03"
     },
     "galaxya11": {
       "att": {
@@ -158,7 +163,8 @@
         "last_updated": 1768261192025,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "A11"
     },
     "galaxya13lte": {
       "att": {
@@ -178,27 +184,27 @@
         "last_updated": 1767472968352,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "A13"
     },
     "galaxya14": {
+      "name": "Galaxy A14",
+      "abbr": "A14",
       "att": {
-        "last_updated": 1778961840224,
-        "monthly": 1,
-        "total": 36
-      },
-      "last_updated": 1778961769448,
-      "name": "Galaxy A14 5G",
-      "tmo": {
-        "dp": 0,
-        "last_updated": 1778961769448,
         "monthly": 0,
         "total": 0
       },
       "vzw": {
-        "last_updated": 1778963488489,
-        "monthly": 1,
-        "total": 36
-      }
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
     },
     "galaxya155g": {
       "att": {
@@ -218,7 +224,8 @@
         "last_updated": 1771178080048,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "A15"
     },
     "galaxya165g": {
       "att": {
@@ -238,7 +245,8 @@
         "last_updated": 1777922845185,
         "monthly": 1.39,
         "total": 50
-      }
+      },
+      "abbr": "A16"
     },
     "galaxya175g": {
       "att": {
@@ -258,7 +266,8 @@
         "last_updated": 1784490194806,
         "monthly": 3.31,
         "total": 119
-      }
+      },
+      "abbr": "A17"
     },
     "galaxya235g": {
       "att": {
@@ -278,7 +287,8 @@
         "last_updated": 1778961870938,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "A23 5G"
     },
     "galaxya355g": {
       "att": {
@@ -298,7 +308,8 @@
         "last_updated": 1769188095938,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "A35"
     },
     "galaxys23": {
       "att": {
@@ -318,7 +329,8 @@
         "last_updated": 1777160363345,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "S23"
     },
     "galaxys23plus5g": {
       "att": {
@@ -338,7 +350,8 @@
         "last_updated": 1777160352357,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "S23+"
     },
     "galaxys24fe": {
       "att": {
@@ -358,7 +371,8 @@
         "last_updated": 1777922869053,
         "monthly": 11.08,
         "total": 399
-      }
+      },
+      "abbr": "24FE"
     },
     "galaxys24plus": {
       "att": {
@@ -378,7 +392,8 @@
         "last_updated": 1782167832510,
         "monthly": 1.36,
         "total": 49
-      }
+      },
+      "abbr": "S24+"
     },
     "galaxys25fe": {
       "att": {
@@ -398,7 +413,8 @@
         "last_updated": 1782167848174,
         "monthly": 11.08,
         "total": 399
-      }
+      },
+      "abbr": "25FE"
     },
     "galaxys25plus5g": {
       "att": {
@@ -418,7 +434,8 @@
         "last_updated": 1781978054640,
         "monthly": 13.86,
         "total": 499
-      }
+      },
+      "abbr": "S25+"
     },
     "galaxys25ultra5g": {
       "att": {
@@ -438,47 +455,46 @@
         "last_updated": 1781978055515,
         "monthly": 13.86,
         "total": 499
-      }
+      },
+      "abbr": "S25U"
     },
     "galaxys26plus5g": {
+      "name": "Galaxy S26 Plus 5G",
+      "abbr": "S26+",
       "att": {
-        "last_updated": 1770329521331,
-        "monthly": 0,
-        "total": 0
-      },
-      "last_updated": 1770329521331,
-      "name": "Galaxy S26 Plus",
-      "tmo": {
-        "dp": 0,
-        "last_updated": 1770329521331,
         "monthly": 0,
         "total": 0
       },
       "vzw": {
-        "last_updated": 1770329521331,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
     },
     "galaxys26ultra5g": {
+      "name": "Galaxy S26 Ultra 5G",
+      "abbr": "S26U",
       "att": {
-        "last_updated": 1781978185061,
-        "monthly": 31.92,
-        "total": 1149
-      },
-      "last_updated": 1770329475722,
-      "name": "Galaxy S26 Ultra",
-      "tmo": {
-        "dp": 0,
-        "last_updated": 1770329475722,
         "monthly": 0,
         "total": 0
       },
       "vzw": {
-        "last_updated": 1781978183595,
-        "monthly": 31.92,
-        "total": 1149
-      }
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
     },
     "galaxyzflip45g": {
       "att": {
@@ -498,7 +514,8 @@
         "last_updated": 1777922971208,
         "monthly": 18.06,
         "total": 650
-      }
+      },
+      "abbr": "GZF4"
     },
     "galazys24ultra5g": {
       "att": {
@@ -518,7 +535,8 @@
         "last_updated": 1782167818372,
         "monthly": 2.75,
         "total": 99
-      }
+      },
+      "abbr": "S24U"
     },
     "gstylus5g": {
       "att": {
@@ -538,7 +556,8 @@
         "last_updated": 1778962013934,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "STYL 5G"
     },
     "iphone13": {
       "att": {
@@ -558,7 +577,8 @@
         "last_updated": 1769187936022,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "IP13"
     },
     "iphone14": {
       "att": {
@@ -578,7 +598,8 @@
         "last_updated": 1769187940346,
         "monthly": 5.53,
         "total": 199
-      }
+      },
+      "abbr": "IP14"
     },
     "iphone14plus": {
       "att": {
@@ -598,7 +619,8 @@
         "last_updated": 1769188002526,
         "monthly": 5.53,
         "total": 199
-      }
+      },
+      "abbr": "IP14+"
     },
     "iphone15": {
       "att": {
@@ -618,7 +640,8 @@
         "last_updated": 1771178432298,
         "monthly": 17.5,
         "total": 630
-      }
+      },
+      "abbr": "IP15"
     },
     "iphone16": {
       "att": {
@@ -638,7 +661,8 @@
         "last_updated": 1785090248459,
         "monthly": 20.25,
         "total": 729
-      }
+      },
+      "abbr": "IP16"
     },
     "iphone16e": {
       "att": {
@@ -658,7 +682,8 @@
         "last_updated": 1785090286163,
         "monthly": 12.47,
         "total": 449
-      }
+      },
+      "abbr": "IP16e"
     },
     "iphone16plus": {
       "att": {
@@ -678,7 +703,8 @@
         "last_updated": 1785090262428,
         "monthly": 22.19,
         "total": 799
-      }
+      },
+      "abbr": "IP16+"
     },
     "iphone16pro": {
       "att": {
@@ -698,7 +724,8 @@
         "last_updated": 1771178487882,
         "monthly": 24.97,
         "total": 899
-      }
+      },
+      "abbr": "IP16PR"
     },
     "iphone16promax": {
       "att": {
@@ -718,7 +745,8 @@
         "last_updated": 1785090278557,
         "monthly": 27.75,
         "total": 999
-      }
+      },
+      "abbr": "IP16PM"
     },
     "iphone17": {
       "att": {
@@ -738,7 +766,8 @@
         "last_updated": 1785090308899,
         "monthly": 21.64,
         "total": 779
-      }
+      },
+      "abbr": "IP17"
     },
     "iphone17e": {
       "att": {
@@ -758,7 +787,8 @@
         "last_updated": 1785179837315,
         "monthly": 15.25,
         "total": 549
-      }
+      },
+      "abbr": "IP17e"
     },
     "iphone17pro": {
       "att": {
@@ -778,7 +808,8 @@
         "last_updated": 1785090304045,
         "monthly": 29.14,
         "total": 1049
-      }
+      },
+      "abbr": "IP17PR"
     },
     "iphone17promax": {
       "att": {
@@ -798,7 +829,8 @@
         "last_updated": 1785090300112,
         "monthly": 31.92,
         "total": 1149
-      }
+      },
+      "abbr": "IP17PM"
     },
     "iphoneair": {
       "att": {
@@ -818,7 +850,8 @@
         "last_updated": 1785090317943,
         "monthly": 24.97,
         "total": 899
-      }
+      },
+      "abbr": "IP AIR"
     },
     "iphonese3rdgen": {
       "att": {
@@ -838,7 +871,8 @@
         "last_updated": 1769187982075,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "SE3"
     },
     "motog5g2024": {
       "att": {
@@ -858,7 +892,8 @@
         "last_updated": 1777922986961,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "MG24"
     },
     "motog5g2025": {
       "att": {
@@ -878,7 +913,8 @@
         "last_updated": 1785090114148,
         "monthly": 1.39,
         "total": 50
-      }
+      },
+      "abbr": "MG25"
     },
     "motog5g2026": {
       "att": {
@@ -898,7 +934,8 @@
         "last_updated": 1785090183438,
         "monthly": 3.61,
         "total": 130
-      }
+      },
+      "abbr": "MG26"
     },
     "motogplay2026": {
       "att": {
@@ -918,7 +955,8 @@
         "last_updated": 1785090203081,
         "monthly": 3.06,
         "total": 110
-      }
+      },
+      "abbr": "PLAY26"
     },
     "motogpower2024": {
       "att": {
@@ -938,7 +976,8 @@
         "last_updated": 1778963093977,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "PWR24"
     },
     "motogpower2025": {
       "att": {
@@ -958,7 +997,8 @@
         "last_updated": 1785090076654,
         "monthly": 1.5,
         "total": 54
-      }
+      },
+      "abbr": "PWR25"
     },
     "motogpower2026": {
       "att": {
@@ -978,7 +1018,8 @@
         "last_updated": 1784490264526,
         "monthly": 4.92,
         "total": 177
-      }
+      },
+      "abbr": "PWR26"
     },
     "motogstylus2023": {
       "att": {
@@ -998,7 +1039,8 @@
         "last_updated": 1778961931973,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "STYL23"
     },
     "motogstylus2024": {
       "att": {
@@ -1018,7 +1060,8 @@
         "last_updated": 1778963300522,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "STYL24"
     },
     "motogstylus2025": {
       "att": {
@@ -1038,7 +1081,8 @@
         "last_updated": 1764701373157,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "STYL25"
     },
     "motogstylus2026": {
       "att": {
@@ -1058,7 +1102,8 @@
         "last_updated": 1784490271168,
         "monthly": 7.31,
         "total": 263
-      }
+      },
+      "abbr": "STYL26"
     },
     "motogstylus5g": {
       "att": {
@@ -1078,7 +1123,8 @@
         "last_updated": 1778963414541,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "STYL 5G"
     },
     "oneace5g": {
       "att": {
@@ -1098,7 +1144,8 @@
         "last_updated": 1771178346070,
         "monthly": 1,
         "total": 36
-      }
+      },
+      "abbr": "ACE"
     },
     "pixel7a": {
       "att": {
@@ -1158,7 +1205,8 @@
         "last_updated": 1764701398907,
         "monthly": 0,
         "total": 0
-      }
+      },
+      "abbr": "REV6"
     },
     "revvl6x5g": {
       "att": {
@@ -1198,7 +1246,8 @@
         "last_updated": 1785179828761,
         "monthly": 15.25,
         "total": 549
-      }
+      },
+      "abbr": "IP17e (SOMM)"
     },
     "tclflip3": {
       "att": {
@@ -1218,7 +1267,1007 @@
         "last_updated": 1784490297403,
         "monthly": 2.06,
         "total": 74
-      }
+      },
+      "abbr": "Flip3"
+    },
+    "iphone15promax": {
+      "name": "iPhone 15 Pro Max",
+      "abbr": "IP15PM",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328530,
+      "is_ghost": true
+    },
+    "iphone15pro": {
+      "name": "iPhone 15 Pro",
+      "abbr": "IP15PR",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328530,
+      "is_ghost": true
+    },
+    "iphone15plus": {
+      "name": "iPhone 15 Plus",
+      "abbr": "IP15+",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328530,
+      "is_ghost": true
+    },
+    "iphone13promax": {
+      "name": "iPhone 13 Pro Max",
+      "abbr": "IP13PM",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "iphone13pro": {
+      "name": "iPhone 13 Pro",
+      "abbr": "IP13PR",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "iphone12promax": {
+      "name": "iPhone 12 Pro Max",
+      "abbr": "IP12PM",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "iphone12pro": {
+      "name": "iPhone 12 Pro",
+      "abbr": "IP12PR",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "iphone12": {
+      "name": "iPhone 12",
+      "abbr": "IP12",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "iphone11promax": {
+      "name": "iPhone 11 Pro Max",
+      "abbr": "IP11PM",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxys22plus": {
+      "name": "Galaxy S22 Plus",
+      "abbr": "S22+",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxys21plus": {
+      "name": "Galaxy S21 Plus",
+      "abbr": "S21+",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxys20plus": {
+      "name": "Galaxy S20 Plus",
+      "abbr": "S20+",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "cingularflip44gb": {
+      "name": "Cingular Flip 4 4GB",
+      "abbr": "Flip4 4GB",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxya1464gb": {
+      "name": "Galaxy A14 64GB",
+      "abbr": "A14 64GB",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxya2364gb": {
+      "name": "Galaxy A23 64GB",
+      "abbr": "A23 64GB",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxya545g128gb": {
+      "name": "Galaxy A54 5G 128GB",
+      "abbr": "A54 128GB",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "motogplay202332gb": {
+      "name": "Moto G Play 2023 32GB",
+      "abbr": "PLAY23 32GB",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxys21fe": {
+      "name": "Galaxy S21 FE",
+      "abbr": "21FE",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "gstylus": {
+      "name": "G Stylus",
+      "abbr": "STYL",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxya525g": {
+      "name": "Galaxy A52 5G",
+      "abbr": "A52 5G",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxya325g": {
+      "name": "Galaxy A32 5G",
+      "abbr": "A32 5G",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxya535g": {
+      "name": "Galaxy A53 5G",
+      "abbr": "A53 5G",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "iphonese2ndgenrev": {
+      "name": "iPhone SE 2nd Gen Rev",
+      "abbr": "SE2 Rev",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "motog5g23": {
+      "name": "Moto G 5G 23",
+      "abbr": "MG23",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxys215g": {
+      "name": "Galaxy S21 5G",
+      "abbr": "S21 5G",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxys20ultra5g": {
+      "name": "Galaxy S20 Ultra 5G",
+      "abbr": "S20U 5G",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "galaxya35128gb": {
+      "name": "Galaxy A35 128GB",
+      "abbr": "A35",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "applewatchs10": {
+      "name": "Apple Watch S10",
+      "abbr": "AW S10",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328531,
+      "is_ghost": true
+    },
+    "applewatchs9": {
+      "name": "Apple Watch S9",
+      "abbr": "AW S9",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchs8": {
+      "name": "Apple Watch S8",
+      "abbr": "AW S8",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchs7": {
+      "name": "Apple Watch S7",
+      "abbr": "AW S7",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchs6": {
+      "name": "Apple Watch S6",
+      "abbr": "AW S6",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchse2rev": {
+      "name": "Apple Watch SE2 Rev",
+      "abbr": "AW SE2 Rev",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchse2": {
+      "name": "Apple Watch SE2",
+      "abbr": "AW SE2",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchse": {
+      "name": "Apple Watch SE",
+      "abbr": "AW SE",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchultra2": {
+      "name": "Apple Watch Ultra 2",
+      "abbr": "AW ULT2",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "applewatchultra": {
+      "name": "Apple Watch Ultra",
+      "abbr": "AW ULT",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "galaxys23128gb": {
+      "name": "Galaxy S23 128GB",
+      "abbr": "S23",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "galaxya54": {
+      "name": "Galaxy A54",
+      "abbr": "A54",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "galaxya35": {
+      "name": "Galaxy A35",
+      "abbr": "A35",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "galaxya13": {
+      "name": "Galaxy A13",
+      "abbr": "A13",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "galaxya71": {
+      "name": "Galaxy A71",
+      "abbr": "A71",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "galaxynote9": {
+      "name": "Galaxy Note9",
+      "abbr": "Note9",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "galaxya425g": {
+      "name": "Galaxy A42 5G",
+      "abbr": "A42 5G",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "motogstylus": {
+      "name": "Moto G Stylus",
+      "abbr": "STYL",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "motogpower": {
+      "name": "Moto G Power",
+      "abbr": "PWR",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "motog": {
+      "name": "Moto G",
+      "abbr": "MG",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "motoe6": {
+      "name": "Moto E6",
+      "abbr": "E6",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
+    },
+    "revvl": {
+      "name": "Revvl",
+      "abbr": "REVVL",
+      "att": {
+        "monthly": 0,
+        "total": 0
+      },
+      "vzw": {
+        "monthly": 0,
+        "total": 0
+      },
+      "tmo": {
+        "dp": 0,
+        "monthly": 0,
+        "total": 0
+      },
+      "last_updated": 1785375328532,
+      "is_ghost": true
     }
+  },
+  "store_nicknames": {
+    "1698": "Hooksett",
+    "1753": "Derry",
+    "1762": "Seabrook",
+    "1785": "Hudson",
+    "1788": "Scarborough",
+    "1796": "Amherst",
+    "1856": "Bangor",
+    "1868": "Auburn",
+    "2118": "Lunenburg",
+    "2143": "Skowhegan",
+    "2152": "Albany",
+    "2202": "Windham",
+    "2222": "Tewksbury",
+    "2369": "Tilton",
+    "2399": "Manchester",
+    "2530": "Rutland",
+    "2639": "Gilford",
+    "2758": "Plymouth",
+    "3535": "Epping"
+  },
+  "color_abbreviations": {
+    "Beige": "BGE",
+    "Black": "BLK",
+    "Black Titanium": "BLK",
+    "Blue": "BLU",
+    "Cosmic Orange": "ORNG",
+    "Deep Blue": "BLU",
+    "Desert Titanium": "DSRT",
+    "Graphite": "BLK",
+    "Gray": "GRY",
+    "Green": "GRN",
+    "Mist Blue": "BLU",
+    "Natural Titanium": "NTRL",
+    "Navy": "BLU",
+    "Sky Blue": "BLU",
+    "Space Black": "BLK",
+    "Titanium Black": "BLK",
+    "Ultramarine": "BLU",
+    "White": "WHTE",
+    "Onyx Black": "BLK",
+    "Onyx BLK": "BLK",
+    "Slipstream": "GRY",
+    "Coal Smoke": "BLK",
+    "Tapestry": "BLU",
+    "Midnight": "NAVY",
+    "Caramel Latte": "BEIGE",
+    "Olive": "GRN",
+    "Silver": "SLVR",
+    "Soft Pink": "PNK"
+  },
+  "hidden_cleanup": {
+    "Demo - iPhone 16 Ultramari ne Demo 128GB": "Demo IP16",
+    "Demo - Galaxy A16 128GB": "Demo A16",
+    "Demo - iPhone 16 Plus 128GB": "Demo IP16+",
+    "Demo - iPhone 16 128GB": "Demo IP16",
+    "Demo - Galaxy S24 FE 128GB": "Demo S24FE",
+    "Demo - Galaxy A15 5G 128GB": "Demo A15",
+    "Demo - Galaxy S25 Plus 256GB": "Demo S25+",
+    "Demo - Galaxy S25 Ultra 256GB": "Demo S25U",
+    "Demo - iPhone 16e 128GB": "Demo IP16e",
+    "Demo - iPhone 17 DEMO 256GB": "Demo IP17",
+    "Demo - iPhone 17 Pro Max DEMO 256GB": "Demo IP17PM",
+    "Demo - iPhone Air DEMO 256GB": "Demo IP Air",
+    "Demo - iPhone 17 Pro DEMO 256GB": "Demo IP17PR",
+    "Demo - iPhone 17 Plus DEMO 256GB": "Demo IP17+",
+    "Demo - Galaxy S25 128GB": "Demo S25"
   }
 }
