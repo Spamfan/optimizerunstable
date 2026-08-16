@@ -11,7 +11,7 @@
         }
 
         // --- SCRIPT INITIALIZATION ---
-        const APP_VERSION = 'v1.5.0';
+        const APP_VERSION = 'v1.5.1';
         document.getElementById('version-text').textContent = APP_VERSION;
         document.title = 'Optimizer';
         
@@ -65,7 +65,7 @@
         TRANSLATIONS.en.ui = {
             loginWarningTitle: "PROPRIETARY CONTENT", loginWarningBody: "Unauthorized access and/or sharing is forbidden. To gain access, agree to these terms by inputting the passcode or pin given to you by the device administrator.", enterPinPlaceholder: "Enter PIN", enterBtn: "Enter", incorrectPin: "Incorrect PIN",
             devBoxHeader: "Developer options",
-            uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "â €â €â €Printâ €â €â €", printoutSettings: "Printout settings â–¼", printoutSettingsUp: "Printout settings â–²", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", troubleshooting: "Troubleshooting / help", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache", cloudFiles: "Cloud files", edlpIndexBtn: "EDLPs Index",
+            uploadFiles: "Click here to upload files", processing: "Processing...", outdated: "Some file(s) could be outdated.", customizeBtn: "Customize Entries", printBtn: "   Print   ", printoutSettings: "Printout settings ▼", printoutSettingsUp: "Printout settings ▲", isolateApple: "Isolate Apple Devices", showEdlps: "Show likely EDLPs", showWearables: "Show wearables", showWearablesNA: "Show wearables (not applicable)", showDevOptions: "Show developer options", howToUse: "How To Use / FAQ", troubleshooting: "Troubleshooting / help", highlightTitle: "Highlight Inventory", highlightSub: "(Highlight partial/full)", doneBtn: "Done", devModeTitle: "Dev Mode", devModeP1: "<strong>developer mode activated lol</strong>", devModeP2: "(this doesn't do anything)", showPdfInputs: "Show PDF Inputs", showEdlpFetches: "Show EDLP Fetches", copyLog: "Copy Log", forceRefetch: "Force Refetch Data", clearCache: "Clear Optimizer Cache", cloudFiles: "Cloud files", edlpIndexBtn: "EDLPs Index",
             tutorialHtml: document.getElementById('main-steps').innerHTML,
             troubleHtml: document.getElementById('trouble-steps') ? document.getElementById('trouble-steps').innerHTML : ''
         };
@@ -103,7 +103,7 @@
         const processEdlpData = (data, source, log, statusIcon) => {
             if (data && data.devices) {
                 const deviceCount = Object.keys(data.devices).length;
-                log(`ðŸ“¦ DATA RECEIVED (${source}): ${deviceCount} devices found.`, 'edlp');
+                log(`📦 DATA RECEIVED (${source}): ${deviceCount} devices found.`, 'edlp');
 
                 // Update dynamic dictionaries from cloud
                 STORE_NICKNAMES = data.store_nicknames || {};
@@ -134,13 +134,13 @@
 
                 EDLP_DATA = newEdlp;
                 if (source === 'live') {
-                    statusIcon.textContent = "â˜ï¸";
+                    statusIcon.textContent = "☁️";
                     statusIcon.title = "Live Data Active (Cloud)";
                 } else if (source === 'backup') {
-                    statusIcon.textContent = "ðŸ’¾";
+                    statusIcon.textContent = "💾";
                     statusIcon.title = "Local Backup Active";
                 }
-                log(`âœ… ${source.toUpperCase()} DATA APPLIED.`, 'edlp');
+                log(`✅ ${source.toUpperCase()} DATA APPLIED.`, 'edlp');
             }
         };
 
@@ -157,11 +157,11 @@
             };
 
             const url = 'https://cdn.jsdelivr.net/gh/spamfan/optimizer@main/edlp_data.json?t=' + Date.now();
-            log(`ðŸ”„ FETCH START: ${url}`, 'edlp');
+            log(`🔄 FETCH START: ${url}`, 'edlp');
 
             fetch(url)
                 .then(res => {
-                    log(`ðŸ“¡ RESPONSE: Status ${res.status}`, 'edlp');
+                    log(`📡 RESPONSE: Status ${res.status}`, 'edlp');
                     if (!res.ok) throw new Error("Fetch failed");
                     return res.json();
                 })
@@ -169,20 +169,20 @@
                     processEdlpData(data, 'live', log, statusIcon);
                 })
                 .catch(err => {
-                    log(`âŒ ERROR: ${err.message}`, 'edlp');
+                    log(`❌ ERROR: ${err.message}`, 'edlp');
                     const localBackup = localStorage.getItem('edlpLocalBackup');
                     if (localBackup) {
                         try {
                             const parsedData = JSON.parse(localBackup);
-                            log(`ðŸ”„ Attempting to load local backup...`, 'edlp');
+                            log(`🔄 Attempting to load local backup...`, 'edlp');
                             processEdlpData(parsedData, 'backup', log, statusIcon);
                         } catch (e) {
-                            log(`âŒ BACKUP ERROR: Invalid JSON in local storage.`, 'edlp');
-                            statusIcon.textContent = "âŒ";
+                            log(`❌ BACKUP ERROR: Invalid JSON in local storage.`, 'edlp');
+                            statusIcon.textContent = "❌";
                             statusIcon.title = "Offline / No Data";
                         }
                     } else {
-                        statusIcon.textContent = "âŒ";
+                        statusIcon.textContent = "❌";
                         statusIcon.title = "Offline / No Data";
                     }
                 });
@@ -1496,7 +1496,7 @@
                     };
                 }
             } catch (err) {
-                debugLog(`âŒ CRASH: ${err.message}`, "sys");
+                debugLog(` CRASH: ${err.message}`, "sys");
                 alert("Failed to generate PDF. Check Dev Console.");
             }
         });
@@ -1548,14 +1548,14 @@
                         fetchLivePricing();
                         
                         backupStatusMsg.style.color = '#1877f2';
-                        backupStatusMsg.textContent = 'âœ… Backup Saved!';
+                        backupStatusMsg.textContent = ' Backup Saved!';
                         setTimeout(() => backupStatusMsg.textContent = '', 3000);
                     } else {
                         throw new Error("Missing 'devices' property.");
                     }
                 } catch (err) {
                     backupStatusMsg.style.color = '#d93025';
-                    backupStatusMsg.textContent = 'âŒ Invalid JSON format';
+                    backupStatusMsg.textContent = ' Invalid JSON format';
                     setTimeout(() => backupStatusMsg.textContent = '', 3000);
                 }
             });
@@ -1901,7 +1901,7 @@
                         if (fileHasWatches) hasWatches = true;
 
                     } catch (err) {
-                        debugLog(`âŒ Cloud Parse CRASH: ${err.message}`, 'sys');
+                        debugLog(`❌ Cloud Parse CRASH: ${err.message}`, 'sys');
                     }
                 } else {
                     if (statusSection) {
